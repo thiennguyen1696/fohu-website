@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fohu - Nền tảng Đặt Lịch & Kết Nối Đối Tác Sáng Tạo Hàng Đầu Việt Nam</title>
+    <meta name="description" content="Nền tảng kết nối trực tiếp Designer, Photographer, Editor, AI Artist và các giải pháp studio chuyên nghiệp tại Việt Nam.">
+    <meta name="keywords" content="fohu, thợ chụp ảnh, editor video, designer, thuê studio, đặt lịch media">
+    <meta name="author" content="fohu Platform">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="fohu - Nền tảng Kết Nối Đối Tác Sáng Tạo">
+    <meta property="og:description" content="Kết nối nhanh chóng với hàng ngàn Designer, Photographer và Editor chuyên nghiệp.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80">
+    
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK v9 (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-main: #f8fafc;
+            --dark: #111827;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(13, 148, 136, 0.12);
+            --ig-heart: #ff3040;
+            --vip-gold: #d97706;
+            
+            --font-serif: 'Playfair Display', serif;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; overflow-x: hidden; }
+
+        /* Toast Notification */
+        #toastNotification {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
+            font-size: 0.88rem; font-weight: 600; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px;
+        }
+        #toastNotification.show { transform: translateX(-50%) translateY(0); }
+
+        /* Navbar */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1440px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 1.5rem;
+        }
+        
+        /* LOGO NAVBAR ĐÃ ĐƯỢC LÀM TO RÕ (56px) */
+        .brand-logo-img {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        /* LOGO FOOTER */
+        .footer-logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            cursor: pointer;
+            filter: brightness(0) invert(1); /* Tùy chọn làm sáng logo trên nền tối của footer nếu muốn */
+        }
+        
+        .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-main); font-weight: 600;
+            font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; cursor: pointer; transition: all 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
+        .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--dark); }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none; position: absolute; top: 100%; left: 0; width: 100%;
+                background: #fff; flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-md); gap: 0.5rem;
+            }
+            .nav-links.active { display: flex; }
+            .nav-mobile-toggle { display: block; }
+        }
+
+        .nav-auth { display: flex; align-items: center; gap: 0.75rem; }
+
+        /* NÚT BẤM */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.88rem;
+            text-decoration: none; cursor: pointer; border: none; white-space: nowrap; transition: all 0.2s;
+        }
+        .btn-primary { background-color: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-dark { background-color: var(--dark); color: #fff; }
+        .btn-secondary { background-color: #ffffff; color: var(--text-main); border: 1px solid var(--border); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+
+        /* PADDING TOP CHO MOBILE & DESKTOP */
+        .page-section { display: none; padding-top: 90px; min-height: calc(100vh - 80px); }
+        .page-section.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* HERO SECTION */
+        .hero-section {
+            padding: 30px 1.5rem 40px; max-width: 1320px; margin: auto;
+            display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center;
+        }
+        @media (max-width: 960px) {
+            .hero-section { grid-template-columns: 1fr; text-align: left; padding-top: 20px; gap: 2rem; }
+            .hero-heading { font-size: 2.2rem !important; line-height: 1.25; }
+            .hero-cta-group { justify-content: flex-start; }
+            .hero-social-proof { justify-content: flex-start; }
+            .home-search-bar { flex-direction: column; }
+            .home-search-input, .home-search-select, .home-search-bar .btn { width: 100%; }
+        }
+
+        .hero-slider-container {
+            position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 4/5;
+            box-shadow: var(--shadow-md); border: 1px solid var(--border); background: #111827;
+            width: 100%; max-height: 480px;
+        }
+        .hero-slide-item {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 0.8s ease-in-out; display: flex; flex-direction: column; justify-content: flex-end;
+            pointer-events: none;
+        }
+        .hero-slide-item.active { opacity: 1; z-index: 2; pointer-events: auto; }
+        .hero-slide-item img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .hero-slide-caption {
+            position: relative; z-index: 3; width: calc(100% - 24px); background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(8px); padding: 1rem; border-radius: 14px; color: #fff; margin: 12px;
+        }
+        .hero-slider-dots { position: absolute; bottom: 22px; right: 24px; z-index: 10; display: flex; gap: 6px; }
+        .hero-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s; }
+        .hero-dot.active { width: 24px; border-radius: 4px; background: var(--primary); }
+
+        .hero-badge-top {
+            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); color: var(--primary-hover);
+            padding: 0.35rem 0.95rem; border-radius: 999px; font-weight: 700; font-size: 0.82rem; margin-bottom: 1rem;
+        }
+        .hero-heading { font-family: var(--font-serif); font-size: 3rem; font-weight: 700; color: var(--dark); line-height: 1.2; margin-bottom: 1rem; }
+        .hero-heading span { background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-description { font-size: 1.02rem; color: var(--text-muted); margin-bottom: 1.75rem; max-width: 580px; }
+        
+        .hero-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+
+        .home-search-bar {
+            background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 0.5rem;
+            box-shadow: var(--shadow-md); display: flex; gap: 0.5rem; margin-top: 1.25rem; align-items: center;
+        }
+        .home-search-input { flex: 1; border: none; padding: 0.65rem 0.85rem; outline: none; font-size: 0.9rem; width: 100%; }
+        .home-search-select { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0.75rem; outline: none; background: #fff; font-size: 0.85rem; font-weight: 600; width: 100%; }
+
+        /* MARKETPLACE & PRICING */
+        .marketplace-layout {
+            max-width: 1440px; margin: 0 auto; padding: 20px 1.5rem 60px;
+            display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start;
+        }
+        @media (max-width: 960px) {
+            .marketplace-layout { grid-template-columns: 1fr; }
+            .marketplace-sidebar { display: none; }
+        }
+        .marketplace-sidebar {
+            background: #fff; border-radius: 16px; padding: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            position: sticky; top: 95px;
+        }
+        .hub-sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+        .hub-sidebar-tab {
+            background: transparent; border: none; width: 100%; padding: 0.65rem 0.9rem; border-radius: 10px;
+            font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-align: left;
+            display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+        }
+        .hub-sidebar-tab:hover, .hub-sidebar-tab.active { background: var(--primary-light); color: var(--primary-hover); font-weight: 700; }
+
+        .pricing-grid { max-width: 1160px; margin: 1.5rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; }
+        .pricing-card { background: #fff; border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.3s; }
+        .pricing-card:hover { transform: translateY(-4px); }
+        .pricing-card.featured { border: 2px solid var(--primary); box-shadow: var(--shadow-md); position: relative; }
+        .pricing-card-with-badge { position: relative; }
+        .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .featured-badge.vip { background: var(--vip-gold); }
+
+        .term-select-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem; margin: 1rem 0; font-size: 0.84rem; }
+        .term-option { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; }
+        .term-option span.price-col { text-align: right; font-weight: 700; color: var(--dark); }
+        .term-option span.gift-col { text-align: right; color: #e11d48; font-size: 0.78rem; font-weight: 700; }
+
+        /* TRANG TIN TỨC (BLOG GRID 10 BÀI VIẾT) */
+        .blog-grid { max-width: 1200px; margin: 1.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .blog-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+        .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .blog-img { height: 200px; background-size: cover; background-position: center; width: 100%; }
+        .blog-body { padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+        .blog-tag { display: inline-block; background: var(--primary-light); color: var(--primary-hover); font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; text-transform: uppercase; width: fit-content; }
+        .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--dark); line-height: 1.4; margin-bottom: 0.5rem; }
+        .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* FOOTER */
+        footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+        @media (max-width: 960px) { .footer-container { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 580px) { .footer-container { grid-template-columns: 1fr; text-align: center; } .footer-socials { justify-content: center; } }
+        .footer-col h4 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.2s; cursor: pointer; }
+        .footer-links a:hover { color: var(--primary); }
+        .footer-socials { display: flex; gap: 0.75rem; margin-top: 1rem; }
+        .footer-social-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.08); color: #fff; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; }
+        .footer-bottom-links { display: flex; gap: 1.25rem; list-style: none; }
+        .footer-bottom-links a { color: #94a3b8; text-decoration: none; cursor: pointer; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #fff; width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 1.25rem; overflow-y: auto; }
+        .modal-field-group { margin-bottom: 0.85rem; }
+        .modal-field-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-main); }
+        .modal-field-group input, .modal-field-group select, .modal-field-group textarea { width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; outline: none; background: #fff; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification">
+        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+        <span id="toastMsg">Thành công!</span>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <!-- LOGO NAVBAR ĐÃ PHÓNG TO RÕ RÀNG -->
+            <img src="fohu 2.png" alt="FOHU Logo" class="brand-logo-img" onclick="switchPage('home')">
+            
+            <button class="nav-mobile-toggle" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
+
+            <ul class="nav-links" id="navLinksList">
+                <li><a onclick="switchPage('home'); closeMobileMenu();" id="nav-home" class="active">Trang chủ</a></li>
+                <li><a onclick="switchPage('marketplace'); closeMobileMenu();" id="nav-marketplace">Đối tác</a></li>
+                <li><a onclick="switchPage('community'); closeMobileMenu();" id="nav-community">Diễn đàn</a></li>
+                <li><a onclick="switchPage('pricing'); closeMobileMenu();" id="nav-pricing">Trở thành đối tác</a></li>
+                <li><a onclick="switchPage('blog'); closeMobileMenu();" id="nav-blog">Tin tức</a></li>
+                <li><a onclick="switchPage('contact'); closeMobileMenu();" id="nav-contact">Liên hệ</a></li>
+            </ul>
+
+            <div class="nav-auth">
+                <button class="btn btn-secondary" onclick="openRegisterBoothModal('FREE')"><i class="fa-solid fa-handshake"></i> <span style="display:none; @media(min-width:640px){display:inline;}">Đăng Ký</span></button>
+                <button class="btn btn-dark" onclick="openLoginRoleModal()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- TRANG 1: TRANG CHỦ -->
+    <div id="page-home" class="page-section active">
+        <section class="hero-section">
+            <div>
+                <div class="hero-badge-top"><i class="fa-solid fa-bolt"></i> Hệ sinh thái dịch vụ media & sáng tạo #1</div>
+                <h1 class="hero-heading">
+                    Kết nối <span>Designer, Photographer, Editor & AI Artist</span> chuyên nghiệp
+                </h1>
+                <p class="hero-description">
+                    Nền tảng quy tụ đầy đủ các đối tác sáng tạo: Nhà thiết kế đồ họa (Designer), nhiếp ảnh gia, biên tập video (Editor), nghệ sĩ sáng tạo AI.
+                </p>
+
+                <div class="hero-cta-group">
+                    <button onclick="switchPage('marketplace')" class="btn btn-primary">
+                        <i class="fa-solid fa-compass"></i> Khám Phá Ngay
+                    </button>
+                    <button onclick="openJobRequestModal()" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
+                        <i class="fa-solid fa-bullhorn"></i> Đăng Yêu Cầu
+                    </button>
+                </div>
+
+                <div class="home-search-bar">
+                    <input type="text" class="home-search-input" placeholder="Tìm dịch vụ (Designer, Chụp ảnh...)...">
+                    <select class="home-search-select">
+                        <option value="">Toàn quốc</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                    </select>
+                    <button class="btn btn-dark" onclick="switchPage('marketplace')"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+
+            <div style="position: relative;">
+                <div class="hero-slider-container" id="heroSlider">
+                    <div class="hero-slide-item active">
+                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Service">
+                        <div class="hero-slide-caption">
+                            <div style="font-size: 0.85rem; font-weight: 700;">1. Photographer & Pre-wedding</div>
+                            <div style="font-size: 0.75rem; color: #cbd5e1;">Bắt trọn từng khoảnh khắc • 3.5tr</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TRANG 2: ĐỐI TÁC -->
+    <div id="page-marketplace" class="page-section">
+        <div class="marketplace-layout">
+            <aside class="marketplace-sidebar">
+                <h3><i class="fa-solid fa-filter" style="color:var(--primary);"></i> Danh mục</h3>
+                <ul class="hub-sidebar-list">
+                    <li><button class="hub-sidebar-tab active"><i class="fa-solid fa-border-all"></i> Tất cả</button></li>
+                </ul>
+            </aside>
+            <main>
+                <div class="pin-masonry-grid" id="postsFeed"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- TRANG 3: DIỄN ĐÀN -->
+    <div id="page-community" class="page-section">
+        <div class="tinhte-layout">
+            <aside class="tinhte-sidebar-left"><h4>Khám Phá</h4></aside>
+            <main class="tinhte-main-feed">
+                <article class="tinhte-thread-card" style="padding: 1.5rem;">
+                    <h3>Chào mừng đến với Diễn đàn fohu!</h3>
+                </article>
+            </main>
+            <aside class="tinhte-sidebar-right"><h4>Check-in Hot</h4></aside>
+        </div>
+    </div>
+
+    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC -->
+    <div id="page-pricing" class="page-section">
+        <section style="padding: 20px 1rem 60px;">
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <h2>Trở Thành Đối Tác</h2>
+                <p style="color: var(--text-muted);">Lựa chọn gói phù hợp để mở gian hàng và vinh danh thương hiệu của bạn.</p>
+            </div>
+            <div class="pricing-grid">
+                <!-- Không Chuyên -->
+                <div class="pricing-card pricing-card-with-badge">
+                    <span class="featured-badge" style="background: var(--text-muted);">Cơ bản</span>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Không Chuyên</h3>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0;">0 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ vĩnh viễn</span></div>
+                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Tạo Hồ sơ cá nhân cơ bản</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
+                            <li><i class="fa-solid fa-ban" style="color: #ef4444;"></i> <strong>Không hiển thị</strong> thông tin liên hệ trực tiếp</li>
+                            <li><i class="fa-solid fa-ban" style="color: #ef4444;"></i> <strong>Không hỗ trợ</strong> giao dịch / kinh doanh trên sàn</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('FREE')">Đăng ký Không Chuyên</button>
+                </div>
+
+                <!-- Bán Chuyên (99.000 đồng) -->
+                <div class="pricing-card pricing-card-with-badge">
+                    <span class="featured-badge">Đối tác Standar</span>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Bán Chuyên</h3>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--primary);">99.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo và thông tin liên hệ</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 15 tác phẩm portfolio</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 5 tin Moment/ngày</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Ưu tiên hiển thị trung bình trong danh mục</li>
+                        </ul>
+                        <div class="term-select-box">
+                            <label class="term-option"><input type="radio" name="standarTerm" checked> <span class="label-col">Theo tháng</span> <span class="price-col">99.000đ</span> <span class="gift-col"></span></label>
+                            <label class="term-option"><input type="radio" name="standarTerm"> <span class="label-col">6 tháng</span> <span class="price-col">594.000đ</span> <span class="gift-col">Tặng 5 ngày</span></label>
+                            <label class="term-option"><input type="radio" name="standarTerm"> <span class="label-col">1 năm</span> <span class="price-col">1.188.000đ</span> <span class="gift-col">Tặng 15 ngày</span></label>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('STANDAR')">Đăng ký Bán Chuyên</button>
+                </div>
+
+                <!-- Chuyên nghiệp (149.000 đồng) -->
+                <div class="pricing-card featured pricing-card-with-badge">
+                    <span class="featured-badge vip">ĐỐI TÁC VIP</span>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: #d97706;">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ & mạng xã hội</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video portfolio</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đặc quyền <strong>ghim lên top đầu</strong> & vinh danh VIP Spotlight</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hỗ trợ tư vấn phát triển kênh 24/7 từ chuyên gia</li>
+                        </ul>
+                        <div class="term-select-box">
+                            <label class="term-option"><input type="radio" name="vipTerm" checked> <span class="label-col">Theo tháng</span> <span class="price-col">149.000đ</span> <span class="gift-col"></span></label>
+                            <label class="term-option"><input type="radio" name="vipTerm"> <span class="label-col">6 tháng</span> <span class="price-col">894.000đ</span> <span class="gift-col">Tặng 7 ngày</span></label>
+                            <label class="term-option"><input type="radio" name="vipTerm"> <span class="label-col">1 năm</span> <span class="price-col">1.788.000đ</span> <span class="gift-col">Tặng 1 tháng</span></label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: #d97706;" onclick="openRegisterBoothModal('VIP')">Đăng ký Chuyên nghiệp</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TRANG TIN TỨC -->
+    <div id="page-blog" class="page-section">
+        <section style="padding: 40px 1rem 80px; max-width: 1200px; margin: auto;">
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <h2 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">Tin Tức & Xu Hướng Sáng Tạo</h2>
+                <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và cuộc thi ảnh quốc tế.</p>
+            </div>
+            
+            <div class="blog-grid">
+                <!-- Bài 1 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Xu hướng cảm xúc')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Nhiếp ảnh</span>
+                            <h3>Xu hướng "Cảm xúc & Tính chân thực" lên ngôi trong nhiếp ảnh 2026</h3>
+                            <p>Sự dịch chuyển từ ảnh dàn dựng sang phong cách candid tự nhiên, tôn trọng hạt grain mộc mạc.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 5 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 2 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Hyper-Bloom')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Thiết kế</span>
+                            <h3>Sự bùng nổ của phong cách thiết kế và màu sắc "Hyper-Bloom"</h3>
+                            <p>Kết hợp giữa thiên nhiên siêu thực và hiệu ứng mờ sương tạo cảm giác lãng mạn, hoài niệm.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 4 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 3 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Mirrorless Full-frame')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Công nghệ</span>
+                            <h3>Đánh giá chi tiết dòng máy ảnh Mirrorless Full-frame toàn diện năm 2026</h3>
+                            <p>Điểm mặt những cỗ máy quốc dân tích hợp AI Autofocus và chống rung IBIS cực mạnh cho creator.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 7 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 4 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Hasselblad')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Thiết bị</span>
+                            <h3>Cuộc đua máy ảnh Medium Format: Hasselblad X2D II 100C ra mắt</h3>
+                            <p>Cảm biến 100MP cùng dải tương phản động vượt trội định nghĩa lại tiêu chuẩn nhiếp ảnh thương mại.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 6 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 5 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Candid Camera Roll')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Trào lưu</span>
+                            <h3>Xu hướng "Candid Camera Roll": Khi Gen Z chuộng phong cách flash thô ráp</h3>
+                            <p>Trào lưu chụp ảnh hoài cổ bằng flash trực diện tạo hiệu ứng chân thực đang làm mưa làm gió.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 4 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 6 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: AI hậu kỳ')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Hậu kỳ</span>
+                            <h3>Cẩm nang tối ưu quy trình hậu kỳ với Trí tuệ nhân tạo (AI)</h3>
+                            <p>Hướng dẫn editor và photographer tự động hóa color grading, tách nền thông minh để tiết kiệm thời gian.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 8 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 7 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Sony World Photography')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Cuộc thi ảnh</span>
+                            <h3>Điểm danh 15 tác phẩm xuất sắc nhất tại Sony World Photography Awards 2026</h3>
+                            <p>Chiêm ngưỡng những khoảnh khắc đời sống và thiên nhiên hoang dã ấn tượng nhất hành tinh.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 5 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 8 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Micro-Industrial')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Thiết kế F&B</span>
+                            <h3>Xu hướng thiết kế nhận diện thương hiệu "Micro-Industrial" cho quán Cafe</h3>
+                            <p>Vũ khí thị giác mới mô phỏng nhãn y tế và typography thô mạnh đang thịnh hành tại Việt Nam.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 5 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 9 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Máy ảnh Retro')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Thị trường</span>
+                            <h3>Máy ảnh dòng Retro (Hoài cổ) tiếp tục thống trị thị trường Việt Nam</h3>
+                            <p>Nhu cầu săn lùng các dòng body máy thiết kế cổ điển kết hợp công nghệ mirrorless hiện đại.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 4 phút đọc</div>
+                    </div>
+                </article>
+
+                <!-- Bài 10 -->
+                <article class="blog-card" onclick="showToast('Mở bài viết: Định giá Freelancer')">
+                    <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80');"></div>
+                    <div class="blog-body">
+                        <div>
+                            <span class="blog-tag">Sự nghiệp</span>
+                            <h3>Hướng dẫn chiến lược định giá dịch vụ cho Freelancer Designer & Photographer</h3>
+                            <p>Bí quyết cân đối chi phí thiết bị và thời gian dựng hình để tối ưu thu nhập mùa cao điểm.</p>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;"><i class="fa-regular fa-clock"></i> 6 phút đọc</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <!-- TRANG LIÊN HỆ -->
+    <div id="page-contact" class="page-section">
+        <section style="padding: 40px 1rem; max-width: 600px; margin: auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2>Liên Hệ & Hỗ Trợ</h2>
+                <p style="color: var(--text-muted);">Hotline: 0909097326</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER (ĐÃ THAY THẾ LOGO HÌNH ẢNH CHÍNH THỨC) -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <img src="fohu 2.png" alt="FOHU Logo" class="footer-logo-img" style="margin-bottom: 1rem;" onclick="switchPage('home')">
+                <p>Nền tảng kết nối hệ sinh thái sáng tạo hàng đầu Việt Nam.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Khám Phá</h4>
+                <ul class="footer-links"><li><a onclick="switchPage('marketplace')">Đối tác</a></li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Chính Sách</h4>
+                <ul class="footer-links"><li><a>Bảo mật</a></li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Hỗ Trợ</h4>
+                <ul class="footer-links"><li><a>Hotline: 0909097326</a></li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 fohu Platform.</p>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="jobRequestModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Đăng Yêu Cầu Dịch Vụ</h3>
+                <button onclick="closeModal('jobRequestModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field-group"><label>Họ và tên *</label><input type="text" required></div>
+                <div class="modal-field-group"><label>SĐT / Zalo *</label><input type="tel" required></div>
+                <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="showToast('Đã gửi yêu cầu!'); closeModal('jobRequestModal');">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            const navT = document.getElementById('nav-' + pageId);
+            if (navT) navT.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
+        function openJobRequestModal() { openModal('jobRequestModal'); }
+        function toggleMobileMenu() { document.getElementById('navLinksList').classList.toggle('active'); }
+        function closeMobileMenu() { document.getElementById('navLinksList').classList.remove('active'); }
+    </script>
+</body>
+</html>
