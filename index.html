@@ -8,6 +8,9 @@
     <meta name="keywords" content="fohu, thợ chụp ảnh, editor video, designer, thuê studio, đặt lịch media">
     <meta name="author" content="fohu Platform">
     
+    <!-- Favicon chuẩn logo chính thức FOHU -->
+    <link rel="icon" type="image/png" href="fohu 2.png">
+    
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="fohu - Nền tảng Kết Nối Đối Tác Sáng Tạo">
@@ -70,7 +73,7 @@
             padding: 0.5rem 1.5rem;
         }
         
-        /* LOGO NAVBAR ĐÃ ĐƯỢC LÀM TO RÕ (56px) */
+        /* LOGO NAVBAR */
         .brand-logo-img {
             height: 56px;
             width: auto;
@@ -84,7 +87,6 @@
             width: auto;
             object-fit: contain;
             cursor: pointer;
-            filter: brightness(0) invert(1); /* Tùy chọn làm sáng logo trên nền tối của footer nếu muốn */
         }
         
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
@@ -255,7 +257,6 @@
     <!-- Navigation Bar -->
     <nav>
         <div class="nav-container">
-            <!-- LOGO NAVBAR ĐÃ PHÓNG TO RÕ RÀNG -->
             <img src="fohu 2.png" alt="FOHU Logo" class="brand-logo-img" onclick="switchPage('home')">
             
             <button class="nav-mobile-toggle" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
@@ -571,7 +572,7 @@
         </section>
     </div>
 
-    <!-- FOOTER (ĐÃ THAY THẾ LOGO HÌNH ẢNH CHÍNH THỨC) -->
+    <!-- FOOTER -->
     <footer>
         <div class="footer-container">
             <div class="footer-col">
@@ -611,6 +612,22 @@
         </div>
     </div>
 
+    <!-- MODAL ĐĂNG NHẬP -->
+    <div class="modal-overlay" id="loginRoleModal">
+        <div class="modal-box" style="max-width: 400px; padding: 20px; text-align: center;">
+            <div class="modal-header" style="border:none; padding-bottom: 0;">
+                <h3 style="width: 100%; font-size: 1.25rem; font-weight: 800;">Đăng Nhập FOHU</h3>
+                <button onclick="closeModal('loginRoleModal')" style="border:none; background:none; cursor:pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 20px;">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Lựa chọn phương thức để tiếp tục kết nối với hệ sinh thái sáng tạo.</p>
+                <button class="btn btn-primary" style="width:100%; justify-content: center; padding: 12px; background: #ea4335;" onclick="loginWithGoogleMock()">
+                    <i class="fa-brands fa-google"></i> Đăng nhập với Google
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -630,8 +647,20 @@
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
         function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
         function openJobRequestModal() { openModal('jobRequestModal'); }
+        
+        // HÀM MỞ MODAL ĐĂNG NHẬP ĐÃ ĐƯỢC KÍCH HOẠT CHUẨN XÁC
+        function openLoginRoleModal() { 
+            openModal('loginRoleModal'); 
+        }
+
+        function loginWithGoogleMock() {
+            closeModal('loginRoleModal');
+            showToast("Đăng nhập thành công!");
+        }
+
         function toggleMobileMenu() { document.getElementById('navLinksList').classList.toggle('active'); }
         function closeMobileMenu() { document.getElementById('navLinksList').classList.remove('active'); }
     </script>
