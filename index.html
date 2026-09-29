@@ -196,6 +196,17 @@
         .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--dark); line-height: 1.4; margin-bottom: 0.5rem; }
         .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
 
+        /* DIỄN ĐÀN STYLES */
+        .community-container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .post-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+        .post-box textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; outline: none; resize: none; font-size: 0.95rem; min-height: 90px; margin-bottom: 0.75rem; }
+        .thread-item { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
+        .thread-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+        .thread-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        .thread-author { font-weight: 700; font-size: 0.92rem; color: var(--dark); }
+        .thread-time { font-size: 0.75rem; color: var(--text-muted); }
+        .thread-content { font-size: 0.95rem; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; }
+
         /* FOOTER */
         footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); }
         .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
@@ -321,10 +332,43 @@
         </div>
     </div>
 
-    <!-- TRANG 3: DIỄN ĐÀN -->
+    <!-- TRANG 3: DIỄN ĐÀN (CÓ CHỨC NĂNG ĐĂNG BÀI & HIỂN THỊ BẢNG TIN) -->
     <div id="page-community" class="page-section">
-        <div class="tinhte-layout" style="padding: 2rem;">
-            <h2>Diễn đàn chia sẻ cộng đồng sáng tạo</h2>
+        <div class="community-container">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);">Diễn đàn cộng đồng sáng tạo</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Chia sẻ kinh nghiệm, tìm kiếm dự án và kết nối với đồng nghiệp.</p>
+            </div>
+
+            <!-- Khung Đăng Bài (Chỉ hiện khi đã đăng nhập) -->
+            <div class="post-box" id="postCreationBox" style="display: none;">
+                <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--dark);"><i class="fa-solid fa-pen-nib" style="color:var(--primary);"></i> Đăng bài thảo luận mới</div>
+                <textarea id="postContentInput" placeholder="Bạn muốn chia sẻ điều gì với cộng đồng fohu hôm nay?"></textarea>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" onclick="createNewPost()"><i class="fa-solid fa-paper-plane"></i> Đăng bài</button>
+                </div>
+            </div>
+
+            <!-- Thông báo khi chưa đăng nhập -->
+            <div class="post-box" id="loginPromptBox" style="text-align: center; padding: 1.5rem;">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Vui lòng đăng nhập tài khoản Google để tham gia đăng bài và bình luận cùng cộng đồng.</p>
+                <button class="btn btn-dark" onclick="openLoginRoleModal()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập ngay</button>
+            </div>
+
+            <!-- Danh sách bài đăng -->
+            <div id="threadsFeedContainer">
+                <!-- Bài mẫu chào mừng -->
+                <div class="thread-item">
+                    <div class="thread-header">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="thread-avatar">
+                        <div>
+                            <div class="thread-author">Fohu Official</div>
+                            <div class="thread-time">Hôm nay</div>
+                        </div>
+                    </div>
+                    <div class="thread-content">Chào mừng các Designer, Photographer, Editor và AI Artist đến với không gian sinh hoạt chung của fohu! Hãy đăng bài giới thiệu portfolio hoặc trao đổi kinh nghiệm ngay nhé.</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -464,6 +508,7 @@
         };
         
         firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -486,12 +531,9 @@
         
         function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
         function openJobRequestModal() { openModal('jobRequestModal'); }
-        
-        function openLoginRoleModal() { 
-            openModal('loginRoleModal'); 
-        }
+        function openLoginRoleModal() { openModal('loginRoleModal'); }
 
-        // ĐĂNG NHẬP GOOGLE DÙNG POPUP AN TOÀN
+        // ĐĂNG NHẬP GOOGLE
         function loginWithGoogleFirebase() {
             const provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider)
@@ -507,11 +549,21 @@
                 });
         }
 
-        // KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP SẴN CÓ
+        let currentUser = null;
+
+        // THEO DÕI TRẠNG THÁI ĐĂNG NHẬP
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
+                currentUser = user;
                 updateUserUI(user);
+                document.getElementById('postCreationBox').style.display = 'block';
+                document.getElementById('loginPromptBox').style.display = 'none';
+            } else {
+                currentUser = null;
+                document.getElementById('postCreationBox').style.display = 'none';
+                document.getElementById('loginPromptBox').style.display = 'block';
             }
+            loadCommunityPosts();
         });
 
         function updateUserUI(user) {
@@ -529,6 +581,70 @@
                 switchPage('home');
                 showToast("Đã đăng xuất!");
             });
+        }
+
+        // ĐĂNG BÀI LÊN FIRESTORE
+        function createNewPost() {
+            const content = document.getElementById('postContentInput').value.trim();
+            if (!content) {
+                showToast("Vui lòng nhập nội dung bài viết!");
+                return;
+            }
+            if (!currentUser) {
+                showToast("Vui lòng đăng nhập trước khi đăng bài!");
+                return;
+            }
+
+            db.collection('posts').add({
+                authorName: currentUser.displayName || 'Thành viên fohu',
+                authorAvatar: currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+                content: content,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('postContentInput').value = '';
+                showToast("Đăng bài thành công!");
+                loadCommunityPosts();
+            }).catch((error) => {
+                console.error("Lỗi đăng bài:", error);
+                showToast("Không thể đăng bài. Vui lòng kiểm tra lại Firestore Rules.");
+            });
+        }
+
+        // TẢI BÀI VIẾT TỪ FIRESTORE
+        function loadCommunityPosts() {
+            const feedContainer = document.getElementById('threadsFeedContainer');
+            db.collection('posts').orderBy('createdAt', 'desc').limit(20).get()
+                .then((snapshot) => {
+                    let html = '';
+                    if (snapshot.empty) {
+                        html = `<div class="thread-item" style="text-align:center; color:var(--text-muted);">Chưa có bài viết nào. Hãy là người đầu tiên đăng bài!</div>`;
+                    } else {
+                        snapshot.forEach((doc) => {
+                            const p = doc.data();
+                            const timeStr = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleString('vi-VN') : 'Vừa xong';
+                            html += `
+                                <div class="thread-item">
+                                    <div class="thread-header">
+                                        <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar">
+                                        <div>
+                                            <div class="thread-author">${p.authorName}</div>
+                                            <div class="thread-time">${timeStr}</div>
+                                        </div>
+                                    </div>
+                                    <div class="thread-content">${escapeHtml(p.content)}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                    feedContainer.innerHTML = html;
+                })
+                .catch((error) => {
+                    console.error("Lỗi tải bài viết:", error);
+                });
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
         function toggleMobileMenu() { document.getElementById('navLinksList').classList.toggle('active'); }
