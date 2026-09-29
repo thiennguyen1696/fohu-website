@@ -606,7 +606,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (GIAO DIỆN NÚT BẤM TRỰC QUAN, TỰ ĐỘNG NÉN ẢNH CHUẨN FIREBASE) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -627,7 +627,7 @@
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
 
-                <!-- Ẩn file input gốc, kích hoạt bằng nút bấm UI đẹp mắt -->
+                <!-- Ẩn file input gốc -->
                 <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'avatar')">
                 <input type="file" id="coverFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'cover')">
 
@@ -732,8 +732,8 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
         
-        let uploadedAvatarUrl = "";
-        let uploadedCoverUrl = "";
+        let uploadedAvatarUrl = null;
+        let uploadedCoverUrl = null;
         let uploadedPostFileUrl = "";
 
         function openEditProfileModal() {
@@ -741,81 +741,98 @@
             document.getElementById('editNameInput').value = currentUser.displayName || '';
             document.getElementById('avatarFileName').innerText = "Chọn ảnh đại diện từ thiết bị";
             document.getElementById('coverFileName').innerText = "Chọn ảnh bìa từ thiết bị";
-            uploadedAvatarUrl = "";
-            uploadedCoverUrl = "";
+            uploadedAvatarUrl = null;
+            uploadedCoverUrl = null;
 
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
+                    if (data.name) document.getElementById('editNameInput').value = data.name;
                     document.getElementById('editBioInput').value = data.bio || '';
                     document.getElementById('editPhoneInput').value = data.phone || '';
-                    uploadedAvatarUrl = data.avatar || '';
-                    uploadedCoverUrl = data.coverUrl || '';
-                    if (data.avatar) document.getElementById('avatarFileName').innerText = "✓ Đã có ảnh đại diện";
-                    if (data.coverUrl) document.getElementById('coverFileName').innerText = "✓ Đã có ảnh bìa";
+                    if (data.avatar) {
+                        uploadedAvatarUrl = data.avatar;
+                        document.getElementById('avatarFileName').innerText = "✓ Đã có ảnh đại diện";
+                    }
+                    if (data.coverUrl) {
+                        uploadedCoverUrl = data.coverUrl;
+                        document.getElementById('coverFileName').innerText = "✓ Đã có ảnh bìa";
+                    }
                 }
             });
             openModal('editProfileModal');
         }
 
-        // THUẬT TOÁN CO GIÃN & NÉN ẢNH THÔNG MINH (SCALE & COMPRESS IMAGE)
-        function compressAndConvertImage(file, maxDimension, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
+        // HÀM NÉN ẢNH CHUẨN PRO DÙNG PROMISE TRÁNH LỖI BẤT ĐỒNG BỘ
+        function processImageFile(file, maxDim) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
 
-                    if (width > height) {
-                        if (width > maxDimension) { height *= maxDimension / width; width = maxDimension; }
-                    } else {
-                        if (height > maxDimension) { width *= maxDimension / height; height = maxDimension; }
+                        if (width > height) {
+                            if (width > maxDim) { height *= maxDim / width; width = maxDim; }
+                        } else {
+                            if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Chất lượng 0.6 đảm bảo dung lượng cực nhẹ dưới 100KB, ghi Firestore vô tư
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        resolve(compressedDataUrl);
                     }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // Nén chất lượng JPEG xuống 0.65 để dung lượng cực nhẹ, lưu Firestore vô tư
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
-                    callback(dataUrl);
+                    img.onerror = reject;
                 }
-            }
-            reader.readAsDataURL(file);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
-        function handleFileSelect(event, type) {
+        async function handleFileSelect(event, type) {
             const file = event.target.files[0];
             if (!file) return;
-
-            // Giới hạn maxDimension 400px cho avatar và 800px cho cover photo
-            const maxDim = (type === 'avatar') ? 400 : 800;
-            compressAndConvertImage(file, maxDim, function(compressedBase64) {
+            try {
+                showToast("Đang xử lý ảnh...");
+                const maxDim = (type === 'avatar') ? 250 : 600;
+                const base64Img = await processImageFile(file, maxDim);
+                
                 if (type === 'avatar') {
-                    uploadedAvatarUrl = compressedBase64;
+                    uploadedAvatarUrl = base64Img;
                     document.getElementById('avatarFileName').innerText = "✓ Đã chọn: " + file.name;
                     showToast("Đã xử lý ảnh đại diện!");
                 } else if (type === 'cover') {
-                    uploadedCoverUrl = compressedBase64;
+                    uploadedCoverUrl = base64Img;
                     document.getElementById('coverFileName').innerText = "✓ Đã chọn: " + file.name;
                     showToast("Đã xử lý ảnh bìa!");
                 }
-            });
+            } catch (err) {
+                console.error(err);
+                showToast("Không thể xử lý ảnh này. Vui lòng chọn ảnh khác!");
+            }
         }
 
-        function handlePostFileSelect(event) {
+        async function handlePostFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
-
-            compressAndConvertImage(file, 900, function(compressedBase64) {
-                uploadedPostFileUrl = compressedBase64;
+            try {
+                showToast("Đang đính kèm ảnh...");
+                const base64Img = await processImageFile(file, 800);
+                uploadedPostFileUrl = base64Img;
                 document.getElementById('postFilePreviewName').innerText = "📁 Đã đính kèm: " + file.name;
-                showToast("Đã đính kèm ảnh vào bài viết!");
-            });
+                showToast("Đã đính kèm thành công!");
+            } catch (err) {
+                console.error(err);
+                showToast("Lỗi đính kèm ảnh!");
+            }
         }
 
         async function saveUserProfileSettings() {
@@ -830,15 +847,17 @@
                 phone: newPhone
             };
 
-            if (uploadedAvatarUrl) updateData.avatar = uploadedAvatarUrl;
-            if (uploadedCoverUrl) updateData.coverUrl = uploadedCoverUrl;
+            // Chỉ cập nhật ảnh mới nếu user đã chọn tải lên
+            if (uploadedAvatarUrl !== null) updateData.avatar = uploadedAvatarUrl;
+            if (uploadedCoverUrl !== null) updateData.coverUrl = uploadedCoverUrl;
 
             try {
-                showToast("Đang lưu thay đổi...");
+                showToast("Đang lưu thay đổi lên hệ thống...");
                 await db.collection('users').doc(currentUser.uid).set(updateData, { merge: true });
                 closeModal('editProfileModal');
                 showToast("Đã lưu thay đổi thành công!");
                 loadUserProfileData();
+                
                 if (uploadedAvatarUrl) {
                     document.getElementById('loggedUserAvatar').src = uploadedAvatarUrl;
                 }
@@ -847,7 +866,7 @@
                 }
             } catch (err) {
                 console.error("Lỗi Firestore:", err);
-                showToast("Lỗi lưu dữ liệu. Vui lòng thử lại!");
+                showToast("Lỗi lưu dữ liệu. Vui lòng thử lại sau!");
             }
         }
 
