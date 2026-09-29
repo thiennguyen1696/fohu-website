@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin Tức & Xu Hướng Sáng Tạo - fohu</title>
+    <meta name="description" content="Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và xu hướng thiết kế mới nhất năm 2026.">
+    <link rel="icon" type="image/png" href="fohu 2.png">
+    <style>
+        :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
+        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
+        .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
+        .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
+        .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; }
+        .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
+        .blog-grid { max-width: 1200px; margin: 2rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; padding: 0 1rem; }
+        .blog-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .blog-img { height: 180px; background-size: cover; background-position: center; }
+        .blog-body { padding: 1.25rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html"><img src="fohu 2.png" alt="Logo" class="brand-logo-img"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="marketplace.html">Đối tác</a></li>
+                <li><a href="community.html">Bảng tin</a></li>
+                <li><a href="pricing.html">Trở thành đối tác</a></li>
+                <li><a href="blog.html" class="active">Tin tức</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div style="text-align: center; margin-top: 2rem;">
+        <h2>Tin Tức & Xu Hướng Sáng Tạo</h2>
+        <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về ngành media.</p>
+    </div>
+    <div class="blog-grid">
+        <article class="blog-card">
+            <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80');"></div>
+            <div class="blog-body">
+                <h3>Xu hướng nhiếp ảnh cảm xúc chân thực 2026</h3>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 6px;">Sự dịch chuyển từ ảnh dàn dựng sang candid tự nhiên.</p>
+            </div>
+        </article>
+    </div>
+</body>
+</html>
