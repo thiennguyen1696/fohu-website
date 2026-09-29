@@ -102,6 +102,14 @@
 
         .nav-auth { display: flex; align-items: center; gap: 0.75rem; position: relative; }
 
+        /* Nút biểu tượng bắt tay đối tác */
+        .partner-handshake-btn {
+            background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary);
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+        }
+        .partner-handshake-btn:hover { background: var(--primary); color: #fff; transform: scale(1.05); }
+
         /* DROPDOWN USER */
         .user-logged-badge {
             display: none; align-items: center; gap: 6px; background: var(--bg-main);
@@ -310,7 +318,8 @@
             </ul>
 
             <div class="nav-auth">
-                <button class="btn btn-secondary" onclick="openRegisterBoothModal('FREE')"><i class="fa-solid fa-handshake"></i> <span style="display:none; @media(min-width:640px){display:inline;}">Đăng Ký</span></button>
+                <!-- Nút biểu tượng bắt tay 🤝 trỏ về trang Trở thành đối tác -->
+                <button class="partner-handshake-btn" onclick="switchPage('pricing')" title="Trở thành đối tác"><i class="fa-solid fa-handshake"></i></button>
                 
                 <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
@@ -327,7 +336,7 @@
                         <div class="tinhte-dropdown-item" onclick="switchPage('profile')"><i class="fa-regular fa-user"></i> Trang cá nhân</div>
                         <div class="tinhte-dropdown-item" onclick="openEditProfileModal()"><i class="fa-solid fa-gear"></i> Cài đặt tài khoản</div>
                         <div class="tinhte-dropdown-item" onclick="switchPage('bookings')"><i class="fa-regular fa-calendar-check"></i> Đặt lịch của bạn</div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Bộ sưu tập portfolio trống')"><i class="fa-regular fa-images"></i> Bộ sưu tập ảnh</div>
+                        <div class="tinhte-dropdown-item" onclick="switchPage('pricing')"><i class="fa-solid fa-handshake"></i> Trở thành đối tác</div>
                         <div class="tinhte-dropdown-divider"></div>
                         <div class="tinhte-dropdown-item" id="themeToggleMenuText" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="themeMenuIcon"></i> Giao diện: Sáng</div>
                         <div class="tinhte-dropdown-divider"></div>
@@ -493,7 +502,7 @@
         </div>
     </div>
 
-    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC -->
+    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC (TÍCH HỢP QUY TRÌNH NÂNG CẤP VAI TRÒ) -->
     <div id="page-pricing" class="page-section">
         <section style="padding: 20px 1rem 60px;">
             <div style="text-align: center; margin-bottom: 2.5rem;">
@@ -511,7 +520,7 @@
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
                         </ul>
                     </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('FREE')">Đăng ký Không Chuyên</button>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="upgradeUserRole('Personal')">Đăng ký Không Chuyên</button>
                 </div>
 
                 <div class="pricing-card pricing-card-with-badge">
@@ -524,7 +533,7 @@
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 15 tác phẩm portfolio</li>
                         </ul>
                     </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('STANDAR')">Đăng ký Bán Chuyên</button>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="upgradeUserRole('Partner')">Đăng ký Bán Chuyên</button>
                 </div>
 
                 <div class="pricing-card featured pricing-card-with-badge">
@@ -537,7 +546,7 @@
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--vip-gold);" onclick="openRegisterBoothModal('VIP')">Đăng ký Chuyên nghiệp</button>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--vip-gold);" onclick="upgradeUserRole('VIP')">Đăng ký Chuyên nghiệp</button>
                 </div>
             </div>
         </section>
@@ -736,6 +745,30 @@
         let uploadedCoverUrl = undefined;
         let uploadedPostFileUrl = "";
 
+        // HÀM NÂNG CẤP VAI TRÒ ĐỐI TÁC KHI USER NHẤN ĐĂNG KÝ
+        async function upgradeUserRole(roleLevel) {
+            if (!currentUser) {
+                showToast("Vui lòng đăng nhập trước khi đăng ký đối tác!");
+                openLoginRoleModal();
+                return;
+            }
+
+            try {
+                showToast("Đang xử lý nâng cấp tài khoản...");
+                await db.collection('users').doc(currentUser.uid).set({
+                    role: roleLevel
+                }, { merge: true });
+
+                showToast("Chúc mừng bạn đã đăng ký thành công gói " + roleLevel + "!");
+                setTimeout(() => {
+                    switchPage('profile');
+                }, 1000);
+            } catch (err) {
+                console.error(err);
+                showToast("Lỗi nâng cấp. Vui lòng thử lại!");
+            }
+        }
+
         function openEditProfileModal() {
             if (!currentUser) return;
             document.getElementById('editNameInput').value = currentUser.displayName || '';
@@ -779,7 +812,6 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Ép chất lượng 0.45 để file ảnh siêu nhẹ, bảo đảm không bao giờ tràn 1MB Firestore
                         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.45);
                         resolve(compressedDataUrl);
                     }
@@ -1044,7 +1076,12 @@
                 if (doc.exists) {
                     const data = doc.data();
                     if (data.name) document.getElementById('profileName').innerText = data.name;
-                    document.getElementById('profileRoleBadge').innerText = data.role === 'Partner' ? 'Đối tác sáng tạo / Media' : 'Người dùng cá nhân';
+                    
+                    let roleText = 'Thành viên';
+                    if (data.role === 'Partner') roleText = 'Đối tác Bán Chuyên';
+                    if (data.role === 'VIP') roleText = 'Đối tác Chuyên nghiệp (VIP)';
+                    document.getElementById('profileRoleBadge').innerText = roleText;
+
                     document.getElementById('profileBio').innerText = data.bio || 'Chưa có tiểu sử cá nhân.';
                     document.getElementById('profilePhoneDisplay').innerText = data.phone || 'Chưa cập nhật SĐT';
                     if (data.avatar) {
