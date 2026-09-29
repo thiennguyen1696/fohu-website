@@ -11,19 +11,13 @@
     <!-- Favicon logo chính thức FOHU -->
     <link rel="icon" type="image/png" href="fohu 2.png">
     
-    <!-- Open Graph / Social Sharing -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="fohu - Nền tảng Kết Nối Đối Tác Sáng Tạo">
-    <meta property="og:description" content="Kết nối nhanh chóng với hàng ngàn Designer, Photographer và Editor chuyên nghiệp.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80">
-    
-    <!-- Google Fonts: Inter & Playfair Display -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase SDK v9 (Compat bản đầy đủ để chạy mượt mà với Auth) -->
+    <!-- Firebase SDK v9 (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -40,9 +34,7 @@
             --border: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(13, 148, 136, 0.12);
-            --ig-heart: #ff3040;
             --vip-gold: #d97706;
-            
             --font-serif: 'Playfair Display', serif;
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
         }
@@ -194,11 +186,6 @@
         .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
         .featured-badge.vip { background: var(--vip-gold); }
 
-        .term-select-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem; margin: 1rem 0; font-size: 0.84rem; }
-        .term-option { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer; font-weight: 600; white-space: nowrap; }
-        .term-option span.price-col { text-align: right; font-weight: 700; color: var(--dark); }
-        .term-option span.gift-col { text-align: right; color: #e11d48; font-size: 0.78rem; font-weight: 700; }
-
         /* BLOG GRID */
         .blog-grid { max-width: 1200px; margin: 1.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
         .blog-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
@@ -349,7 +336,6 @@
                 <p style="color: var(--text-muted);">Lựa chọn gói phù hợp để mở gian hàng và vinh danh thương hiệu của bạn.</p>
             </div>
             <div class="pricing-grid">
-                <!-- Không Chuyên -->
                 <div class="pricing-card pricing-card-with-badge">
                     <span class="featured-badge" style="background: var(--text-muted);">Cơ bản</span>
                     <div>
@@ -358,37 +344,32 @@
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Tạo Hồ sơ cá nhân cơ bản</li>
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
-                            <li><i class="fa-solid fa-ban" style="color: #ef4444;"></i> <strong>Không hiển thị</strong> thông tin liên hệ trực tiếp</li>
                         </ul>
                     </div>
                     <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('FREE')">Đăng ký Không Chuyên</button>
                 </div>
 
-                <!-- Bán Chuyên (99.000 đồng) -->
                 <div class="pricing-card pricing-card-with-badge">
                     <span class="featured-badge">Đối tác Standar</span>
                     <div>
                         <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Bán Chuyên</h3>
                         <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--primary);">99.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo và thông tin liên hệ</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo liên hệ</li>
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 15 tác phẩm portfolio</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 5 tin Moment/ngày</li>
                         </ul>
                     </div>
                     <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openRegisterBoothModal('STANDAR')">Đăng ký Bán Chuyên</button>
                 </div>
 
-                <!-- Chuyên nghiệp (149.000 đồng) -->
                 <div class="pricing-card featured pricing-card-with-badge">
                     <span class="featured-badge vip">ĐỐI TÁC VIP</span>
                     <div>
                         <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
                         <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: #d97706;">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ & mạng xã hội</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video portfolio</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đặc quyền <strong>ghim lên top đầu</strong> & vinh danh VIP Spotlight</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video</li>
                         </ul>
                     </div>
                     <button class="btn btn-primary" style="width: 100%; justify-content: center; background: #d97706;" onclick="openRegisterBoothModal('VIP')">Đăng ký Chuyên nghiệp</button>
@@ -455,7 +436,7 @@
         </div>
     </footer>
 
-    <!-- MODAL ĐĂNG NHẬP GOOGLE THỰC TẾ -->
+    <!-- MODAL ĐĂNG NHẬP GOOGLE -->
     <div class="modal-overlay" id="loginRoleModal">
         <div class="modal-box" style="max-width: 400px; padding: 20px; text-align: center;">
             <div class="modal-header" style="border:none; padding-bottom: 0;">
@@ -472,7 +453,7 @@
     </div>
 
     <script>
-        // CẤU HÌNH FIREBASE THỰC TẾ CỦA BẠN
+        // CẤU HÌNH FIREBASE THỰC TẾ
         const firebaseConfig = {
             apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
             authDomain: "fohu-platform.firebaseapp.com",
@@ -482,7 +463,6 @@
             appId: "1:696328353651:web:8add8d582b366c12ccf706"
         };
         
-        // KHỞI TẠO FIREBASE
         firebase.initializeApp(firebaseConfig);
 
         function showToast(message) {
@@ -511,35 +491,46 @@
             openModal('loginRoleModal'); 
         }
 
-        // HÀM ĐĂNG NHẬP GOOGLE FIREBASE AUTH THỰC TẾ
+        // SỬ DỤNG REDIRECT THAY CHO POPUP ĐỂ CHỐNG LỖI DOMAIN 100%
         function loginWithGoogleFirebase() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider)
-                .then((result) => {
-                    const user = result.user;
-                    closeModal('loginRoleModal');
-                    showToast("Xin chào, " + user.displayName + "!");
-                    
-                    // Chuyển trạng thái nút đăng nhập thành Avatar người dùng
-                    document.getElementById('loginNavBtn').style.display = 'none';
-                    const badge = document.getElementById('userLoggedBadge');
-                    badge.style.display = 'flex';
-                    document.getElementById('loggedUserName').innerText = user.displayName;
-                    document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
-                })
-                .catch((error) => {
-                    console.error("Lỗi đăng nhập:", error);
-                    showToast("Đăng nhập thất bại: " + error.message);
-                });
+            firebase.auth().signInWithRedirect(provider);
         }
 
-        // HÀM ĐĂNG XUẤT
+        // TỰ ĐỘNG XỬ LÝ KHI GOOGLE CHUYỂN HƯỚNG TRẢ VỀ TRANG WEB
+        firebase.auth().getRedirectResult()
+            .then((result) => {
+                if (result.user) {
+                    const user = result.user;
+                    showToast("Xin chào, " + user.displayName + "!");
+                    updateUserUI(user);
+                }
+            }).catch((error) => {
+                console.error("Lỗi xác thực:", error);
+                showToast("Đăng nhập thất bại: " + error.message);
+            });
+
+        // KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP SẴN CÓ
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                updateUserUI(user);
+            }
+        });
+
+        function updateUserUI(user) {
+            document.getElementById('loginNavBtn').style.display = 'none';
+            const badge = document.getElementById('userLoggedBadge');
+            badge.style.display = 'flex';
+            document.getElementById('loggedUserName').innerText = user.displayName || 'Thành viên';
+            document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+        }
+
         function logoutFirebase() {
             firebase.auth().signOut().then(() => {
                 document.getElementById('loginNavBtn').style.display = 'inline-flex';
                 document.getElementById('userLoggedBadge').style.display = 'none';
                 switchPage('home');
-                showToast("Đã đăng xuất tài khoản!");
+                showToast("Đã đăng xuất!");
             });
         }
 
