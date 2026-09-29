@@ -255,10 +255,9 @@
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
 
-        /* PRESET SELECTION FOR COVER/AVATAR */
-        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
-        .preset-item { height: 70px; border-radius: 8px; background-size: cover; background-position: center; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
-        .preset-item:hover, .preset-item.selected { border-color: var(--primary); transform: scale(1.03); }
+        /* UPLOAD BUTTON STYLING */
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
 
         /* BACKSTAGE ADMIN */
         .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
@@ -428,7 +427,7 @@
             <!-- Ảnh bìa -->
             <div class="profile-cover-box" id="profileCoverBg"></div>
             
-            <!-- Phần thông tin định danh & Avatar nằm ngoài ảnh bìa -->
+            <!-- Phần thông tin định danh & Avatar -->
             <div class="profile-identity-section">
                 <img src="" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
@@ -612,7 +611,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHỌN MẪU ẢNH BÌA THAY VÌ GÕ URL) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHO PHÉP UPLOAD ẢNH TỪ MÁY TÍNH) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -633,13 +632,18 @@
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
                 <div class="modal-field-group">
-                    <label>Chọn mẫu Ảnh bìa (Cover Photo):</label>
-                    <div class="preset-grid">
-                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80')"></div>
-                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80')"></div>
-                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200&q=80')"></div>
+                    <label>Tải lên Ảnh đại diện (Avatar mới)</label>
+                    <div class="upload-btn-wrapper">
+                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fa-solid fa-camera"></i> Chọn ảnh từ thiết bị</button>
+                        <input type="file" id="avatarFileInput" accept="image/*" onchange="previewAvatarUpload(event)">
                     </div>
-                    <input type="hidden" id="editCoverInput">
+                </div>
+                <div class="modal-field-group">
+                    <label>Tải lên Ảnh bìa (Cover Photo mới)</label>
+                    <div class="upload-btn-wrapper">
+                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fa-solid fa-image"></i> Chọn ảnh từ thiết bị</button>
+                        <input type="file" id="coverFileInput" accept="image/*" onchange="previewCoverUpload(event)">
+                    </div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
             </div>
@@ -728,23 +732,46 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
         
+        let tempAvatarBase64 = "";
+        let tempCoverBase64 = "";
+
         function openEditProfileModal() {
             if (!currentUser) return;
             document.getElementById('editNameInput').value = currentUser.displayName || '';
+            tempAvatarBase64 = "";
+            tempCoverBase64 = "";
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
                     document.getElementById('editBioInput').value = data.bio || '';
                     document.getElementById('editPhoneInput').value = data.phone || '';
-                    document.getElementById('editCoverInput').value = data.coverUrl || '';
                 }
             });
             openModal('editProfileModal');
         }
 
-        function selectCoverPreset(url) {
-            document.getElementById('editCoverInput').value = url;
-            showToast("Đã chọn mẫu ảnh bìa mới!");
+        function previewAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempAvatarBase64 = e.target.result;
+                    showToast("Đã tải ảnh đại diện lên!");
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewCoverUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempCoverBase64 = e.target.result;
+                    showToast("Đã tải ảnh bìa lên!");
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
         function saveUserProfileSettings() {
@@ -752,14 +779,22 @@
             const newName = document.getElementById('editNameInput').value.trim();
             const newBio = document.getElementById('editBioInput').value.trim();
             const newPhone = document.getElementById('editPhoneInput').value.trim();
-            const newCover = document.getElementById('editCoverInput').value.trim();
 
-            db.collection('users').doc(currentUser.uid).set({
+            let updateData = {
                 name: newName,
                 bio: newBio,
-                phone: newPhone,
-                coverUrl: newCover || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80"
-            }, { merge: true }).then(() => {
+                phone: newPhone
+            };
+
+            if (tempAvatarBase64) {
+                updateData.avatar = tempAvatarBase64;
+                document.getElementById('loggedUserAvatar').src = tempAvatarBase64;
+            }
+            if (tempCoverBase64) {
+                updateData.coverUrl = tempCoverBase64;
+            }
+
+            db.collection('users').doc(currentUser.uid).set(updateData, { merge: true }).then(() => {
                 closeModal('editProfileModal');
                 showToast("Đã cập nhật thông tin thành công!");
                 loadUserProfileData();
@@ -902,7 +937,14 @@
             const badge = document.getElementById('userLoggedBadge');
             badge.style.display = 'flex';
             document.getElementById('loggedUserName').innerText = user.displayName || 'Thành viên';
-            document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+            
+            db.collection('users').doc(user.uid).get().then((doc) => {
+                if (doc.exists && doc.data().avatar) {
+                    document.getElementById('loggedUserAvatar').src = doc.data().avatar;
+                } else {
+                    document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+                }
+            });
         }
 
         function logoutFirebase() {
@@ -917,7 +959,6 @@
 
         function loadUserProfileData() {
             if (!currentUser) return;
-            document.getElementById('profileAvatar').src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
             document.getElementById('profileName').innerText = currentUser.displayName;
             document.getElementById('profileEmailDisplay').innerText = currentUser.email;
 
@@ -927,6 +968,11 @@
                     document.getElementById('profileRoleBadge').innerText = data.role === 'Partner' ? 'Đối tác sáng tạo / Media' : 'Người dùng cá nhân';
                     document.getElementById('profileBio').innerText = data.bio || 'Chưa có tiểu sử cá nhân.';
                     document.getElementById('profilePhoneDisplay').innerText = data.phone || 'Chưa cập nhật SĐT';
+                    if (data.avatar) {
+                        document.getElementById('profileAvatar').src = data.avatar;
+                    } else {
+                        document.getElementById('profileAvatar').src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+                    }
                     if (data.coverUrl) {
                         document.getElementById('profileCoverBg').style.backgroundImage = `url('${data.coverUrl}')`;
                     }
@@ -985,22 +1031,23 @@
                 return;
             }
 
-            db.collection('posts').add({
-                authorId: currentUser.uid,
-                authorName: currentUser.displayName || 'Thành viên fohu',
-                authorAvatar: currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
-                content: content,
-                mediaUrl: mediaUrl,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                document.getElementById('postContentInput').value = '';
-                document.getElementById('postMediaInput').value = '';
-                document.getElementById('mediaInputContainer').style.display = 'none';
-                showToast("Đã chia sẻ bài viết lên bảng tin!");
-                loadCommunityPosts();
-            }).catch((error) => {
-                console.error("Lỗi đăng bài:", error);
-                showToast("Không thể đăng bài. Vui lòng kiểm tra lại cấu hình Firestore.");
+            db.collection('users').doc(currentUser.uid).get().then((userDoc) => {
+                const userAvatar = (userDoc.exists && userDoc.data().avatar) ? userDoc.data().avatar : (currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80');
+                
+                db.collection('posts').add({
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName || 'Thành viên fohu',
+                    authorAvatar: userAvatar,
+                    content: content,
+                    mediaUrl: mediaUrl,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    document.getElementById('postContentInput').value = '';
+                    document.getElementById('postMediaInput').value = '';
+                    document.getElementById('mediaInputContainer').style.display = 'none';
+                    showToast("Đã chia sẻ bài viết lên bảng tin!");
+                    loadCommunityPosts();
+                });
             });
         }
 
