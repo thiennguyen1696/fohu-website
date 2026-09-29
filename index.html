@@ -28,6 +28,7 @@
             --primary-hover: #0f766e;
             --primary-light: #ccfbf1;
             --bg-main: #f8fafc;
+            --bg-card: #ffffff;
             --dark: #111827;
             --text-main: #1f2937;
             --text-muted: #6b7280;
@@ -39,8 +40,23 @@
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
+        /* DARK MODE THEME */
+        body.dark-mode {
+            --primary: #14b8a6;
+            --primary-hover: #0d9488;
+            --primary-light: rgba(20, 184, 166, 0.15);
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --dark: #f8fafc;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; overflow-x: hidden; }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
 
         /* Toast Notification */
         #toastNotification {
@@ -54,10 +70,11 @@
         /* Navbar */
         nav {
             position: fixed; top: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--bg-card);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             z-index: 1000;
+            transition: background 0.3s, border-color 0.3s;
         }
         .nav-container {
             max-width: 1440px; margin: auto;
@@ -74,12 +91,12 @@
             font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; cursor: pointer; transition: all 0.2s;
         }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--dark); }
+        .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
 
         @media (max-width: 900px) {
             .nav-links {
                 display: none; position: absolute; top: 100%; left: 0; width: 100%;
-                background: #fff; flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border);
+                background: var(--bg-card); flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border);
                 box-shadow: var(--shadow-md); gap: 0.5rem;
             }
             .nav-links.active { display: flex; }
@@ -90,16 +107,16 @@
 
         /* TINHTE USER DROPDOWN MENU */
         .user-logged-badge {
-            display: none; align-items: center; gap: 6px; background: #f3f4f6;
+            display: none; align-items: center; gap: 6px; background: var(--bg-main);
             padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
             font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
         }
-        .user-logged-badge:hover { background: #e5e7eb; }
+        .user-logged-badge:hover { background: var(--border); }
         .user-logged-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
 
         .tinhte-user-dropdown {
-            position: absolute; top: 110%; right: 0; width: 260px; background: #fff;
-            border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: absolute; top: 110%; right: 0; width: 260px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             display: none; flex-direction: column; padding: 6px 0; z-index: 3000;
         }
         .tinhte-user-dropdown.active { display: flex; }
@@ -107,7 +124,7 @@
             display: flex; align-items: center; gap: 12px; padding: 10px 16px;
             font-size: 0.88rem; font-weight: 500; color: var(--text-main); text-decoration: none; cursor: pointer; transition: background 0.15s;
         }
-        .tinhte-dropdown-item:hover { background: #f1f5f9; color: var(--primary); }
+        .tinhte-dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
         .tinhte-dropdown-item i { width: 18px; text-align: center; color: var(--text-muted); }
         .tinhte-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
@@ -119,8 +136,8 @@
         }
         .btn-primary { background-color: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
         .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-dark { background-color: var(--dark); color: #fff; }
-        .btn-secondary { background-color: #ffffff; color: var(--text-main); border: 1px solid var(--border); }
+        .btn-dark { background-color: var(--dark); color: var(--bg-card); }
+        .btn-secondary { background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
 
         /* PADDING TOP CHO MOBILE & DESKTOP */
@@ -142,7 +159,7 @@
 
         .hero-slider-container {
             position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 4/5;
-            box-shadow: var(--shadow-md); border: 1px solid var(--border); background: #111827;
+            box-shadow: var(--shadow-md); border: 1px solid var(--border); background: var(--bg-card);
             width: 100%; max-height: 480px;
         }
         .hero-slide-item {
@@ -157,7 +174,7 @@
         }
 
         .hero-badge-top {
-            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); color: var(--primary-hover);
+            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); color: var(--primary);
             padding: 0.35rem 0.95rem; border-radius: 999px; font-weight: 700; font-size: 0.82rem; margin-bottom: 1rem;
         }
         .hero-heading { font-family: var(--font-serif); font-size: 3rem; font-weight: 700; color: var(--dark); line-height: 1.2; margin-bottom: 1rem; }
@@ -166,11 +183,11 @@
         .hero-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
 
         .home-search-bar {
-            background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 0.5rem;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 0.5rem;
             box-shadow: var(--shadow-md); display: flex; gap: 0.5rem; margin-top: 1.25rem; align-items: center;
         }
-        .home-search-input { flex: 1; border: none; padding: 0.65rem 0.85rem; outline: none; font-size: 0.9rem; width: 100%; }
-        .home-search-select { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0.75rem; outline: none; background: #fff; font-size: 0.85rem; font-weight: 600; width: 100%; }
+        .home-search-input { flex: 1; border: none; padding: 0.65rem 0.85rem; outline: none; font-size: 0.9rem; width: 100%; background: transparent; color: var(--text-main); }
+        .home-search-select { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0.75rem; outline: none; background: var(--bg-card); color: var(--text-main); font-size: 0.85rem; font-weight: 600; width: 100%; }
 
         /* MARKETPLACE & PRICING */
         .marketplace-layout {
@@ -182,7 +199,7 @@
             .marketplace-sidebar { display: none; }
         }
         .marketplace-sidebar {
-            background: #fff; border-radius: 16px; padding: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            background: var(--bg-card); border-radius: 16px; padding: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
             position: sticky; top: 95px;
         }
         .hub-sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
@@ -191,10 +208,10 @@
             font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-align: left;
             display: flex; align-items: center; gap: 10px; transition: all 0.2s;
         }
-        .hub-sidebar-tab:hover, .hub-sidebar-tab.active { background: var(--primary-light); color: var(--primary-hover); font-weight: 700; }
+        .hub-sidebar-tab:hover, .hub-sidebar-tab.active { background: var(--primary-light); color: var(--primary); font-weight: 700; }
 
         .pricing-grid { max-width: 1160px; margin: 1.5rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; }
-        .pricing-card { background: #fff; border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.3s; }
+        .pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.3s; }
         .pricing-card:hover { transform: translateY(-4px); }
         .pricing-card.featured { border: 2px solid var(--primary); box-shadow: var(--shadow-md); position: relative; }
         .pricing-card-with-badge { position: relative; }
@@ -203,34 +220,34 @@
 
         /* BLOG GRID */
         .blog-grid { max-width: 1200px; margin: 1.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-        .blog-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+        .blog-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
         .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
         .blog-img { height: 200px; background-size: cover; background-position: center; width: 100%; }
         .blog-body { padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-        .blog-tag { display: inline-block; background: var(--primary-light); color: var(--primary-hover); font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; text-transform: uppercase; width: fit-content; }
-        .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--dark); line-height: 1.4; margin-bottom: 0.5rem; }
+        .blog-tag { display: inline-block; background: var(--primary-light); color: var(--primary); font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; text-transform: uppercase; width: fit-content; }
+        .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 0.5rem; }
         .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* DIỄN ĐÀN & TRANG CÁ NHÂN STYLES */
+        /* COMMUNITY & PROFILE */
         .community-container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-        .post-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
-        .post-box textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; outline: none; resize: none; font-size: 0.95rem; min-height: 90px; margin-bottom: 0.75rem; }
-        .thread-item { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
+        .post-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+        .post-box textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; outline: none; resize: none; font-size: 0.95rem; min-height: 90px; margin-bottom: 0.75rem; background: var(--bg-main); color: var(--text-main); }
+        .thread-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
         .thread-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
         .thread-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
-        .thread-author { font-weight: 700; font-size: 0.92rem; color: var(--dark); }
+        .thread-author { font-weight: 700; font-size: 0.92rem; color: var(--text-main); }
         .thread-time { font-size: 0.75rem; color: var(--text-muted); }
         .thread-content { font-size: 0.95rem; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; }
 
-        /* PROFILE PAGE STYLES */
+        /* PROFILE */
         .profile-banner { background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%); height: 160px; border-radius: 16px; margin-bottom: 50px; position: relative; }
-        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; position: absolute; bottom: -40px; left: 30px; object-fit: cover; background: #fff; }
-        .profile-info-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 3rem 1.5rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--bg-card); position: absolute; bottom: -40px; left: 30px; object-fit: cover; background: var(--bg-card); }
+        .profile-info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 3rem 1.5rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
 
-        /* BACKSTAGE ADMIN STYLES */
-        .admin-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
+        /* BACKSTAGE ADMIN */
+        .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
         .admin-table th, .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
-        .admin-table th { background: #f1f5f9; font-weight: 700; color: var(--dark); }
+        .admin-table th { background: var(--bg-main); font-weight: 700; color: var(--text-main); }
 
         /* FOOTER */
         footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); }
@@ -246,13 +263,10 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: #fff; width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-box { background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid var(--border); }
         .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 1.5rem; overflow-y: auto; }
-        .modal-field-group { margin-bottom: 1rem; }
-        .modal-field-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-main); }
-        .modal-field-group input, .modal-field-group select, .modal-field-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 10px; outline: none; background: #fff; font-size: 0.9rem; }
-        .role-option-card { border: 2px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .role-option-card { border: 2px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; background: var(--bg-main); }
         .role-option-card:hover, .role-option-card.selected { border-color: var(--primary); background: var(--primary-light); }
     </style>
 </head>
@@ -278,14 +292,12 @@
                 <li><a onclick="switchPage('pricing'); closeMobileMenu();" id="nav-pricing">Trở thành đối tác</a></li>
                 <li><a onclick="switchPage('blog'); closeMobileMenu();" id="nav-blog">Tin tức</a></li>
                 <li><a onclick="switchPage('contact'); closeMobileMenu();" id="nav-contact">Liên hệ</a></li>
-                <!-- Nút Admin Backstage chỉ hiển thị khi đúng email admin -->
-                <li id="adminNavTab" style="display: none;"><a onclick="switchPage('admin'); closeMobileMenu();" id="nav-admin" style="color: #d97706;"><i class="fa-solid fa-shield-halved"></i> Backstage</a></li>
+                <li id="adminNavTab" style="display: none;"><a onclick="switchPage('admin'); closeMobileMenu();" id="nav-admin" style="color: var(--vip-gold);"><i class="fa-solid fa-shield-halved"></i> Backstage</a></li>
             </ul>
 
             <div class="nav-auth">
                 <button class="btn btn-secondary" onclick="openRegisterBoothModal('FREE')"><i class="fa-solid fa-handshake"></i> <span style="display:none; @media(min-width:640px){display:inline;}">Đăng Ký</span></button>
                 
-                <!-- Nút Đăng Nhập Ban Đầu -->
                 <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
                 </button>
@@ -303,7 +315,7 @@
                         <div class="tinhte-dropdown-item" onclick="switchPage('bookings')"><i class="fa-regular fa-calendar-check"></i> Đặt lịch của bạn</div>
                         <div class="tinhte-dropdown-item" onclick="showToast('Không có bài viết nháp')"><i class="fa-regular fa-file-lines"></i> Bài viết nháp</div>
                         <div class="tinhte-dropdown-divider"></div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Đã chuyển chế độ sáng')"><i class="fa-solid fa-moon"></i> Giao diện: Sáng</div>
+                        <div class="tinhte-dropdown-item" id="themeToggleMenuText" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="themeMenuIcon"></i> Giao diện: Sáng</div>
                         <div class="tinhte-dropdown-divider"></div>
                         <div class="tinhte-dropdown-item" style="color: #ef4444;" onclick="logoutFirebase()"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Đăng xuất</div>
                     </div>
@@ -363,12 +375,12 @@
     <div id="page-community" class="page-section">
         <div class="community-container">
             <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);">Diễn đàn cộng đồng sáng tạo</h2>
+                <h2 style="font-family: var(--font-serif); font-weight: 700;">Diễn đàn cộng đồng sáng tạo</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Chia sẻ kinh nghiệm, tìm kiếm dự án và kết nối với đồng nghiệp.</p>
             </div>
 
             <div class="post-box" id="postCreationBox" style="display: none;">
-                <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--dark);"><i class="fa-solid fa-pen-nib" style="color:var(--primary);"></i> Đăng bài thảo luận mới</div>
+                <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem;"><i class="fa-solid fa-pen-nib" style="color:var(--primary);"></i> Đăng bài thảo luận mới</div>
                 <textarea id="postContentInput" placeholder="Bạn muốn chia sẻ điều gì với cộng đồng fohu hôm nay?"></textarea>
                 <div style="display: flex; justify-content: flex-end;">
                     <button class="btn btn-primary" onclick="createNewPost()"><i class="fa-solid fa-paper-plane"></i> Đăng bài</button>
@@ -391,9 +403,9 @@
                 <img src="" alt="Avatar" class="profile-avatar-large" id="profileAvatar">
             </div>
             <div class="profile-info-box">
-                <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--dark);">Tên User</h2>
+                <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800;">Tên User</h2>
                 <p id="profileEmail" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2px;">email@domain.com</p>
-                <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary-hover); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem;" id="profileRoleBadge">
+                <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem;" id="profileRoleBadge">
                     Vai trò: Thành viên
                 </div>
             </div>
@@ -406,15 +418,15 @@
     <div id="page-bookings" class="page-section">
         <div class="community-container">
             <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);">Lịch Đặt Dịch Vụ & Studio</h2>
+                <h2 style="font-family: var(--font-serif); font-weight: 700;">Lịch Đặt Dịch Vụ & Studio</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Quản lý các lịch hẹn làm việc với Photographer, Editor và Studio của bạn.</p>
             </div>
             <div class="thread-item" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-weight: 700; color: var(--dark); font-size: 1rem;">Gói Chụp Ảnh Pre-wedding (Studio Sáng Tạo)</div>
+                    <div style="font-weight: 700; font-size: 1rem;">Gói Chụp Ảnh Pre-wedding (Studio Sáng Tạo)</div>
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Thời gian: 15:00 - 18:00 • Ngày 10/10/2026</div>
                 </div>
-                <span style="background: #ccfbf1; color: #0f766e; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.78rem;">Đã xác nhận</span>
+                <span style="background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.78rem;">Đã xác nhận</span>
             </div>
         </div>
     </div>
@@ -423,10 +435,10 @@
     <div id="page-admin" class="page-section">
         <div style="max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem;">
             <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Backstage - Quản Trị Hệ Thống fohu</h2>
+                <h2 style="font-family: var(--font-serif); font-weight: 700;"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Backstage - Quản Trị Hệ Thống fohu</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Khu vực kiểm soát tài khoản người dùng, đối tác và bài đăng trên toàn hệ thống.</p>
             </div>
-            <div style="background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
                 <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Danh sách tài khoản thành viên</h3>
                 <table class="admin-table">
                     <thead>
@@ -501,7 +513,7 @@
     <div id="page-blog" class="page-section">
         <section style="padding: 40px 1rem 80px; max-width: 1200px; margin: auto;">
             <div style="text-align: center; margin-bottom: 2.5rem;">
-                <h2 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">Tin Tức & Xu Hướng Sáng Tạo</h2>
+                <h2 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem;">Tin Tức & Xu Hướng Sáng Tạo</h2>
                 <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và cuộc thi ảnh quốc tế.</p>
             </div>
             
@@ -530,7 +542,7 @@
         </section>
     </div>
 
-    <!-- MODAL CHỌN VAI TRÒ KHI ĐĂNG NHẬP LẦN ĐẦU -->
+    <!-- MODAL CHỌN VAI TRÒ -->
     <div class="modal-overlay" id="roleSelectionModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -542,7 +554,7 @@
                 <div class="role-option-card selected" id="roleCardPersonal" onclick="selectRole('Personal')">
                     <i class="fa-solid fa-user" style="font-size: 1.5rem; color: var(--primary);"></i>
                     <div>
-                        <div style="font-weight: 700; color: var(--dark);">Người dùng cá nhân</div>
+                        <div style="font-weight: 700;">Người dùng cá nhân</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">Tìm kiếm dịch vụ, đặt lịch và tham gia thảo luận diễn đàn.</div>
                     </div>
                 </div>
@@ -550,7 +562,7 @@
                 <div class="role-option-card" id="roleCardPartner" onclick="selectRole('Partner')">
                     <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: var(--primary);"></i>
                     <div>
-                        <div style="font-weight: 700; color: var(--dark);">Đối tác sáng tạo / Media</div>
+                        <div style="font-weight: 700;">Đối tác sáng tạo / Media</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">Mở gian hàng, đăng portfolio portfolio và nhận đơn đặt lịch.</div>
                     </div>
                 </div>
@@ -615,7 +627,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Email cấu hình độc quyền làm Admin Backstage
         const ADMIN_EMAIL = "thien.nguyen1696@gmail.com";
 
         function showToast(message) {
@@ -644,6 +655,34 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
 
+        // CHUYỂN ĐỔI SÁNG / TỐI (DARK MODE)
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('fohu_theme', isDark ? 'dark' : 'light');
+            
+            const menuText = document.getElementById('themeToggleMenuText');
+            const menuIcon = document.getElementById('themeMenuIcon');
+            if (isDark) {
+                menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
+                showToast("Đã bật chế độ Tối");
+            } else {
+                menuText.innerHTML = `<i class="fa-solid fa-moon" id="themeMenuIcon"></i> Giao diện: Sáng`;
+                showToast("Đã bật chế độ Sáng");
+            }
+        }
+
+        // Tự động khôi phục theme đã lưu khi load trang
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('fohu_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                const menuText = document.getElementById('themeToggleMenuText');
+                if (menuText) {
+                    menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
+                }
+            }
+        });
+
         // DROPDOWN USER
         function toggleUserDropdown(event) {
             event.stopPropagation();
@@ -660,7 +699,7 @@
         function selectRole(role) {
             selectedRoleChoice = role;
             document.getElementById('roleCardPersonal').classList.toggle('selected', role === 'Personal');
-            document.getElementById('roleCardPartner', role === 'Partner').classList.toggle('selected', role === 'Partner');
+            document.getElementById('roleCardPartner').classList.toggle('selected', role === 'Partner');
         }
 
         // ĐĂNG NHẬP GOOGLE
@@ -687,7 +726,6 @@
                     currentUserRole = doc.data().role;
                     finishLogin(user);
                 } else {
-                    // Chưa chọn vai trò -> Hiện modal chọn
                     currentUser = user;
                     openModal('roleSelectionModal');
                 }
@@ -717,7 +755,6 @@
             document.getElementById('postCreationBox').style.display = 'block';
             document.getElementById('loginPromptBox').style.display = 'none';
 
-            // Kiểm tra quyền Admin
             if (user.email === ADMIN_EMAIL) {
                 document.getElementById('adminNavTab').style.display = 'block';
             }
@@ -774,7 +811,6 @@
                 }
             });
 
-            // Tải bài đăng của riêng user này
             const container = document.getElementById('userPostsContainer');
             db.collection('posts').where('authorId', '==', currentUser.uid).orderBy('createdAt', 'desc').get()
                 .then((snapshot) => {
@@ -819,7 +855,7 @@
                         <tr>
                             <td><b>${u.name || 'Không tên'}</b></td>
                             <td>${u.email}</td>
-                            <td><span style="background:var(--primary-light); color:var(--primary-hover); padding:2px 8px; border-radius:6px; font-weight:700; font-size:0.75rem;">${u.role || 'Personal'}</span></td>
+                            <td><span style="background:var(--primary-light); color:var(--primary); padding:2px 8px; border-radius:6px; font-weight:700; font-size:0.75rem;">${u.role || 'Personal'}</span></td>
                             <td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('Đã xem chi tiết user')">Chi tiết</button></td>
                         </tr>
                     `;
