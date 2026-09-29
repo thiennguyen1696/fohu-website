@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fohu - Mạng Xã Hội & Nền Tảng Đặt Lịch Sáng Tạo Hàng Đầu Việt Nam</title>
-    <meta name="description" content="Nền tảng mạng xã hội kết nối trực tiếp Designer, Photographer, Editor, AI Artist và các giải pháp studio chuyên nghiệp tại Việt Nam.">
+    <title>fohu - Nền tảng Mạng Xã Hội Sáng Tạo & Đặt Lịch Media Hàng Đầu Việt Nam</title>
+    <meta name="description" content="Kết nối trực tiếp với hàng ngàn Designer, Photographer, Editor và AI Artist chuyên nghiệp. Đặt lịch studio và giải pháp truyền thông trọn gói.">
+    <meta name="keywords" content="fohu, mạng xã hội sáng tạo, thuê photographer, editor video, designer việt nam">
     
-    <!-- Favicon logo chính thức FOHU -->
+    <!-- Open Graph SEO Google & Social Media -->
+    <meta property="og:title" content="fohu - Nền Tảng Mạng Xã Hội Sáng Tạo">
+    <meta property="og:description" content="Hệ sinh thái kết nối đối tác media và dịch vụ sáng tạo chuyên nghiệp tại Việt Nam.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="fohu 2.png">
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -65,21 +72,17 @@
         }
         #toastNotification.show { transform: translateX(-50%) translateY(0); }
 
-        /* Navbar */
+        /* Navbar đa trang chuẩn */
         nav {
             position: fixed; top: 0; width: 100%;
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            transition: background 0.3s, border-color 0.3s;
+            background: var(--bg-card); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
         }
         .nav-container {
             max-width: 1440px; margin: auto;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0.5rem 1.5rem;
         }
-        
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .footer-logo-img { height: 40px; width: auto; object-fit: contain; cursor: pointer; }
         
@@ -89,635 +92,96 @@
             font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; cursor: pointer; transition: all 0.2s;
         }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
-
-        @media (max-width: 900px) {
-            .nav-links {
-                display: none; position: absolute; top: 100%; left: 0; width: 100%;
-                background: var(--bg-card); flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border);
-                box-shadow: var(--shadow-md); gap: 0.5rem;
-            }
-            .nav-links.active { display: flex; }
-            .nav-mobile-toggle { display: block; }
-        }
 
         .nav-auth { display: flex; align-items: center; gap: 0.75rem; position: relative; }
-
-        /* Nút biểu tượng bắt tay đối tác */
         .partner-handshake-btn {
             background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary);
             width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.2s; font-size: 0.95rem; text-decoration: none;
         }
         .partner-handshake-btn:hover { background: var(--primary); color: #fff; transform: scale(1.05); }
 
-        /* AVATAR WRAPPER VỚI HUY HIỆU ĐỊNH DANH */
-        .avatar-badge-container { position: relative; display: inline-block; }
-        .badge-icon-overlay {
-            position: absolute; bottom: 0; right: 0; width: 18px; height: 18px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #fff; border: 2px solid var(--bg-card);
-        }
-        .badge-standard { background: var(--standard-gem); }
-        .badge-premium { background: var(--premium-gold); }
-
-        /* DROPDOWN USER */
-        .user-logged-badge {
-            display: none; align-items: center; gap: 6px; background: var(--bg-main);
-            padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
-            font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
-        }
-        .user-logged-badge:hover { background: var(--border); }
-        .user-logged-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-
-        .tinhte-user-dropdown {
-            position: absolute; top: 110%; right: 0; width: 260px; background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            display: none; flex-direction: column; padding: 6px 0; z-index: 3000;
-        }
-        .tinhte-user-dropdown.active { display: flex; }
-        .tinhte-dropdown-item {
-            display: flex; align-items: center; gap: 12px; padding: 10px 16px;
-            font-size: 0.88rem; font-weight: 500; color: var(--text-main); text-decoration: none; cursor: pointer; transition: background 0.15s;
-        }
-        .tinhte-dropdown-item:hover { background: var(--primary-light); color: var(--primary); }
-        .tinhte-dropdown-item i { width: 18px; text-align: center; color: var(--text-muted); }
-        .tinhte-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-        /* NÚT BẤM */
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.88rem;
             text-decoration: none; cursor: pointer; border: none; white-space: nowrap; transition: all 0.2s;
         }
-        .btn-primary { background-color: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
-        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-primary { background-color: var(--primary); color: #fff; }
         .btn-dark { background-color: var(--dark); color: var(--bg-card); }
         .btn-secondary { background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
 
-        /* PADDING TOP CHO MOBILE & DESKTOP */
-        .page-section { display: none; padding-top: 90px; min-height: calc(100vh - 80px); }
-        .page-section.active { display: block; animation: fadeIn 0.2s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* HERO SECTION */
+        /* Hero Section */
         .hero-section {
-            padding: 30px 1.5rem 40px; max-width: 1320px; margin: auto;
+            padding: 120px 1.5rem 60px; max-width: 1320px; margin: auto;
             display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center;
-        }
-        @media (max-width: 960px) {
-            .hero-section { grid-template-columns: 1fr; text-align: left; padding-top: 20px; gap: 2rem; }
-            .hero-heading { font-size: 2.2rem !important; line-height: 1.25; }
-            .home-search-bar { flex-direction: column; }
-            .home-search-input, .home-search-select, .home-search-bar .btn { width: 100%; }
-        }
-
-        .hero-slider-container {
-            position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 4/5;
-            box-shadow: var(--shadow-md); border: 1px solid var(--border); background: var(--bg-card);
-            width: 100%; max-height: 480px;
-        }
-        .hero-slide-item {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.8s ease-in-out; display: flex; flex-direction: column; justify-content: flex-end;
-        }
-        .hero-slide-item.active { opacity: 1; z-index: 2; }
-        .hero-slide-item img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
-        .hero-slide-caption {
-            position: relative; z-index: 3; width: calc(100% - 24px); background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(8px); padding: 1rem; border-radius: 14px; color: #fff; margin: 12px;
-        }
-
-        .hero-badge-top {
-            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary-light); color: var(--primary);
-            padding: 0.35rem 0.95rem; border-radius: 999px; font-weight: 700; font-size: 0.82rem; margin-bottom: 1rem;
         }
         .hero-heading { font-family: var(--font-serif); font-size: 3rem; font-weight: 700; color: var(--dark); line-height: 1.2; margin-bottom: 1rem; }
         .hero-heading span { background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-description { font-size: 1.02rem; color: var(--text-muted); margin-bottom: 1.75rem; max-width: 580px; }
-        .hero-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
 
-        /* MARKETPLACE & PRICING */
-        .marketplace-layout {
-            max-width: 1440px; margin: 0 auto; padding: 20px 1.5rem 60px;
-            display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start;
-        }
-        @media (max-width: 960px) {
-            .marketplace-layout { grid-template-columns: 1fr; }
-            .marketplace-sidebar { display: none; }
-        }
-        .marketplace-sidebar {
-            background: var(--bg-card); border-radius: 16px; padding: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-            position: sticky; top: 95px;
-        }
-        .hub-sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
-        .hub-sidebar-tab {
-            background: transparent; border: none; width: 100%; padding: 0.65rem 0.9rem; border-radius: 10px;
-            font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-align: left;
-            display: flex; align-items: center; gap: 10px; transition: all 0.2s;
-        }
-        .hub-sidebar-tab:hover, .hub-sidebar-tab.active { background: var(--primary-light); color: var(--primary); font-weight: 700; }
-
-        .pricing-grid { max-width: 1160px; margin: 1.5rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; }
-        .pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.3s; }
-        .pricing-card:hover { transform: translateY(-4px); }
-        .pricing-card.featured { border: 2px solid var(--primary); box-shadow: var(--shadow-md); position: relative; }
-        .pricing-card-with-badge { position: relative; }
-        .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .featured-badge.premium { background: var(--premium-gold); }
-
-        /* BLOG GRID */
-        .blog-grid { max-width: 1200px; margin: 1.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-        .blog-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
-        .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .blog-img { height: 200px; background-size: cover; background-position: center; width: 100%; }
-        .blog-body { padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-        .blog-tag { display: inline-block; background: var(--primary-light); color: var(--primary); font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; text-transform: uppercase; width: fit-content; }
-        .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 0.5rem; }
-        .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
-
-        /* SOCIAL FEED */
-        .community-container { max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
-        .post-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
-        .post-box textarea { width: 100%; border: none; outline: none; resize: none; font-size: 0.98rem; min-height: 70px; background: transparent; color: var(--text-main); }
-        
-        .post-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 10px; }
-        .post-tools-left { display: flex; gap: 8px; flex-wrap: wrap; }
-        .ig-tool-btn { background: var(--bg-main); border: 1px solid var(--border); color: var(--text-main); padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-        .ig-tool-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-
-        .thread-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
-        .thread-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-        .thread-author-wrap { display: flex; align-items: center; gap: 10px; }
-        .thread-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
-        .thread-author { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
-        .thread-time { font-size: 0.75rem; color: var(--text-muted); }
-        .thread-content { font-size: 0.95rem; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px; }
-        .thread-media { width: 100%; max-height: 420px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; display: none; }
-        .thread-actions { display: flex; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
-        .thread-actions span:hover { color: var(--primary); }
-
-        /* PROFILE LAYOUT */
-        .profile-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .profile-cover-box { height: 260px; border-radius: 16px; background-size: cover; background-position: center; background-color: #cbd5e1; position: relative; }
-        .profile-identity-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
-        .profile-avatar-positioned { width: 130px; height: 130px; border-radius: 50%; border: 5px solid var(--bg-card); object-fit: cover; background: var(--bg-card); margin-top: -65px; margin-bottom: 12px; box-shadow: var(--shadow-md); position: relative; z-index: 2; }
-        .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-        .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
-        .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
-
-        /* BACKSTAGE ADMIN */
-        .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
-        .admin-table th, .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
-        .admin-table th { background: var(--bg-main); font-weight: 700; color: var(--text-main); }
-
-        /* FOOTER */
+        /* Footer */
         footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); }
         .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
-        @media (max-width: 960px) { .footer-container { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 580px) { .footer-container { grid-template-columns: 1fr; text-align: center; } }
         .footer-col h4 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
         .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-        .footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.2s; cursor: pointer; }
-        .footer-links a:hover { color: var(--primary); }
-        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; }
-
-        /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid var(--border); }
-        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 1.5rem; overflow-y: auto; }
-        .modal-field-group { margin-bottom: 1rem; }
-        .modal-field-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); }
-        .modal-field-group input, .modal-field-group select, .modal-field-group textarea { width: 100%; padding: 0.7rem; border: 1px solid var(--border); border-radius: 10px; outline: none; background: var(--bg-main); color: var(--text-main); font-size: 0.9rem; }
-        .role-option-card { border: 2px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; background: var(--bg-main); }
-        .role-option-card:hover, .role-option-card.selected { border-color: var(--primary); background: var(--primary-light); }
+        .footer-links a { color: #94a3b8; text-decoration: none; cursor: pointer; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-    <!-- Toast Notification -->
     <div id="toastNotification">
         <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
         <span id="toastMsg">Thành công!</span>
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- Navbar Đa Trang (True Multi-Page Links) -->
     <nav>
         <div class="nav-container">
-            <img src="fohu 2.png" alt="FOHU Logo" class="brand-logo-img" onclick="switchPage('home')">
+            <a href="index.html"><img src="fohu 2.png" alt="FOHU Logo" class="brand-logo-img"></a>
             
-            <button class="nav-mobile-toggle" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
-
-            <ul class="nav-links" id="navLinksList">
-                <li><a onclick="switchPage('home'); closeMobileMenu();" id="nav-home" class="active">Trang chủ</a></li>
-                <li><a onclick="switchPage('marketplace'); closeMobileMenu();" id="nav-marketplace">Đối tác</a></li>
-                <li><a onclick="switchPage('community'); closeMobileMenu();" id="nav-community">Bảng tin</a></li>
-                <li><a onclick="switchPage('pricing'); closeMobileMenu();" id="nav-pricing">Trở thành đối tác</a></li>
-                <li><a onclick="switchPage('blog'); closeMobileMenu();" id="nav-blog">Tin tức</a></li>
-                <li><a onclick="switchPage('contact'); closeMobileMenu();" id="nav-contact">Liên hệ</a></li>
-                <li id="adminNavTab" style="display: none;"><a onclick="switchPage('admin'); closeMobileMenu();" id="nav-admin" style="color: var(--vip-gold);"><i class="fa-solid fa-shield-halved"></i> Backstage</a></li>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Trang chủ</a></li>
+                <li><a href="marketplace.html">Đối tác</a></li>
+                <li><a href="community.html">Bảng tin</a></li>
+                <li><a href="pricing.html">Trở thành đối tác</a></li>
+                <li><a href="blog.html">Tin tức</a></li>
+                <li><a href="contact.html">Liên hệ</a></li>
             </ul>
 
             <div class="nav-auth">
-                <button class="partner-handshake-btn" onclick="switchPage('pricing')" title="Trở thành đối tác"><i class="fa-solid fa-handshake"></i></button>
-                
-                <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
-                </button>
-
-                <!-- Badge User & Dropdown -->
-                <div class="user-logged-badge" id="userLoggedBadge" onclick="toggleUserDropdown(event)">
-                    <div class="avatar-badge-container">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
-                        <div id="loggedUserBadgeIcon" class="badge-icon-overlay" style="display: none;"></div>
-                    </div>
-                    <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
-                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 2px;"></i>
-
-                    <!-- Menu thả xuống -->
-                    <div class="tinhte-user-dropdown" id="tinhteDropdown">
-                        <div class="tinhte-dropdown-item" onclick="switchPage('profile')"><i class="fa-regular fa-user"></i> Trang cá nhân</div>
-                        <div class="tinhte-dropdown-item" onclick="openEditProfileModal()"><i class="fa-solid fa-gear"></i> Cài đặt tài khoản</div>
-                        <div class="tinhte-dropdown-item" onclick="switchPage('bookings')"><i class="fa-regular fa-calendar-check"></i> Đặt lịch của bạn</div>
-                        <div class="tinhte-dropdown-item" onclick="switchPage('pricing')"><i class="fa-solid fa-handshake"></i> Trở thành đối tác</div>
-                        <div class="tinhte-dropdown-divider"></div>
-                        <div class="tinhte-dropdown-item" id="themeToggleMenuText" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="themeMenuIcon"></i> Giao diện: Sáng</div>
-                        <div class="tinhte-dropdown-divider"></div>
-                        <div class="tinhte-dropdown-item" style="color: #ef4444;" onclick="logoutFirebase()"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Đăng xuất</div>
-                    </div>
-                </div>
+                <a href="pricing.html" class="partner-handshake-btn" title="Trở thành đối tác"><i class="fa-solid fa-handshake"></i></a>
+                <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">Đăng nhập</button>
             </div>
         </div>
     </nav>
 
-    <!-- TRANG 1: TRANG CHỦ -->
-    <div id="page-home" class="page-section active">
-        <section class="hero-section">
-            <div>
-                <div class="hero-badge-top"><i class="fa-solid fa-bolt"></i> Hệ sinh thái dịch vụ media & sáng tạo #1</div>
-                <h1 class="hero-heading">
-                    Kết nối <span>Designer, Photographer, Editor & AI Artist</span> chuyên nghiệp
-                </h1>
-                <p class="hero-description">
-                    Nền tảng quy tụ đầy đủ các đối tác sáng tạo: Nhà thiết kế đồ họa (Designer), nhiếp ảnh gia, biên tập video (Editor), nghệ sĩ sáng tạo AI.
-                </p>
-
-                <div class="hero-cta-group">
-                    <button onclick="switchPage('marketplace')" class="btn btn-primary"><i class="fa-solid fa-compass"></i> Khám Phá Ngay</button>
-                    <button onclick="openJobRequestModal()" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);"><i class="fa-solid fa-bullhorn"></i> Đăng Yêu Cầu</button>
-                </div>
-            </div>
-
-            <div style="position: relative;">
-                <div class="hero-slider-container">
-                    <div class="hero-slide-item active">
-                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Service">
-                        <div class="hero-slide-caption">
-                            <div style="font-size: 0.85rem; font-weight: 700;">1. Photographer & Pre-wedding</div>
-                            <div style="font-size: 0.75rem; color: #cbd5e1;">Bắt trọn từng khoảnh khắc • 3.5tr</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- TRANG 2: ĐỐI TÁC -->
-    <div id="page-marketplace" class="page-section">
-        <div class="marketplace-layout">
-            <aside class="marketplace-sidebar">
-                <h3><i class="fa-solid fa-filter" style="color:var(--primary);"></i> Danh mục</h3>
-                <ul class="hub-sidebar-list">
-                    <li><button class="hub-sidebar-tab active"><i class="fa-solid fa-border-all"></i> Tất cả</button></li>
-                </ul>
-            </aside>
-            <main>
-                <div class="pin-masonry-grid" id="postsFeed"></div>
-            </main>
-        </div>
-    </div>
-
-    <!-- TRANG 3: BẢNG TIN SÁNG TẠO -->
-    <div id="page-community" class="page-section">
-        <div class="community-container">
-            <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700;">Bảng Tin Sáng Tạo</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Không gian kết nối, chia sẻ tác phẩm và câu chuyện cảm hứng của các nhà sáng tạo.</p>
-            </div>
-
-            <div class="post-box" id="postCreationBox" style="display: none;">
-                <textarea id="postContentInput" placeholder="Hôm nay bạn có tác phẩm hoặc câu chuyện gì muốn chia sẻ cùng cộng đồng?"></textarea>
-                
-                <input type="file" id="postMediaFileInput" accept="image/*,video/*" style="display: none;" onchange="handlePostFileSelect(event)">
-                <div id="postFilePreviewName" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 8px;"></div>
-
-                <div class="post-toolbar">
-                    <div class="post-tools-left">
-                        <button class="ig-tool-btn" onclick="document.getElementById('postMediaFileInput').click()"><i class="fa-regular fa-image" style="color: #10b981;"></i> Ảnh / Video</button>
-                        <button class="ig-tool-btn" onclick="promptCheckin()"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Check-in</button>
-                        <button class="ig-tool-btn" onclick="showToast('Đã gắn thẻ danh mục portfolio')"><i class="fa-solid fa-palette" style="color: #f59e0b;"></i> Portfolio</button>
-                    </div>
-                    <button class="btn btn-primary" style="padding: 6px 16px; font-size: 0.82rem;" onclick="createNewPost()"><i class="fa-solid fa-paper-plane"></i> Đăng</button>
-                </div>
-            </div>
-
-            <div class="post-box" id="loginPromptBox" style="text-align: center; padding: 1.5rem;">
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Vui lòng đăng nhập tài khoản Google để tham gia đăng bài và tương tác.</p>
-                <button class="btn btn-dark" onclick="openLoginRoleModal()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập ngay</button>
-            </div>
-
-            <div id="threadsFeedContainer"></div>
-        </div>
-    </div>
-
-    <!-- TRANG CÁ NHÂN (PROFILE) -->
-    <div id="page-profile" class="page-section">
-        <div class="profile-container">
-            <div class="profile-cover-box" id="profileCoverBg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80');"></div>
-            
-            <div class="profile-identity-section">
-                <div class="avatar-badge-container" style="margin-top: -65px; margin-bottom: 12px; display: inline-block;">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar" style="margin-top: 0; margin-bottom: 0;" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
-                    <div id="profileBadgeIcon" class="badge-icon-overlay" style="display: none; width: 24px; height: 24px; font-size: 0.8rem;"></div>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
-                    <div>
-                        <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Tên User</h2>
-                        <span id="profileRoleBadge" style="background: var(--primary-light); color: var(--primary); padding: 3px 10px; border-radius: 999px; font-weight: 700; font-size: 0.75rem; display: inline-block; margin-top: 4px;">Thành viên</span>
-                        <p id="profileBio" style="color: var(--text-muted); font-size: 0.92rem; margin-top: 10px; max-width: 600px;">Chưa có tiểu sử cá nhân. Hãy vào Cài đặt tài khoản để cập nhật thêm về bạn!</p>
-                        <div style="display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">
-                            <div><i class="fa-solid fa-envelope"></i> <span id="profileEmailDisplay">email@domain.com</span></div>
-                            <div><i class="fa-solid fa-phone"></i> <span id="profilePhoneDisplay">Chưa cập nhật SĐT</span></div>
-                        </div>
-                    </div>
-                    <button class="btn btn-secondary" onclick="openEditProfileModal()"><i class="fa-solid fa-pen"></i> Chỉnh sửa trang cá nhân</button>
-                </div>
-            </div>
-
-            <div class="profile-tabs">
-                <button class="profile-tab-btn active">Bài đăng của bạn</button>
-                <button class="profile-tab-btn" onclick="showToast('Bộ sưu tập portfolio đang trống')">Bộ sưu tập</button>
-            </div>
-
-            <div id="userPostsContainer"></div>
-        </div>
-    </div>
-
-    <!-- TRANG ĐẶT LỊCH CỦA BẠN (BOOKINGS) -->
-    <div id="page-bookings" class="page-section">
-        <div class="community-container">
-            <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700;">Lịch Đặt Dịch Vụ & Studio</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Quản lý các lịch hẹn làm việc với Photographer, Editor và Studio của bạn.</p>
-            </div>
-            <div class="thread-item" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-weight: 700; font-size: 1rem;">Gói Chụp Ảnh Pre-wedding (Studio Sáng Tạo)</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Thời gian: 15:00 - 18:00 • Ngày 10/10/2026</div>
-                </div>
-                <span style="background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.78rem;">Đã xác nhận</span>
+    <!-- Nội dung Trang Chủ -->
+    <section class="hero-section">
+        <div>
+            <h1 class="hero-heading">Kết nối <span>Designer, Photographer, Editor & AI Artist</span> chuyên nghiệp</h1>
+            <p class="hero-description">Nền tảng mạng xã hội hàng đầu kết nối trực tiếp cộng đồng sáng tạo và các giải pháp studio chuyên nghiệp tại Việt Nam.</p>
+            <div style="display: flex; gap: 1rem;">
+                <a href="marketplace.html" class="btn btn-primary"><i class="fa-solid fa-compass"></i> Khám Phá Ngay</a>
+                <a href="pricing.html" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">Mở Gian Hàng</a>
             </div>
         </div>
-    </div>
-
-    <!-- TRANG BACKSTAGE ADMIN -->
-    <div id="page-admin" class="page-section">
-        <div style="max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem;">
-            <div style="margin-bottom: 1.5rem;">
-                <h2 style="font-family: var(--font-serif); font-weight: 700;"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Backstage - Quản Trị Hệ Thống fohu</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Khu vực kiểm soát tài khoản người dùng, đối tác và bài đăng trên toàn hệ thống.</p>
-            </div>
-            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
-                <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Danh sách tài khoản thành viên</h3>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Họ tên</th>
-                            <th>Email</th>
-                            <th>Vai trò hệ thống</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminUsersTableBody">
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: var(--text-muted);">Đang tải dữ liệu...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div>
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Hero" style="width: 100%; border-radius: 24px; box-shadow: var(--shadow-md);">
         </div>
-    </div>
+    </section>
 
-    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC -->
-    <div id="page-pricing" class="page-section">
-        <section style="padding: 20px 1rem 60px;">
-            <div style="text-align: center; margin-bottom: 2.5rem;">
-                <h2>Trở Thành Đối Tác</h2>
-                <p style="color: var(--text-muted);">Lựa chọn gói phù hợp để mở gian hàng và vinh danh thương hiệu của bạn.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card pricing-card-with-badge">
-                    <span class="featured-badge" style="background: var(--text-muted);">Cơ bản</span>
-                    <div>
-                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Không Chuyên</h3>
-                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0;">0 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ vĩnh viễn</span></div>
-                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Tạo Hồ sơ cá nhân cơ bản</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
-                        </ul>
-                    </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openCheckoutModal('Không Chuyên', 0, 'Personal')">Đăng ký Không Chuyên</button>
-                </div>
-
-                <div class="pricing-card pricing-card-with-badge">
-                    <span class="featured-badge">Đối tác Standard</span>
-                    <div>
-                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Bán Chuyên</h3>
-                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--primary);">99.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
-                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo liên hệ</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Kim cương 💎</strong></li>
-                        </ul>
-                    </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openCheckoutModal('Bán Chuyên (Standard)', 99000, 'Partner')">Đăng ký Bán Chuyên</button>
-                </div>
-
-                <div class="pricing-card featured pricing-card-with-badge">
-                    <span class="featured-badge premium">ĐỐI TÁC PREMIUM</span>
-                    <div>
-                        <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
-                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--premium-gold);">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
-                        <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Vương miện 👑</strong></li>
-                        </ul>
-                    </div>
-                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--premium-gold);" onclick="openCheckoutModal('Chuyên nghiệp (Premium)', 149000, 'VIP')">Đăng ký Premium</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- TRANG TIN TỨC -->
-    <div id="page-blog" class="page-section">
-        <section style="padding: 40px 1rem 80px; max-width: 1200px; margin: auto;">
-            <div style="text-align: center; margin-bottom: 2.5rem;">
-                <h2 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem;">Tin Tức & Xu Hướng Sáng Tạo</h2>
-                <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và cuộc thi ảnh quốc tế.</p>
-            </div>
-            
-            <div class="blog-grid" id="blogGridContainer">
-                <!-- Sẽ được render tự động qua danh sách bài báo -->
-            </div>
-        </section>
-    </div>
-
-    <!-- TRANG LIÊN HỆ -->
-    <div id="page-contact" class="page-section">
-        <section style="padding: 40px 1rem; max-width: 600px; margin: auto;">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h2>Liên Hệ & Hỗ Trợ</h2>
-                <p style="color: var(--text-muted);">Hotline: 0909097326</p>
-            </div>
-        </section>
-    </div>
-
-    <!-- MODAL THANH TOÁN (CHECKOUT QR CODE) -->
-    <div class="modal-overlay" id="checkoutModal">
-        <div class="modal-box" style="text-align: center;">
-            <div class="modal-header">
-                <h3 id="checkoutModalTitle">Thanh Toán Gói Dịch Vụ</h3>
-                <button onclick="closeModal('checkoutModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">Quét mã QR qua ứng dụng Ngân hàng để thanh toán tự động.</p>
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; display: inline-block; border: 1px solid var(--border); margin-bottom: 15px;">
-                    <img src="https://api.vietqr.io/image/970422-0388277265-xxxx.jpg?amount=0&addInfo=FOHU&accountName=NGUYEN%20TRUONG%20HOANG%20THIEN" alt="QR Code" style="width: 180px; height: 180px; object-fit: contain;" id="checkoutQrImg">
-                </div>
-                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 5px;">Nội dung chuyển khoản:</div>
-                <div id="checkoutSyntaxCode" style="background: var(--primary-light); color: var(--primary); padding: 8px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; margin-bottom: 20px;">FOHU UID</div>
-                <button class="btn btn-primary" style="width: 100%; justify-content: center; background: #10b981;" onclick="confirmPaymentSuccess()">Đã Chuyển Khoản & Kích Hoạt</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ĐỌC BÁO CHI TIẾT (BLOG DETAIL) -->
-    <div class="modal-overlay" id="blogDetailModal">
-        <div class="modal-box" style="max-width: 650px;">
-            <div class="modal-header">
-                <h3 id="blogDetailTitle">Tiêu đề bài viết</h3>
-                <button onclick="closeModal('blogDetailModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <img id="blogDetailImg" src="" style="width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem;" alt="Blog">
-                <div id="blogDetailContent" style="font-size: 0.95rem; line-height: 1.7; color: var(--text-main); white-space: pre-wrap;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL CHỌN VAI TRÒ -->
-    <div class="modal-overlay" id="roleSelectionModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Chọn Vai Trò Tài Khoản</h3>
-            </div>
-            <div class="modal-body">
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">Vui lòng chọn vai trò phù hợp để trải nghiệm hệ thống fohu tốt nhất.</p>
-                
-                <div class="role-option-card selected" id="roleCardPersonal" onclick="selectRole('Personal')">
-                    <i class="fa-solid fa-user" style="font-size: 1.5rem; color: var(--primary);"></i>
-                    <div>
-                        <div style="font-weight: 700;">Người dùng cá nhân</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Tìm kiếm dịch vụ, đặt lịch và tham gia thảo luận diễn đàn.</div>
-                    </div>
-                </div>
-
-                <div class="role-option-card" id="roleCardPartner" onclick="selectRole('Partner')">
-                    <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: var(--primary);"></i>
-                    <div>
-                        <div style="font-weight: 700;">Đối tác sáng tạo / Media</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Mở gian hàng, đăng portfolio và nhận đơn đặt lịch.</div>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" onclick="saveUserRoleAndContinue()">Xác nhận & Tiếp tục</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN -->
-    <div class="modal-overlay" id="editProfileModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Cài Đặt Thông Tin Tài Khoản</h3>
-                <button onclick="closeModal('editProfileModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-field-group">
-                    <label>Họ và tên hiển thị</label>
-                    <input type="text" id="editNameInput">
-                </div>
-                <div class="modal-field-group">
-                    <label>Tiểu sử (Bio)</label>
-                    <textarea id="editBioInput" placeholder="Giới thiệu ngắn gọn về bạn..." rows="2"></textarea>
-                </div>
-                <div class="modal-field-group">
-                    <label>Số điện thoại liên hệ</label>
-                    <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
-                </div>
-
-                <!-- Input file ẩn -->
-                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'avatar')">
-                <input type="file" id="coverFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'cover')">
-
-                <div class="modal-field-group">
-                    <label>Ảnh đại diện (Avatar mới)</label>
-                    <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.85rem;" onclick="document.getElementById('avatarFileInput').click()">
-                        <i class="fa-solid fa-camera"></i> <span id="avatarFileName">Chọn ảnh đại diện từ thiết bị</span>
-                    </button>
-                </div>
-
-                <div class="modal-field-group">
-                    <label>Ảnh bìa (Cover Photo mới)</label>
-                    <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.85rem;" onclick="document.getElementById('coverFileInput').click()">
-                        <i class="fa-solid fa-image"></i> <span id="coverFileName">Chọn ảnh bìa từ thiết bị</span>
-                    </button>
-                </div>
-
-                <button type="button" class="btn btn-primary" id="saveProfileBtn" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ĐĂNG NHẬP GOOGLE -->
-    <div class="modal-overlay" id="loginRoleModal">
-        <div class="modal-box" style="max-width: 400px; padding: 20px; text-align: center;">
-            <div class="modal-header" style="border:none; padding-bottom: 0;">
-                <h3 style="width: 100%; font-size: 1.25rem; font-weight: 800;">Đăng Nhập FOHU</h3>
-                <button onclick="closeModal('loginRoleModal')" style="border:none; background:none; cursor:pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body" style="padding-top: 20px;">
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Xác thực tài khoản Google để tham gia hệ sinh thái.</p>
-                <button class="btn btn-primary" style="width:100%; justify-content: center; padding: 12px; background: #ea4335;" onclick="loginWithGoogleFirebase()">
-                    <i class="fa-brands fa-google"></i> Đăng nhập với Google
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer>
         <div class="footer-container">
             <div class="footer-col">
-                <img src="fohu 2.png" alt="FOHU Logo" class="footer-logo-img" style="margin-bottom: 1rem;" onclick="switchPage('home')">
+                <img src="fohu 2.png" alt="Logo" class="footer-logo-img" style="margin-bottom: 1rem;">
                 <p>Nền tảng kết nối hệ sinh thái sáng tạo hàng đầu Việt Nam.</p>
             </div>
             <div class="footer-col">
                 <h4>Khám Phá</h4>
-                <ul class="footer-links"><li><a onclick="switchPage('marketplace')">Đối tác</a></li></ul>
+                <ul class="footer-links"><li><a href="marketplace.html">Đối tác</a></li></ul>
             </div>
             <div class="footer-col">
                 <h4>Chính Sách</h4>
@@ -734,6 +198,7 @@
     </footer>
 
     <script>
+        // Cấu hình Firebase & Xác thực chung cho toàn bộ các trang con
         const firebaseConfig = {
             apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
             authDomain: "fohu-platform.firebaseapp.com",
@@ -742,61 +207,8 @@
             messagingSenderId: "696328353651",
             appId: "1:696328353651:web:8add8d582b366c12ccf706"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        const ADMIN_EMAIL = "thien.nguyen1696@gmail.com";
-
-        // DANH SÁCH BÀI VIẾT TIN TỨC (CLICKABLE BLOGS)
-        const blogArticles = [
-            { id: 1, tag: "Nhiếp ảnh", title: 'Xu hướng "Cảm xúc & Tính chân thực" lên ngôi trong nhiếp ảnh 2026', desc: 'Sự dịch chuyển từ ảnh dàn dựng sang phong cách candid tự nhiên.', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80', content: 'Trong kỷ nguyên nhiếp ảnh số 2026, các khách hàng thương mại và cặp đôi không còn chuộng phong cách chỉnh màu rực rỡ, dàn dựng cứng nhắc. Thay vào đó, cảm xúc chân thật, những khoảnh khắc đời thường (candid) bắt trọn bằng ánh sáng tự nhiên đang trở thành xu hướng chủ đạo...' },
-            { id: 2, tag: "Thiết kế", title: 'Sự bùng nổ của phong cách thiết kế và màu sắc "Hyper-Bloom"', desc: 'Kết hợp thiên nhiên siêu thực và hiệu ứng mờ sương.', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80', content: 'Phong cách Hyper-Bloom đang làm mưa làm gió trong cộng đồng Designer quốc tế với các tông màu chuyển sắc (gradient) lấy cảm hứng từ sinh học quang phổ và các lớp kính mờ ảo...' },
-            { id: 3, tag: "Công nghệ", title: 'Đánh giá chi tiết dòng máy ảnh Mirrorless Full-frame toàn diện năm 2026', desc: 'Điểm mặt những cỗ máy tích hợp AI Autofocus mạnh mẽ.', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80', content: 'Trí tuệ nhân tạo đã thực sự thay đổi cách chúng ta chụp ảnh. Các thuật toán nhận diện chủ thể dựa trên thần kinh nhân tạo giúp máy ảnh khóa nét động vật, mắt người và xe chuyển động với độ chính xác gần như tuyệt đối...' },
-            { id: 4, tag: "Thiết bị", title: 'Cuộc đua máy ảnh Medium Format: Hasselblad X2D II 100C ra mắt', desc: 'Cảm biến 100MP định nghĩa lại tiêu chuẩn nhiếp ảnh thương mại.', img: 'https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=800&q=80', content: 'Hasselblad vừa chính thức vén màn dòng máy ảnh medium format mới với dải tương phản động lên tới 16 stop, mang lại chi tiết vùng tối và vùng sáng cực kỳ kinh ngạc cho các nhiếp ảnh gia thời trang và phong cảnh...' },
-            { id: 5, tag: "Trào lưu", title: 'Xu hướng "Candid Camera Roll": Khi Gen Z chuộng phong cách flash thô ráp', desc: 'Hiệu ứng chân thực đang làm mưa làm gió trong cộng đồng.', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80', content: 'Không cần studio đắt đỏ, giới trẻ hiện nay đang tạo ra trào lưu chụp ảnh bằng đèn flash trực diện vào ban đêm, giữ nguyên các khuyết điểm da và khung cảnh thô ráp để tạo nên nét đẹp cá tính riêng...' },
-            { id: 6, tag: "Hậu kỳ", title: 'Cẩm nang tối ưu quy trình hậu kỳ với Trí tuệ nhân tạo (AI)', desc: 'Tự động hóa color grading và tách nền thông minh.', img: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80', content: 'Khám phá các plugin Premiere và Photoshop tích hợp AI giúp tiết kiệm 70% thời gian dựng phim và cân chỉnh màu sắc trong các dự án quảng cáo lớn...' }
-        ];
-
-        function renderBlogGrid() {
-            const grid = document.getElementById('blogGridContainer');
-            if (!grid) return;
-            let html = '';
-            blogArticles.forEach(b => {
-                html += `
-                    <article class="blog-card" onclick="openBlogDetail(${b.id})">
-                        <div class="blog-img" style="background-image: url('${b.img}');"></div>
-                        <div class="blog-body">
-                            <span class="blog-tag">${b.tag}</span>
-                            <h3>${b.title}</h3>
-                            <p>${b.desc}</p>
-                        </div>
-                    </article>
-                `;
-            });
-            grid.innerHTML = html;
-        }
-
-        function openBlogDetail(id) {
-            const blog = blogArticles.find(b => b.id === id);
-            if (!blog) return;
-            document.getElementById('blogDetailTitle').innerText = blog.title;
-            document.getElementById('blogDetailImg').src = blog.img;
-            document.getElementById('blogDetailContent').innerText = blog.content;
-            openModal('blogDetailModal');
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderBlogGrid();
-            const savedTheme = localStorage.getItem('fohu_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                const menuText = document.getElementById('themeToggleMenuText');
-                if (menuText) {
-                    menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
-                }
-            }
-        });
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -804,532 +216,6 @@
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            const navT = document.getElementById('nav-' + pageId);
-            if (navT) navT.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (pageId === 'profile') loadUserProfileData();
-            if (pageId === 'admin') loadAdminBackstageData();
-        }
-
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        
-        function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
-        function openJobRequestModal() { openModal('jobRequestModal'); }
-        function openLoginRoleModal() { openModal('loginRoleModal'); }
-
-        // THANH TOÁN QR CODE & KÍCH HOẠT GÓI
-        let pendingUpgradeRole = 'Personal';
-        function openCheckoutModal(packageName, amount, roleKey) {
-            if (!currentUser) {
-                showToast("Vui lòng đăng nhập trước khi đăng ký gói đối tác!");
-                openLoginRoleModal();
-                return;
-            }
-            pendingUpgradeRole = roleKey;
-            document.getElementById('checkoutModalTitle').innerText = "Thanh toán gói: " + packageName;
-            const syntax = "FOHU " + currentUser.uid.substring(0, 6).toUpperCase() + " " + roleKey;
-            document.getElementById('checkoutSyntaxCode').innerText = syntax;
-            
-            // VietQR Dynamic API
-            const qrUrl = `https://api.vietqr.io/image/970422-0388277265-xxxx.jpg?amount=${amount}&addInfo=${encodeURIComponent(syntax)}&accountName=NGUYEN%20TRUONG%20HOANG%20THIEN`;
-            document.getElementById('checkoutQrImg').src = qrUrl;
-            
-            openModal('checkoutModal');
-        }
-
-        async function confirmPaymentSuccess() {
-            if (!currentUser) return;
-            try {
-                showToast("Đang xác thực giao dịch...");
-                await db.collection('users').doc(currentUser.uid).set({
-                    role: pendingUpgradeRole
-                }, { merge: true });
-
-                closeModal('checkoutModal');
-                showToast("Thanh toán thành công! Đã kích hoạt gói đối tác.");
-                loadUserProfileData();
-                updateUserUI(currentUser);
-            } catch (err) {
-                console.error(err);
-                showToast("Lỗi kích hoạt. Vui lòng liên hệ hotline!");
-            }
-        }
-        
-        let uploadedAvatarUrl = undefined;
-        let uploadedCoverUrl = undefined;
-        let uploadedPostFileUrl = "";
-
-        function openEditProfileModal() {
-            if (!currentUser) return;
-            document.getElementById('editNameInput').value = currentUser.displayName || '';
-            document.getElementById('avatarFileName').innerText = "Chọn ảnh đại diện từ thiết bị";
-            document.getElementById('coverFileName').innerText = "Chọn ảnh bìa từ thiết bị";
-            uploadedAvatarUrl = undefined;
-            uploadedCoverUrl = undefined;
-
-            db.collection('users').doc(currentUser.uid).get().then((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.name) document.getElementById('editNameInput').value = data.name;
-                    document.getElementById('editBioInput').value = data.bio || '';
-                    document.getElementById('editPhoneInput').value = data.phone || '';
-                    if (data.avatar) document.getElementById('avatarFileName').innerText = "✓ Đã có ảnh đại diện";
-                    if (data.coverUrl) document.getElementById('coverFileName').innerText = "✓ Đã có ảnh bìa";
-                }
-            });
-            openModal('editProfileModal');
-        }
-
-        function processImageFile(file, maxDim) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > maxDim) { height *= maxDim / width; width = maxDim; }
-                        } else {
-                            if (height > maxDim) { width *= maxDim / height; height = maxDim; }
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.45);
-                        resolve(compressedDataUrl);
-                    }
-                    img.onerror = reject;
-                }
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function handleFileSelect(event, type) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const saveBtn = document.getElementById('saveProfileBtn');
-            saveBtn.style.opacity = '0.5';
-            saveBtn.style.pointerEvents = 'none';
-            saveBtn.innerText = "Đang nén ảnh...";
-
-            try {
-                const maxDim = (type === 'avatar') ? 150 : 400;
-                const base64Img = await processImageFile(file, maxDim);
-                
-                if (type === 'avatar') {
-                    uploadedAvatarUrl = base64Img;
-                    document.getElementById('avatarFileName').innerText = "✓ Đã chọn: " + file.name;
-                    showToast("Đã xử lý ảnh đại diện!");
-                } else if (type === 'cover') {
-                    uploadedCoverUrl = base64Img;
-                    document.getElementById('coverFileName').innerText = "✓ Đã chọn: " + file.name;
-                    showToast("Đã xử lý ảnh bìa!");
-                }
-            } catch (err) {
-                console.error(err);
-                showToast("Lỗi xử lý ảnh!");
-            } finally {
-                saveBtn.style.opacity = '1';
-                saveBtn.style.pointerEvents = 'auto';
-                saveBtn.innerText = "Lưu thay đổi";
-            }
-        }
-
-        async function handlePostFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            try {
-                showToast("Đang đính kèm ảnh...");
-                const base64Img = await processImageFile(file, 600);
-                uploadedPostFileUrl = base64Img;
-                document.getElementById('postFilePreviewName').innerText = "📁 Đã đính kèm: " + file.name;
-                showToast("Đã đính kèm thành công!");
-            } catch (err) {
-                console.error(err);
-                showToast("Lỗi đính kèm ảnh!");
-            }
-        }
-
-        async function saveUserProfileSettings() {
-            if (!currentUser) return;
-            const newName = document.getElementById('editNameInput').value.trim();
-            const newBio = document.getElementById('editBioInput').value.trim();
-            const newPhone = document.getElementById('editPhoneInput').value.trim();
-
-            let updateData = {
-                name: newName || currentUser.displayName,
-                bio: newBio,
-                phone: newPhone
-            };
-
-            if (uploadedAvatarUrl !== undefined) updateData.avatar = uploadedAvatarUrl;
-            if (uploadedCoverUrl !== undefined) updateData.coverUrl = uploadedCoverUrl;
-
-            const saveBtn = document.getElementById('saveProfileBtn');
-            saveBtn.style.opacity = '0.5';
-            saveBtn.style.pointerEvents = 'none';
-            saveBtn.innerText = "Đang lưu thay đổi...";
-
-            try {
-                await db.collection('users').doc(currentUser.uid).set(updateData, { merge: true });
-                closeModal('editProfileModal');
-                showToast("Đã lưu thay đổi thành công!");
-                loadUserProfileData();
-                updateUserUI(currentUser);
-            } catch (err) {
-                console.error("Lỗi Firestore:", err);
-                showToast("Lỗi lưu dữ liệu. Vui lòng kiểm tra quyền Firestore Rules!");
-            } finally {
-                saveBtn.style.opacity = '1';
-                saveBtn.style.pointerEvents = 'auto';
-                saveBtn.innerText = "Lưu thay đổi";
-            }
-        }
-
-        function toggleMediaInput() {
-            document.getElementById('postMediaFileInput').click();
-        }
-
-        function promptCheckin() {
-            const loc = prompt("Nhập địa điểm check-in của bạn (Ví dụ: Studio Sáng Tạo fohu, TP.HCM):");
-            if (loc) {
-                const ta = document.getElementById('postContentInput');
-                ta.value += ` 📍 Đang ở tại ${loc}`;
-            }
-        }
-
-        function toggleDarkMode() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('fohu_theme', isDark ? 'dark' : 'light');
-            
-            const menuText = document.getElementById('themeToggleMenuText');
-            if (isDark) {
-                menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
-                showToast("Đã bật chế độ Tối");
-            } else {
-                menuText.innerHTML = `<i class="fa-solid fa-moon" id="themeMenuIcon"></i> Giao diện: Sáng`;
-                showToast("Đã bật chế độ Sáng");
-            }
-        }
-
-        function toggleUserDropdown(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('tinhteDropdown');
-            dropdown.classList.toggle('active');
-        }
-
-        window.addEventListener('click', () => {
-            const dropdown = document.getElementById('tinhteDropdown');
-            if (dropdown) dropdown.classList.remove('active');
-        });
-
-        let selectedRoleChoice = 'Personal';
-        function selectRole(role) {
-            selectedRoleChoice = role;
-            document.getElementById('roleCardPersonal').classList.toggle('selected', role === 'Personal');
-            document.getElementById('roleCardPartner').classList.toggle('selected', role === 'Partner');
-        }
-
-        function loginWithGoogleFirebase() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider)
-                .then((result) => {
-                    const user = result.user;
-                    closeModal('loginRoleModal');
-                    checkUserRoleInFirestore(user);
-                })
-                .catch((error) => {
-                    console.error("Lỗi đăng nhập:", error);
-                    showToast("Lỗi đăng nhập: " + error.code);
-                });
-        }
-
-        let currentUser = null;
-
-        function checkUserRoleInFirestore(user) {
-            db.collection('users').doc(user.uid).get().then((doc) => {
-                if (doc.exists && doc.data().role) {
-                    finishLogin(user);
-                } else {
-                    currentUser = user;
-                    openModal('roleSelectionModal');
-                }
-            });
-        }
-
-        function saveUserRoleAndContinue() {
-            if (!currentUser) return;
-            db.collection('users').doc(currentUser.uid).set({
-                uid: currentUser.uid,
-                name: currentUser.displayName,
-                email: currentUser.email,
-                avatar: currentUser.photoURL,
-                role: selectedRoleChoice,
-                bio: "Chưa có tiểu sử.",
-                phone: "",
-                coverUrl: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).then(() => {
-                closeModal('roleSelectionModal');
-                finishLogin(currentUser);
-            });
-        }
-
-        function finishLogin(user) {
-            currentUser = user;
-            updateUserUI(user);
-            showToast("Xin chào, " + user.displayName + "!");
-            document.getElementById('postCreationBox').style.display = 'block';
-            document.getElementById('loginPromptBox').style.display = 'none';
-
-            if (user.email === ADMIN_EMAIL) {
-                document.getElementById('adminNavTab').style.display = 'block';
-            }
-        }
-
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user;
-                updateUserUI(user);
-                document.getElementById('postCreationBox').style.display = 'block';
-                document.getElementById('loginPromptBox').style.display = 'none';
-                if (user.email === ADMIN_EMAIL) {
-                    document.getElementById('adminNavTab').style.display = 'block';
-                }
-            } else {
-                currentUser = null;
-                document.getElementById('postCreationBox').style.display = 'none';
-                document.getElementById('loginPromptBox').style.display = 'block';
-                document.getElementById('adminNavTab').style.display = 'none';
-            }
-            loadCommunityPosts();
-        });
-
-        // CẬP NHẬT GIAO DIỆN AVATAR & HUY HIỆU ĐỊNH DANH (💎 / 👑)
-        function updateUserUI(user) {
-            document.getElementById('loginNavBtn').style.display = 'none';
-            const badge = document.getElementById('userLoggedBadge');
-            badge.style.display = 'flex';
-            document.getElementById('loggedUserName').innerText = user.displayName || 'Thành viên';
-            
-            db.collection('users').doc(user.uid).get().then((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.name) document.getElementById('loggedUserName').innerText = data.name;
-                    if (data.avatar) document.getElementById('loggedUserAvatar').src = data.avatar;
-                    else document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
-
-                    // Gắn huy hiệu trên Navbar
-                    const badgeIcon = document.getElementById('loggedUserBadgeIcon');
-                    if (data.role === 'Partner') {
-                        badgeIcon.style.display = 'flex';
-                        badgeIcon.className = 'badge-icon-overlay badge-standard';
-                        badgeIcon.innerHTML = '💎';
-                        badgeIcon.title = 'Đối tác Bán Chuyên (Standard)';
-                    } else if (data.role === 'VIP') {
-                        badgeIcon.style.display = 'flex';
-                        badgeIcon.className = 'badge-icon-overlay badge-premium';
-                        badgeIcon.innerHTML = '👑';
-                        badgeIcon.title = 'Đối tác Chuyên nghiệp (Premium)';
-                    } else {
-                        badgeIcon.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        function logoutFirebase() {
-            firebase.auth().signOut().then(() => {
-                document.getElementById('loginNavBtn').style.display = 'inline-flex';
-                document.getElementById('userLoggedBadge').style.display = 'none';
-                document.getElementById('adminNavTab').style.display = 'none';
-                switchPage('home');
-                showToast("Đã đăng xuất!");
-            });
-        }
-
-        function loadUserProfileData() {
-            if (!currentUser) return;
-            document.getElementById('profileName').innerText = currentUser.displayName;
-            document.getElementById('profileEmailDisplay').innerText = currentUser.email;
-
-            db.collection('users').doc(currentUser.uid).get().then((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.name) document.getElementById('profileName').innerText = data.name;
-                    
-                    let roleText = 'Thành viên cá nhân';
-                    const profileBadge = document.getElementById('profileBadgeIcon');
-                    if (data.role === 'Partner') {
-                        roleText = 'Đối tác Bán Chuyên (Standard)';
-                        profileBadge.style.display = 'flex';
-                        profileBadge.className = 'badge-icon-overlay badge-standard';
-                        profileBadge.innerHTML = '💎';
-                    } else if (data.role === 'VIP') {
-                        roleText = 'Đối tác Chuyên nghiệp (Premium)';
-                        profileBadge.style.display = 'flex';
-                        profileBadge.className = 'badge-icon-overlay badge-premium';
-                        profileBadge.innerHTML = '👑';
-                    } else {
-                        profileBadge.style.display = 'none';
-                    }
-                    document.getElementById('profileRoleBadge').innerText = roleText;
-
-                    document.getElementById('profileBio').innerText = data.bio || 'Chưa có tiểu sử cá nhân.';
-                    document.getElementById('profilePhoneDisplay').innerText = data.phone || 'Chưa cập nhật SĐT';
-                    if (data.avatar) {
-                        document.getElementById('profileAvatar').src = data.avatar;
-                    } else {
-                        document.getElementById('profileAvatar').src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
-                    }
-                    if (data.coverUrl) {
-                        document.getElementById('profileCoverBg').style.backgroundImage = `url('${data.coverUrl}')`;
-                    }
-                }
-            });
-
-            const container = document.getElementById('userPostsContainer');
-            db.collection('posts').where('authorId', '==', currentUser.uid).orderBy('createdAt', 'desc').get()
-                .then((snapshot) => {
-                    let html = '';
-                    if (snapshot.empty) {
-                        html = `<div class="thread-item" style="text-align:center; color:var(--text-muted);">Bạn chưa đăng bài viết nào.</div>`;
-                    } else {
-                        snapshot.forEach((doc) => {
-                            html += renderPostCard(doc.data());
-                        });
-                    }
-                    container.innerHTML = html;
-                });
-        }
-
-        function loadAdminBackstageData() {
-            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
-                showToast("Bạn không có quyền truy cập Backstage!");
-                switchPage('home');
-                return;
-            }
-
-            const tbody = document.getElementById('adminUsersTableBody');
-            db.collection('users').get().then((snapshot) => {
-                let html = '';
-                snapshot.forEach((doc) => {
-                    const u = doc.data();
-                    html += `
-                        <tr>
-                            <td><b>${u.name || 'Không tên'}</b></td>
-                            <td>${u.email}</td>
-                            <td><span style="background:var(--primary-light); color:var(--primary); padding:2px 8px; border-radius:6px; font-weight:700; font-size:0.75rem;">${u.role || 'Personal'}</span></td>
-                            <td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('Đã xem chi tiết')">Chi tiết</button></td>
-                        </tr>
-                    `;
-                });
-                tbody.innerHTML = html;
-            });
-        }
-
-        function createNewPost() {
-            const content = document.getElementById('postContentInput').value.trim();
-            if (!content) {
-                showToast("Vui lòng nhập nội dung bài viết!");
-                return;
-            }
-            if (!currentUser) {
-                showToast("Vui lòng đăng nhập trước khi đăng bài!");
-                return;
-            }
-
-            db.collection('users').doc(currentUser.uid).get().then((userDoc) => {
-                const userAvatar = (userDoc.exists && userDoc.data().avatar) ? userDoc.data().avatar : (currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80');
-                const userName = (userDoc.exists && userDoc.data().name) ? userDoc.data().name : (currentUser.displayName || 'Thành viên fohu');
-                const userRole = (userDoc.exists && userDoc.data().role) ? userDoc.data().role : 'Personal';
-                
-                db.collection('posts').add({
-                    authorId: currentUser.uid,
-                    authorName: userName,
-                    authorAvatar: userAvatar,
-                    authorRole: userRole,
-                    content: content,
-                    mediaUrl: uploadedPostFileUrl,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    document.getElementById('postContentInput').value = '';
-                    document.getElementById('postFilePreviewName').innerText = '';
-                    uploadedPostFileUrl = "";
-                    showToast("Đã chia sẻ bài viết lên bảng tin!");
-                    loadCommunityPosts();
-                });
-            });
-        }
-
-        function renderPostCard(p) {
-            const timeStr = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleString('vi-VN') : 'Vừa xong';
-            const mediaTag = p.mediaUrl ? `<img src="${p.mediaUrl}" class="thread-media" style="display:block;" alt="Media">` : '';
-            
-            let badgeHtml = '';
-            if (p.authorRole === 'Partner') badgeHtml = `<span style="background:var(--standard-gem); color:#fff; font-size:0.6rem; padding:1px 5px; border-radius:999px; margin-left:4px;" title="Standard">💎</span>`;
-            if (p.authorRole === 'VIP') badgeHtml = `<span style="background:var(--premium-gold); color:#fff; font-size:0.6rem; padding:1px 5px; border-radius:999px; margin-left:4px;" title="Premium">👑</span>`;
-
-            return `
-                <div class="thread-item">
-                    <div class="thread-header">
-                        <div class="thread-author-wrap">
-                            <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
-                            <div>
-                                <div class="thread-author">${p.authorName} ${badgeHtml}</div>
-                                <div class="thread-time">${timeStr}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="thread-content">${escapeHtml(p.content)}</div>
-                    ${mediaTag}
-                    <div class="thread-actions">
-                        <span onclick="showToast('Đã thả tim bài viết ❤️')"><i class="fa-regular fa-heart"></i> Thích</span>
-                        <span onclick="showToast('Mở khung bình luận')"><i class="fa-regular fa-comment"></i> Bình luận</span>
-                        <span onclick="showToast('Đã chia sẻ bài viết')"><i class="fa-solid fa-share"></i> Chia sẻ</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function loadCommunityPosts() {
-            const feedContainer = document.getElementById('threadsFeedContainer');
-            db.collection('posts').orderBy('createdAt', 'desc').limit(20).get()
-                .then((snapshot) => {
-                    let html = '';
-                    if (snapshot.empty) {
-                        html = `<div class="thread-item" style="text-align:center; color:var(--text-muted);">Chưa có bài viết nào. Hãy là người đầu tiên chia sẻ lên bảng tin!</div>`;
-                    } else {
-                        snapshot.forEach((doc) => {
-                            html += renderPostCard(doc.data());
-                        });
-                    }
-                    feedContainer.innerHTML = html;
-                });
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function toggleMobileMenu() { document.getElementById('navLinksList').classList.toggle('active'); }
-        function closeMobileMenu() { document.getElementById('navLinksList').classList.remove('active'); }
     </script>
 </body>
 </html>
