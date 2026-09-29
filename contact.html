@@ -8,8 +8,8 @@
     <style>
         :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
-        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: 90px; }
+        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; }
         .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
@@ -31,7 +31,7 @@
             </ul>
         </div>
     </nav>
-    <section style="padding: 40px 1rem; max-width: 600px; margin: auto; text-align: center;">
+    <section style="padding: 60px 1rem; text-align: center;">
         <h2>Liên Hệ & Hỗ Trợ</h2>
         <p style="color: var(--text-muted); margin-top: 10px;">Hotline hỗ trợ trực tuyến: 0909097326</p>
     </section>
