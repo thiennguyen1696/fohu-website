@@ -5,18 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fohu - Mạng Xã Hội & Nền Tảng Đặt Lịch Sáng Tạo Hàng Đầu Việt Nam</title>
     <meta name="description" content="Nền tảng mạng xã hội kết nối trực tiếp Designer, Photographer, Editor, AI Artist và các giải pháp studio chuyên nghiệp tại Việt Nam.">
-    <meta name="keywords" content="fohu, social network, thợ chụp ảnh, editor video, designer, thuê studio, đặt lịch media">
-    <meta name="author" content="fohu Platform">
     
     <!-- Favicon logo chính thức FOHU -->
     <link rel="icon" type="image/png" href="fohu 2.png">
     
-    <!-- Open Graph SEO -->
-    <meta property="og:title" content="fohu - Mạng Xã Hội Sáng Tạo & Đặt Lịch Media">
-    <meta property="og:description" content="Kết nối nhanh chóng với hàng ngàn Designer, Photographer và Editor chuyên nghiệp.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80">
-    <meta property="og:type" content="website">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -254,11 +246,11 @@
         .thread-actions { display: flex; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
         .thread-actions span:hover { color: var(--primary); }
 
-        /* PROFILE LAYOUT */
+        /* PROFILE LAYOUT PERFECTED */
         .profile-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
         .profile-cover-box { height: 260px; border-radius: 16px; background-size: cover; background-position: center; background-color: #cbd5e1; position: relative; }
         .profile-identity-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
-        .profile-avatar-positioned { width: 130px; height: 130px; border-radius: 50%; border: 5px solid var(--bg-card); object-fit: cover; background: var(--bg-card); margin-top: -65px; margin-bottom: 12px; box-shadow: var(--shadow-md); }
+        .profile-avatar-positioned { width: 130px; height: 130px; border-radius: 50%; border: 5px solid var(--bg-card); object-fit: cover; background: var(--bg-card); margin-top: -65px; margin-bottom: 12px; box-shadow: var(--shadow-md); position: relative; z-index: 2; }
         .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
@@ -538,13 +530,13 @@
                     <span class="featured-badge vip">ĐỐI TÁC VIP</span>
                     <div>
                         <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
-                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: #d97706;">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--vip-gold);">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ</li>
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: #d97706;" onclick="openRegisterBoothModal('VIP')">Đăng ký Chuyên nghiệp</button>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--vip-gold);" onclick="openRegisterBoothModal('VIP')">Đăng ký Chuyên nghiệp</button>
                 </div>
             </div>
         </section>
@@ -613,7 +605,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (UPLOAD ẢNH CHUẨN UX/UI) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (ĐÃ TỐI ƯU URL ẢNH THAY CHO FILE UPLOAD TRÁNH QUÁ DUNG LƯỢNG) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -634,18 +626,12 @@
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
                 <div class="modal-field-group">
-                    <label>Ảnh đại diện (Avatar mới)</label>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <img id="previewAvatarModal" src="" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border);">
-                        <input type="file" id="avatarFileInput" accept="image/*" onchange="previewImageUpload(event, 'avatar')" style="font-size: 0.82rem;">
-                    </div>
+                    <label>Link Ảnh đại diện (Avatar URL)</label>
+                    <input type="url" id="editAvatarInput" placeholder="https://images.unsplash.com/photo-...">
                 </div>
                 <div class="modal-field-group">
-                    <label>Ảnh bìa (Cover Photo mới)</label>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <img id="previewCoverModal" src="" style="width: 70px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border);">
-                        <input type="file" id="coverFileInput" accept="image/*" onchange="previewImageUpload(event, 'cover')" style="font-size: 0.82rem;">
-                    </div>
+                    <label>Link Ảnh bìa (Cover Photo URL)</label>
+                    <input type="url" id="editCoverInput" placeholder="https://images.unsplash.com/photo-...">
                 </div>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
             </div>
@@ -734,44 +720,19 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
         
-        let tempAvatarBase64 = "";
-        let tempCoverBase64 = "";
-
         function openEditProfileModal() {
             if (!currentUser) return;
             document.getElementById('editNameInput').value = currentUser.displayName || '';
-            tempAvatarBase64 = "";
-            tempCoverBase64 = "";
-
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
                     document.getElementById('editBioInput').value = data.bio || '';
                     document.getElementById('editPhoneInput').value = data.phone || '';
-                    document.getElementById('previewAvatarModal').src = data.avatar || currentUser.photoURL;
-                    document.getElementById('previewCoverModal').src = data.coverUrl || 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&q=80';
+                    document.getElementById('editAvatarInput').value = data.avatar || '';
+                    document.getElementById('editCoverInput').value = data.coverUrl || '';
                 }
             });
             openModal('editProfileModal');
-        }
-
-        function previewImageUpload(event, type) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (type === 'avatar') {
-                        tempAvatarBase64 = e.target.result;
-                        document.getElementById('previewAvatarModal').src = tempAvatarBase64;
-                        showToast("Đã chọn ảnh đại diện mới!");
-                    } else if (type === 'cover') {
-                        tempCoverBase64 = e.target.result;
-                        document.getElementById('previewCoverModal').src = tempCoverBase64;
-                        showToast("Đã chọn ảnh bìa mới!");
-                    }
-                }
-                reader.readAsDataURL(file);
-            }
         }
 
         function saveUserProfileSettings() {
@@ -779,6 +740,8 @@
             const newName = document.getElementById('editNameInput').value.trim();
             const newBio = document.getElementById('editBioInput').value.trim();
             const newPhone = document.getElementById('editPhoneInput').value.trim();
+            const newAvatar = document.getElementById('editAvatarInput').value.trim();
+            const newCover = document.getElementById('editCoverInput').value.trim();
 
             let updateData = {
                 name: newName,
@@ -786,21 +749,19 @@
                 phone: newPhone
             };
 
-            if (tempAvatarBase64) {
-                updateData.avatar = tempAvatarBase64;
-                document.getElementById('loggedUserAvatar').src = tempAvatarBase64;
-            }
-            if (tempCoverBase64) {
-                updateData.coverUrl = tempCoverBase64;
-            }
+            if (newAvatar) updateData.avatar = newAvatar;
+            if (newCover) updateData.coverUrl = newCover;
 
             db.collection('users').doc(currentUser.uid).set(updateData, { merge: true }).then(() => {
                 closeModal('editProfileModal');
                 showToast("Đã lưu thay đổi thành công!");
                 loadUserProfileData();
+                if (newAvatar) {
+                    document.getElementById('loggedUserAvatar').src = newAvatar;
+                }
             }).catch((err) => {
                 console.error(err);
-                showToast("Lỗi lưu dữ liệu. Vui lòng thử lại!");
+                showToast("Lỗi lưu dữ liệu. Vui lòng kiểm tra lại!");
             });
         }
 
@@ -968,6 +929,7 @@
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
+                    if (data.name) document.getElementById('profileName').innerText = data.name;
                     document.getElementById('profileRoleBadge').innerText = data.role === 'Partner' ? 'Đối tác sáng tạo / Media' : 'Người dùng cá nhân';
                     document.getElementById('profileBio').innerText = data.bio || 'Chưa có tiểu sử cá nhân.';
                     document.getElementById('profilePhoneDisplay').innerText = data.phone || 'Chưa cập nhật SĐT';
@@ -1036,10 +998,11 @@
 
             db.collection('users').doc(currentUser.uid).get().then((userDoc) => {
                 const userAvatar = (userDoc.exists && userDoc.data().avatar) ? userDoc.data().avatar : (currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80');
+                const userName = (userDoc.exists && userDoc.data().name) ? userDoc.data().name : (currentUser.displayName || 'Thành viên fohu');
                 
                 db.collection('posts').add({
                     authorId: currentUser.uid,
-                    authorName: currentUser.displayName || 'Thành viên fohu',
+                    authorName: userName,
                     authorAvatar: userAvatar,
                     content: content,
                     mediaUrl: mediaUrl,
