@@ -3,26 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tin Tức & Xu Hướng Sáng Tạo - fohu</title>
-    <meta name="description" content="Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và xu hướng thiết kế mới nhất năm 2026.">
+    <title>Tin Tức, Thiết Bị & Thủ Thuật Sáng Tạo Media - fohu</title>
+    <meta name="description" content="Cập nhật xu hướng máy ảnh, máy quay mới nhất, thủ thuật chụp ảnh, quay video chuyên nghiệp và kỹ thuật dựng phim tối ưu traffic cao nhất hôm nay.">
     <link rel="icon" type="image/png" href="fohu 2.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-main: #f0f2f5;
+            --bg-card: #ffffff;
+            --dark: #111827;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(13, 148, 136, 0.12);
+            --font-serif: 'Playfair Display', serif;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
         body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
-        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
-        .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
+
+        /* Navbar chuẩn */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1440px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 1.5rem;
+        }
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-main); font-weight: 600;
+            font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px;
+        }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .blog-grid { max-width: 1200px; margin: 2rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; padding: 0 1rem; }
-        .blog-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
-        .blog-img { height: 180px; background-size: cover; background-position: center; }
-        .blog-body { padding: 1.25rem; }
+
+        /* Blog Grid Layout */
+        .blog-header { text-align: center; margin: 2rem auto 2.5rem; padding: 0 1rem; max-width: 800px; }
+        .blog-header h2 { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .blog-header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .blog-grid {
+            max-width: 1280px; margin: 0 auto 80px; padding: 0 1.5rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem;
+        }
+        .blog-card {
+            background: var(--bg-card); border-radius: 20px; overflow: hidden;
+            border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            transition: transform 0.25s ease, box-shadow 0.25s ease; cursor: pointer;
+            display: flex; flex-direction: column;
+        }
+        .blog-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+        .blog-img-box { height: 210px; width: 100%; background-size: cover; background-position: center; position: relative; }
+        .blog-tag-badge {
+            position: absolute; top: 12px; left: 12px; background: rgba(13, 148, 136, 0.9);
+            backdrop-filter: blur(4px); color: #fff; font-size: 0.72rem; font-weight: 800;
+            padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .blog-content-body { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+        .blog-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 0.75rem; }
+        .blog-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; }
+        .blog-meta-info { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+
+        /* Modal Đọc Bài Viết Chi Tiết */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); z-index: 2000; display: none;
+            align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-box {
+            background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 760px;
+            border-radius: 24px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
+            border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 2rem; overflow-y: auto; }
+        .modal-article-img { width: 100%; height: 320px; object-fit: cover; border-radius: 16px; margin-bottom: 1.5rem; }
+        .modal-article-text { font-size: 1rem; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; }
     </style>
 </head>
 <body>
+
     <nav>
         <div class="nav-container">
             <a href="index.html"><img src="fohu 2.png" alt="Logo" class="brand-logo-img"></a>
@@ -36,18 +114,166 @@
             </ul>
         </div>
     </nav>
-    <div style="text-align: center; margin-top: 2rem;">
-        <h2>Tin Tức & Xu Hướng Sáng Tạo</h2>
-        <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về ngành media.</p>
+
+    <div class="blog-header">
+        <h2>Tin Tức, Thiết Bị & Thủ Thuật Sáng Tạo</h2>
+        <p>Tổng hợp 10 chủ đề công nghệ máy ảnh, máy quay và kỹ thuật dựng phim đang thu hút traffic khủng nhất hôm nay.</p>
     </div>
-    <div class="blog-grid">
-        <article class="blog-card">
-            <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80');"></div>
-            <div class="blog-body">
-                <h3>Xu hướng nhiếp ảnh cảm xúc chân thực 2026</h3>
-                <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 6px;">Sự dịch chuyển từ ảnh dàn dựng sang candid tự nhiên.</p>
+
+    <!-- LƯỚI 10 BÀI VIẾT NỔI BẬT -->
+    <div class="blog-grid" id="blogGridContainer"></div>
+
+    <!-- MODAL ĐỌC BÁO CHI TIẾT -->
+    <div class="modal-overlay" id="blogDetailModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalBlogTitle" style="font-size: 1.2rem; font-weight: 800; padding-right: 20px;">Tiêu đề</h3>
+                <button onclick="closeModal()" style="border:none; background:none; cursor:pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
             </div>
-        </article>
+            <div class="modal-body">
+                <img id="modalBlogImg" src="" class="modal-article-img" alt="Article Image">
+                <div id="modalBlogContent" class="modal-article-text"></div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // DỮ LIỆU 10 BÀI VIẾT HOT NHẤT HÔM NAY
+        const hotArticles = [
+            {
+                id: 1,
+                tag: "Máy ảnh",
+                title: "Đánh giá chi tiết Sony A7V: Kỷ nguyên AI Autofocus thế hệ mới",
+                desc: "Phân tích những nâng cấp đột phá về khả năng lấy nét nhận diện chủ thể và dải tương phản động.",
+                img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80",
+                date: "Hôm nay • 5 phút đọc",
+                content: `Sony vừa chính thức đặt một cột mốc mới trong phân khúc máy ảnh mirrorless full-frame với dòng sản phẩm Sony A7V. Điểm ăn tiền lớn nhất trên phiên bản này không chỉ nằm ở cảm biến BSI-CMOS 33MP mới mà là con chip AI Processing Unit thế hệ thứ hai.\n\n1. Khả năng nhận diện thông minh vượt trội:\nKhác với các dòng máy trước, A7V có thể dự đoán chuyển động của vận động viên hoặc chim bay ngay cả khi vật thể bị che khuất một phần trong khung hình. Tốc độ tính toán của thuật toán giúp tỷ lệ lấy nét thành công lên tới 99%.\n\n2. Hiệu suất quay phim 8K Oversampling:\nĐối với nhà sáng tạo nội dung đa năng, khả năng quay 4K 60p không crop từ vùng cảm biến 7K mang lại độ nét cực kỳ sắc sảo, giảm thiểu hoàn toàn hiện tượng moiré.`
+            },
+            {
+                id: 2,
+                tag: "Thủ thuật",
+                title: "Bí quyết set up ánh sáng 3 điểm cực chuẩn cho Studio diện tích nhỏ",
+                desc: "Hướng dẫn tối ưu không gian hẹp nhưng vẫn tạo ra những khung hình cinematic chiều sâu.",
+                img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&q=80",
+                date: "Hôm nay • 4 phút đọc",
+                content: `Nhiều creator gặp khó khăn khi quay video tại các phòng làm việc nhỏ vì ánh sáng bị gắt và đổ bóng sâu vào tường. Dưới đây là công thức tối ưu:\n\n- Key Light (Đèn chính): Đặt góc 45 độ so với chủ thể, sử dụng softbox cầu lớn (ít nhất 65cm) để tán sáng mềm.\n- Fill Light (Đèn lấp đầy): Sử dụng một tấm hắt sáng màu trắng hoặc đèn LED panel công suất nhỏ đánh ngược vào tường trắng để tạo độ mở cho vùng tối.\n- Rim Light / Hair Light: Đặt phía sau lưng chủ thể, dùng gel màu cam hoặc xanh để tạo đường viền tách biệt chủ thể khỏi phông nền.`
+            },
+            {
+                id: 3,
+                tag: "Edit Video",
+                title: "Top 5 hiệu ứng chuyển cảnh (Transition) mượt mà giữ chân người xem TikTok/Reels",
+                desc: "Cách dựng phim giữ tỷ lệ Retention Rate trên 70% cho các video dạng ngắn.",
+                img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
+                date: "Hôm nay • 6 phút đọc",
+                content: `Trong thuật toán phân phối video ngắn hiện nay, 3 giây đầu tiên và tỷ lệ giữ chân (Retention) quyết định video có triệu view hay không.\n\n1. Whip Pan (Chuyển cảnh hất máy):\nTạo cú lắc máy nhanh giữa hai cảnh quay và ghép khớp chuyển động (match cut) trong Premiere hoặc CapCut.\n\n2. Sound Design Match:\nLuôn đi kèm hiệu ứng âm thanh (whoosh, hit, riser) tại điểm chuyển cảnh để đánh lừa thị giác và thính giác người xem, tạo cảm giác cực kỳ cao cấp.`
+            },
+            {
+                id: 4,
+                tag: "Máy quay",
+                title: "So sánh DJI Osmo Pocket 4 Pro và Sony ZV-E10 II: Chọn máy nào cho Vlogger?",
+                desc: "Cuộc chiến giữa sự nhỏ gọn bỏ túi tối đa và chất lượng cảm biến lớn thay được ống kính.",
+                img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80",
+                date: "Hôm nay • 7 phút đọc",
+                content: `Lựa chọn thiết bị quay vlog luôn là chủ đề bàn luận sôi nổi trên các diễn đàn công nghệ.\n\n- DJI Osmo Pocket 4 Pro:\nƯu điểm tuyệt đối về sự nhỏ gọn, chống rung cơ học 3 trục tích hợp sẵn, khởi động trong 1 giây. Phù hợp cho travel blogger thích sự linh hoạt.\n\n- Sony ZV-E10 II:\nLợi thế cảm biến APS-C lớn, khả năng thay đổi ống kính linh hoạt giúp xóa phông mù mịt và quay thiếu sáng xuất sắc hơn hẳn dòng máy bỏ túi.`
+            },
+            {
+                id: 5,
+                tag: "Chụp ảnh",
+                title: "Kỹ thuật đo sáng điểm (Spot Metering) và khóa nét để chụp ngược sáng nghệ thuật",
+                desc: "Bỏ túi ngay cách tạo ra những bức ảnh silhoutte và chân dung hoàng hôn rực rỡ.",
+                img: "https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=800&q=80",
+                date: "Hôm nay • 4 phút đọc",
+                content: `Chụp ngược sáng thường khiến bức ảnh bị tối mặt hoặc cháy sáng hậu cảnh. Để xử lý triệt để:\n\n1. Chuyển chế độ đo sáng sang Spot Metering (Đo sáng điểm).\n2. Khóa điểm đo sáng vào phần sáng nhất của bầu trời hoặc vùng rìa chủ thể.\n3. Sử dụng bù sáng (Exposure Compensation) giảm nhẹ từ -0.3 đến -0.7 EV để giữ lại độ sâu màu sắc hoàng hôn.`
+            },
+            {
+                id: 6,
+                tag: "Color Grading",
+                title: "Công thức giả lập màu phim Film Look chuẩn Kodak và Fujifilm trên CapCut & Premiere",
+                desc: "Biết cách tinh chỉnh Curve và HSL để video có màu sắc hoài cổ, ấm áp.",
+                img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
+                date: "Hôm nay • 5 phút đọc",
+                content: `Màu phim (Film emulation) đang thống trị các thước phim lifestyle.\n- Nâng nhẹ vùng shadow (bóng tối) lên một chút trên đường cong Tone Curve để tạo hiệu ứng phủ sương mờ đặc trưng.\n- Giảm độ bão hòa (Saturation) của màu đỏ cam và tăng nhẹ màu vàng ấm.\n- Thêm hiệu ứng Film Grain (Hạt phim) độ mịn 15% để hoàn thiện chất liệu hoài cổ.`
+            },
+            {
+                id: 7,
+                tag: "Thiết bị",
+                title: "Tại sao ống kính tiêu cự 35mm luôn được mệnh danh là 'vua của mọi góc nhìn'?",
+                desc: "Khám phá lý do các nhà làm phim tài liệu và nhiếp ảnh gia đường phố luôn trung thành với 35mm.",
+                img: "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80",
+                date: "Hôm nay • 5 phút đọc",
+                content: `Tiêu cự 35mm tái hiện góc nhìn rất gần với mắt người nhìn tự nhiên nhất. Không quá rộng như 24mm gây méo hình, cũng không quá bó hẹp như 85mm. 35mm giúp kể câu chuyện bối cảnh đi kèm cảm xúc nhân vật một cách trọn vẹn.`
+            },
+            {
+                id: 8,
+                tag: "Âm thanh",
+                title: "Bí quyết lọc tiếng ồn tạp âm môi trường bằng AI chỉ với 1 cú click",
+                desc: "Đánh giá các công cụ khử nhiễu âm thanh tốt nhất cho dân làm video ngoài trời.",
+                img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&q=80",
+                date: "Hôm nay • 4 phút đọc",
+                content: `Âm thanh tệ sẽ khiến 90% người xem rời bỏ video trong 5 giây đầu tiên. Việc ứng dụng các công cụ AI như Adobe Podcast Enhance hoặc tính năng Voice Isolation trên các phần mềm dựng phim giúp loại bỏ hoàn toàn tiếng gió, tiếng xe cộ mà vẫn giữ nguyên độ ấm tự nhiên của giọng nói.`
+            },
+            {
+                id: 9,
+                tag: "Xu hướng",
+                title: "Chiến lược sản xuất chuỗi Short-video triệu view cho dịch vụ Studio & Wedding",
+                desc: "Kế hoạch nội dung thực chiến giúp các media agency bùng nổ đơn hàng.",
+                img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+                date: "Hôm nay • 6 phút đọc",
+                content: `Thay vì chỉ đăng ảnh tĩnh thành phẩm, các studio hiện nay cần tập trung vào format 'Behind the Scenes' (Hậu trường vui nhộn), các clip biến hóa trước và sau khi makeup, kết hợp lồng tiếng chia sẻ kinh nghiệm cưới thực tế để thu hút khách hàng tiềm năng tự nhiên.`
+            },
+            {
+                id: 10,
+                tag: "Thủ thuật",
+                title: "Cách tối ưu hóa bitrate và khung hình khi xuất video đăng Facebook Reels & TikTok",
+                desc: "Khắc phục tình trạng video bị nén vỡ hạt, mờ nhòe sau khi upload lên mạng xã hội.",
+                img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
+                date: "Hôm nay • 4 phút đọc",
+                content: `Nhiều editor thường xuất file dung lượng quá lớn dẫn đến thuật toán nền tảng tự động nén mạnh tay gây vỡ hình. Thông số chuẩn vàng:\n- Độ phân giải: 1080x1920 (Vertical 9:16)\n- Tốc độ khung hình: 30fps hoặc 60fps\n- Định dạng: MP4 (H.264)\n- Bitrate mục tiêu: 15 - 20 Mbps với CBR hoặc VBR 2-pass.`
+            }
+        ];
+
+        // RENDER 10 BÀI VIẾT RA GIAO DIỆN
+        function renderBlogList() {
+            const grid = document.getElementById('blogGridContainer');
+            if (!grid) return;
+            let html = '';
+            hotArticles.forEach(item => {
+                html += `
+                    <article class="blog-card" onclick="openArticle(${item.id})">
+                        <div class="blog-img-box" style="background-image: url('${item.img}');">
+                            <span class="blog-tag-badge">${item.tag}</span>
+                        </div>
+                        <div class="blog-content-body">
+                            <div>
+                                <h3>${item.title}</h3>
+                                <p>${item.desc}</p>
+                            </div>
+                            <div class="blog-meta-info">
+                                <i class="fa-regular fa-clock"></i> <span>${item.date}</span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function openArticle(id) {
+            const article = hotArticles.find(a => a.id === id);
+            if (!article) return;
+            document.getElementById('modalBlogTitle').innerText = article.title;
+            document.getElementById('modalBlogImg').src = article.img;
+            document.getElementById('modalBlogContent').innerText = article.content;
+            document.getElementById('blogDetailModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('blogDetailModal').classList.remove('active');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderBlogList();
+        });
+    </script>
 </body>
 </html>
