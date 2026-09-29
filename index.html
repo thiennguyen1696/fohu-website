@@ -318,7 +318,7 @@
 
                 <!-- Badge User & Dropdown -->
                 <div class="user-logged-badge" id="userLoggedBadge" onclick="toggleUserDropdown(event)">
-                    <img src="" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar">
                     <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
                     <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 2px;"></i>
 
@@ -421,10 +421,10 @@
     <!-- TRANG CÁ NHÂN (PROFILE) -->
     <div id="page-profile" class="page-section">
         <div class="profile-container">
-            <div class="profile-cover-box" id="profileCoverBg"></div>
+            <div class="profile-cover-box" id="profileCoverBg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80');"></div>
             
             <div class="profile-identity-section">
-                <img src="" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
                     <div>
                         <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Tên User</h2>
@@ -606,7 +606,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (UPLOAD ẢNH TRỰC TIẾP TỪ THIẾT BỊ HOÀN HẢO) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -757,7 +757,6 @@
             openModal('editProfileModal');
         }
 
-        // HÀM XỬ LÝ NÉN ẢNH AN TOÀN TRÁNH TRÀN DUNG LƯỢNG
         function processImageFile(file, maxDim) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -780,7 +779,7 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.55);
                         resolve(compressedDataUrl);
                     }
                     img.onerror = reject;
@@ -800,7 +799,7 @@
             saveBtn.innerText = "Đang xử lý ảnh...";
 
             try {
-                const maxDim = (type === 'avatar') ? 250 : 600;
+                const maxDim = (type === 'avatar') ? 200 : 500;
                 const base64Img = await processImageFile(file, maxDim);
                 
                 if (type === 'avatar') {
@@ -827,7 +826,7 @@
             if (!file) return;
             try {
                 showToast("Đang đính kèm ảnh...");
-                const base64Img = await processImageFile(file, 800);
+                const base64Img = await processImageFile(file, 700);
                 uploadedPostFileUrl = base64Img;
                 document.getElementById('postFilePreviewName').innerText = "📁 Đã đính kèm: " + file.name;
                 showToast("Đã đính kèm thành công!");
@@ -1137,7 +1136,7 @@
                 <div class="thread-item">
                     <div class="thread-header">
                         <div class="thread-author-wrap">
-                            <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar">
+                            <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
                             <div>
                                 <div class="thread-author">${p.authorName}</div>
                                 <div class="thread-time">${timeStr}</div>
