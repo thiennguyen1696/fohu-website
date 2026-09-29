@@ -29,15 +29,12 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: 90px; }
 
-        /* Navbar chuẩn */
         nav {
             position: fixed; top: 0; width: 100%;
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
+            background: var(--bg-card); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
         }
         .nav-container {
             max-width: 1440px; margin: auto;
@@ -52,7 +49,6 @@
         }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
 
-        /* Blog Grid Layout */
         .blog-header { text-align: center; margin: 2rem auto 2.5rem; padding: 0 1rem; max-width: 800px; }
         .blog-header h2 { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
         .blog-header p { color: var(--text-muted); font-size: 0.95rem; }
@@ -72,7 +68,7 @@
         .blog-tag-badge {
             position: absolute; top: 12px; left: 12px; background: rgba(13, 148, 136, 0.9);
             backdrop-filter: blur(4px); color: #fff; font-size: 0.72rem; font-weight: 800;
-            padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 4px 10px; border-radius: 999px; text-transform: uppercase;
         }
         .blog-content-body { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
         .blog-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 0.75rem; }
@@ -89,14 +85,14 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .modal-box {
-            background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 760px;
+            background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 800px;
             border-radius: 24px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
             border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 2rem; overflow-y: auto; }
-        .modal-article-img { width: 100%; height: 320px; object-fit: cover; border-radius: 16px; margin-bottom: 1.5rem; }
-        .modal-article-text { font-size: 1rem; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; }
+        .modal-body { padding: 2.5rem; overflow-y: auto; }
+        .modal-article-img { width: 100%; height: 350px; object-fit: cover; border-radius: 16px; margin-bottom: 1.5rem; }
+        .modal-article-text { font-size: 1.02rem; line-height: 1.9; color: var(--text-main); white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -117,17 +113,16 @@
 
     <div class="blog-header">
         <h2>Tin Tức, Thiết Bị & Thủ Thuật Sáng Tạo</h2>
-        <p>Tổng hợp 10 chủ đề công nghệ máy ảnh, máy quay và kỹ thuật dựng phim đang thu hút traffic khủng nhất hôm nay.</p>
+        <p>Tổng hợp 10 bài viết chuyên sâu về máy ảnh, máy quay và kỹ thuật dựng phim xu hướng mới nhất.</p>
     </div>
 
-    <!-- LƯỚI 10 BÀI VIẾT NỔI BẬT -->
     <div class="blog-grid" id="blogGridContainer"></div>
 
     <!-- MODAL ĐỌC BÁO CHI TIẾT -->
     <div class="modal-overlay" id="blogDetailModal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 id="modalBlogTitle" style="font-size: 1.2rem; font-weight: 800; padding-right: 20px;">Tiêu đề</h3>
+                <h3 id="modalBlogTitle" style="font-size: 1.25rem; font-weight: 800; padding-right: 20px;">Tiêu đề</h3>
                 <button onclick="closeModal()" style="border:none; background:none; cursor:pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
@@ -138,101 +133,99 @@
     </div>
 
     <script>
-        // DỮ LIỆU 10 BÀI VIẾT HOT NHẤT HÔM NAY
         const hotArticles = [
             {
                 id: 1,
                 tag: "Máy ảnh",
-                title: "Đánh giá chi tiết Sony A7V: Kỷ nguyên AI Autofocus thế hệ mới",
-                desc: "Phân tích những nâng cấp đột phá về khả năng lấy nét nhận diện chủ thể và dải tương phản động.",
+                title: "Đánh giá chi tiết Sony A7V: Kỷ nguyên AI Autofocus thế hệ mới trong nhiếp ảnh thương mại",
+                desc: "Phân tích chuyên sâu những nâng cấp đột phá về cảm biến, chip xử lý thần kinh và khả năng lấy nét chớp nhoáng.",
                 img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80",
-                date: "Hôm nay • 5 phút đọc",
-                content: `Sony vừa chính thức đặt một cột mốc mới trong phân khúc máy ảnh mirrorless full-frame với dòng sản phẩm Sony A7V. Điểm ăn tiền lớn nhất trên phiên bản này không chỉ nằm ở cảm biến BSI-CMOS 33MP mới mà là con chip AI Processing Unit thế hệ thứ hai.\n\n1. Khả năng nhận diện thông minh vượt trội:\nKhác với các dòng máy trước, A7V có thể dự đoán chuyển động của vận động viên hoặc chim bay ngay cả khi vật thể bị che khuất một phần trong khung hình. Tốc độ tính toán của thuật toán giúp tỷ lệ lấy nét thành công lên tới 99%.\n\n2. Hiệu suất quay phim 8K Oversampling:\nĐối với nhà sáng tạo nội dung đa năng, khả năng quay 4K 60p không crop từ vùng cảm biến 7K mang lại độ nét cực kỳ sắc sảo, giảm thiểu hoàn toàn hiện tượng moiré.`
+                date: "Hôm nay • 6 phút đọc",
+                content: `Sony vừa chính thức thiết lập một tiêu chuẩn hoàn toàn mới trong phân khúc máy ảnh mirrorless full-frame chuyên nghiệp với sự ra mắt của Sony A7V. Không chỉ đơn thuần là bản nâng cấp vòng đời, chiếc máy ảnh này mang trong mình cuộc cách mạng thực sự về công nghệ trí tuệ nhân tạo áp dụng trực tiếp vào hệ thống lấy nét và xử lý hình ảnh.\n\n1. Sức mạnh vượt trội từ bộ xử lý AI thế hệ thứ hai\nKhác với các dòng máy tiền nhiệm, Sony A7V được trang bị một con chip chuyên biệt dành riêng cho việc học máy (Machine Learning). Chip này có khả năng nhận diện cấu trúc cơ thể người, chuyển động của động vật, côn trùng, xe cộ và thậm chí là dự đoán hướng di chuyển của chủ thể ngay cả khi bị che khuất hoàn toàn trong một khoảnh khắc ngắn.\n\n2. Hiệu suất quang học và cảm biến BSI-CMOS mới\nSở hữu cảm biến 33MP với công nghệ chiếu sáng sau (BSI), A7V mang lại dải tương phản động (Dynamic Range) lên tới 15 stops. Điều này giúp các nhiếp ảnh gia thương mại và dịch vụ cưới dễ dàng kéo chi tiết vùng tối (shadows) và bảo vệ vùng sáng (highlights) mà không lo bị nhiễu hạt hay bệt màu.\n\n3. Trải nghiệm thực tế và khả năng quay video\nBên cạnh chụp ảnh tĩnh xuất sắc, máy hỗ trợ quay phim độ phân giải 4K 60p Oversampling từ vùng cảm biến 7K, mang lại độ nét hoàn hảo. Hệ thống tản nhiệt mới cũng giúp máy hoạt động bền bỉ trong các buổi quay sự kiện kéo dài liên tục mà không gặp tình trạng quá nhiệt.`
             },
             {
                 id: 2,
                 tag: "Thủ thuật",
-                title: "Bí quyết set up ánh sáng 3 điểm cực chuẩn cho Studio diện tích nhỏ",
-                desc: "Hướng dẫn tối ưu không gian hẹp nhưng vẫn tạo ra những khung hình cinematic chiều sâu.",
+                title: "Bí quyết set up ánh sáng 3 điểm chuyên nghiệp cho Studio diện tích nhỏ tại nhà",
+                desc: "Hướng dẫn tối ưu không gian hẹp nhưng vẫn tạo ra những thước phim cinematic có chiều sâu nghệ thuật.",
                 img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&q=80",
-                date: "Hôm nay • 4 phút đọc",
-                content: `Nhiều creator gặp khó khăn khi quay video tại các phòng làm việc nhỏ vì ánh sáng bị gắt và đổ bóng sâu vào tường. Dưới đây là công thức tối ưu:\n\n- Key Light (Đèn chính): Đặt góc 45 độ so với chủ thể, sử dụng softbox cầu lớn (ít nhất 65cm) để tán sáng mềm.\n- Fill Light (Đèn lấp đầy): Sử dụng một tấm hắt sáng màu trắng hoặc đèn LED panel công suất nhỏ đánh ngược vào tường trắng để tạo độ mở cho vùng tối.\n- Rim Light / Hair Light: Đặt phía sau lưng chủ thể, dùng gel màu cam hoặc xanh để tạo đường viền tách biệt chủ thể khỏi phông nền.`
+                date: "Hôm nay • 5 phút đọc",
+                content: `Việc sở hữu một không gian studio nhỏ hẹp tại nhà không còn là rào cản lớn đối với các nhà sáng tạo nội dung nếu bạn nắm vững nguyên lý thiết lập ánh sáng 3 điểm (Three-Point Lighting) tối ưu.\n\n1. Định vị đèn chính (Key Light)\nĐèn chính nên được đặt lệch góc từ 45 đến 60 độ so với chủ thể. Để ánh sáng không bị gắt và tạo bóng đổ quá cứng, hãy sử dụng một softbox cầu (Lantern Softbox) có đường kính từ 65cm trở lên. Ánh sáng tản đều sẽ giúp làn da mịn màng tự nhiên.\n\n2. Xử lý ánh sáng bổ trợ (Fill Light)\nTrong phòng nhỏ, ánh sáng từ đèn chính thường sẽ dội ngược lại các bức tường trắng. Tuy nhiên, để kiểm soát vùng tối bên còn lại của khuôn mặt, bạn nên dùng một tấm hắt sáng màu trắng hoặc một đèn LED panel phụ đánh công suất nhỏ để cân bằng sáng tối.\n\n3. Tạo điểm nhấn với Rim Light (Đèn viền)\nĐây là chìa khóa quan trọng nhất giúp tách biệt chủ thể ra khỏi phông nền tối, mang lại cảm giác không gian ba chiều vô cùng cao cấp. Đặt đèn chiếu thẳng vào sau gáy chủ thể, kết hợp gel màu cam hoặc xanh dương nhẹ để tăng tính thẩm mỹ cho video.`
             },
             {
                 id: 3,
                 tag: "Edit Video",
-                title: "Top 5 hiệu ứng chuyển cảnh (Transition) mượt mà giữ chân người xem TikTok/Reels",
-                desc: "Cách dựng phim giữ tỷ lệ Retention Rate trên 70% cho các video dạng ngắn.",
+                title: "Top 5 hiệu ứng chuyển cảnh và âm thanh giúp giữ chân người xem TikTok/Reels trên 70%",
+                desc: "Khám phá các kỹ thuật dựng phim ngắn tối ưu hóa thuật toán phân phối video của các nền tảng mạng xã hội.",
                 img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
-                date: "Hôm nay • 6 phút đọc",
-                content: `Trong thuật toán phân phối video ngắn hiện nay, 3 giây đầu tiên và tỷ lệ giữ chân (Retention) quyết định video có triệu view hay không.\n\n1. Whip Pan (Chuyển cảnh hất máy):\nTạo cú lắc máy nhanh giữa hai cảnh quay và ghép khớp chuyển động (match cut) trong Premiere hoặc CapCut.\n\n2. Sound Design Match:\nLuôn đi kèm hiệu ứng âm thanh (whoosh, hit, riser) tại điểm chuyển cảnh để đánh lừa thị giác và thính giác người xem, tạo cảm giác cực kỳ cao cấp.`
+                date: "Hôm nay • 7 phút đọc",
+                content: `Tỷ lệ giữ chân người xem (Retention Rate) chính là yếu tố quyết định sự thành bại của một video ngắn dạng dọc trên các nền tảng như TikTok, Instagram Reels hay YouTube Shorts.\n\n1. Kỹ thuật Match Cut và Whip Pan\nChuyển cảnh bằng cách hất máy tốc độ cao kết hợp đồng bộ nhịp điệu hành động của nhân vật giúp não bộ người xem không bị ngắt quãng nhịp thị giác.\n\n2. Sức mạnh của Sound Design (Thiết kế âm thanh)\nMỗi lần chuyển cảnh hoặc xuất hiện một chữ text quan trọng, hãy lồng ghép các hiệu ứng âm thanh như whoosh, hit, riser. Âm thanh kích thích thính giác sẽ giữ chân người xem ở lại lâu hơn gấp đôi so với chỉ dùng nhạc nền đơn thuần.\n\n3. Nhịp độ cắt dựng (Pacing)\nCứ sau từ 2 đến 3 giây, khung hình bắt buộc phải có sự thay đổi về góc quay, zoom in/out hoặc chèn B-roll minh họa để xóa bỏ hoàn toàn cảm giác nhàm chán.`
             },
             {
                 id: 4,
                 tag: "Máy quay",
-                title: "So sánh DJI Osmo Pocket 4 Pro và Sony ZV-E10 II: Chọn máy nào cho Vlogger?",
-                desc: "Cuộc chiến giữa sự nhỏ gọn bỏ túi tối đa và chất lượng cảm biến lớn thay được ống kính.",
+                title: "So sánh chi tiết DJI Osmo Pocket 4 Pro và Sony ZV-E10 II: Đâu là lựa chọn tối ưu cho Vlogger?",
+                desc: "Phân tích ưu nhược điểm giữa sự nhỏ gọn bỏ túi tuyệt đối và sức mạnh của cảm biến lớn thay đổi ống kính.",
                 img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80",
-                date: "Hôm nay • 7 phút đọc",
-                content: `Lựa chọn thiết bị quay vlog luôn là chủ đề bàn luận sôi nổi trên các diễn đàn công nghệ.\n\n- DJI Osmo Pocket 4 Pro:\nƯu điểm tuyệt đối về sự nhỏ gọn, chống rung cơ học 3 trục tích hợp sẵn, khởi động trong 1 giây. Phù hợp cho travel blogger thích sự linh hoạt.\n\n- Sony ZV-E10 II:\nLợi thế cảm biến APS-C lớn, khả năng thay đổi ống kính linh hoạt giúp xóa phông mù mịt và quay thiếu sáng xuất sắc hơn hẳn dòng máy bỏ túi.`
+                date: "Hôm nay • 8 phút đọc",
+                content: `Cuộc cạnh tranh trong phân khúc máy quay vlog luôn vô cùng khốc liệt giữa các dòng máy tích hợp chống rung cơ học và máy ảnh mirrorless truyền thống.\n\n1. DJI Osmo Pocket 4 Pro: Tiện lợi và Linh hoạt\nSở hữu gimbal chống rung cơ học 3 trục tích hợp sẵn, chiếc máy này có thể khởi động và sẵn sàng quay phim chỉ trong vòng chưa đầy 1 giây. Thiết kế siêu nhỏ gọn giúp bạn dễ dàng quay vlog đường phố mà không gây chú ý.\n\n2. Sony ZV-E10 II: Sức mạnh điện ảnh và Xóa phông\nVới cảm biến APS-C lớn, thiết bị này cho phép bạn thay đổi ống kính linh hoạt, tạo ra hiệu ứng xóa phông mờ mịt cực kỳ nghệ thuật và khả năng quay thiếu sáng vượt trội hơn hẳn các dòng máy bỏ túi cảm biến nhỏ.\n\n3. Lời khuyên lựa chọn\nNếu bạn chuyên làm vlog du lịch, đi bộ nhiều và cần sự gọn nhẹ tối đa, hãy chọn Pocket 4 Pro. Ngược lại, nếu bạn làm nội dung phỏng vấn studio, review sản phẩm cần chất lượng hình ảnh cao cấp, ZV-E10 II là sự đầu tư hoàn hảo.`
             },
             {
                 id: 5,
                 tag: "Chụp ảnh",
-                title: "Kỹ thuật đo sáng điểm (Spot Metering) và khóa nét để chụp ngược sáng nghệ thuật",
-                desc: "Bỏ túi ngay cách tạo ra những bức ảnh silhoutte và chân dung hoàng hôn rực rỡ.",
+                title: "Nghệ thuật chụp ảnh ngược sáng (Backlight Photography): Làm chủ đo sáng và khóa nét",
+                desc: "Hướng dẫn toàn tập cách tạo ra những bức ảnh nghệ thuật silhoutte và chân dung hoàng hôn rực rỡ không bị tối mặt.",
                 img: "https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=800&q=80",
-                date: "Hôm nay • 4 phút đọc",
-                content: `Chụp ngược sáng thường khiến bức ảnh bị tối mặt hoặc cháy sáng hậu cảnh. Để xử lý triệt để:\n\n1. Chuyển chế độ đo sáng sang Spot Metering (Đo sáng điểm).\n2. Khóa điểm đo sáng vào phần sáng nhất của bầu trời hoặc vùng rìa chủ thể.\n3. Sử dụng bù sáng (Exposure Compensation) giảm nhẹ từ -0.3 đến -0.7 EV để giữ lại độ sâu màu sắc hoàng hôn.`
+                date: "Hôm nay • 6 phút đọc",
+                content: `Chụp ảnh ngược sáng luôn mang lại hiệu ứng thị giác mạnh mẽ nhưng đồng thời cũng là thử thách lớn đối với các nhiếp ảnh gia do hiện tượng lóa sáng (flare) và mất chi tiết vùng tối.\n\n1. Thiết lập chế độ đo sáng điểm (Spot Metering)\nThay vì sử dụng đo sáng toàn khung hình khiến máy ảnh tự động cân bằng và làm tối đen chủ thể, hãy chuyển sang chế độ Spot Metering và đo sáng trực tiếp vào phần da sáng của nhân vật hoặc rìa ánh sáng rực rỡ.\n\n2. Kiểm soát hiện tượng Lens Flare\nSử dụng hood chống chói hoặc khéo léo để một phần thân cây, mái nhà che bớt một phần nguồn sáng trực tiếp chiếu vào thấu kính sẽ giúp bức ảnh giữ được độ tương phản cao, tránh bị mờ sương.\n\n3. Xử lý hậu kỳ thông minh\nKhi chụp định dạng RAW, bạn có thể dễ dàng kéo chi tiết vùng bóng râm (shadows) lên mà không lo bị nhiễu hạt nặng nhờ vào dải tần nhạy sáng của các dòng máy ảnh hiện đại.`
             },
             {
                 id: 6,
                 tag: "Color Grading",
-                title: "Công thức giả lập màu phim Film Look chuẩn Kodak và Fujifilm trên CapCut & Premiere",
-                desc: "Biết cách tinh chỉnh Curve và HSL để video có màu sắc hoài cổ, ấm áp.",
+                title: "Công thức giả lập màu phim Film Look cổ điển chuẩn Kodak & Fujifilm cho Editor",
+                desc: "Bí quyết tinh chỉnh thông số màu sắc, đường cong Tone Curve và hạt film để mang lại chất liệu hoài cổ.",
                 img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
-                date: "Hôm nay • 5 phút đọc",
-                content: `Màu phim (Film emulation) đang thống trị các thước phim lifestyle.\n- Nâng nhẹ vùng shadow (bóng tối) lên một chút trên đường cong Tone Curve để tạo hiệu ứng phủ sương mờ đặc trưng.\n- Giảm độ bão hòa (Saturation) của màu đỏ cam và tăng nhẹ màu vàng ấm.\n- Thêm hiệu ứng Film Grain (Hạt phim) độ mịn 15% để hoàn thiện chất liệu hoài cổ.`
+                date: "Hôm nay • 6 phút đọc",
+                content: `Màu phim analog luôn sở hữu sức hút kỳ lạ đối với người xem nhờ sự ấm áp, hoài niệm và độ sâu màu sắc đặc trưng.\n\n1. Xử lý đường cong Tone Curve\nĐể tạo ra chất màu phim kinh điển, hãy nâng nhẹ điểm đen (black point) trên biểu đồ Tone Curve lên một chút. Thao tác này tạo ra hiệu ứng phủ sương mờ (matte look) rất được ưa chuộng trong các video lifestyle hiện đại.\n\n2. Cân chỉnh kênh màu HSL\nGiảm độ bão hòa của các sắc độ màu đỏ rực, đồng thời dịch chuyển tông màu da (skin tone) hơi ngả vàng ấm để tạo cảm giác thân thiện, hoài cổ.\n\n3. Hiệu ứng Film Grain\nThêm một lớp hạt film mịn với tỷ lệ vừa phải sẽ che lấp đi cảm giác kỹ thuật số sắc lạnh của cảm biến máy ảnh, hoàn thiện vẻ đẹp hoài niệm cho thước phim.`
             },
             {
                 id: 7,
                 tag: "Thiết bị",
-                title: "Tại sao ống kính tiêu cự 35mm luôn được mệnh danh là 'vua của mọi góc nhìn'?",
-                desc: "Khám phá lý do các nhà làm phim tài liệu và nhiếp ảnh gia đường phố luôn trung thành với 35mm.",
+                title: "Khám phá tiêu cự 35mm: 'Vua của mọi góc nhìn' trong nhiếp ảnh đường phố và tài liệu",
+                desc: "Lý do vì sao các nhiếp ảnh gia huyền thoại luôn coi ống kính 35mm là người bạn đồng hành tin cậy nhất.",
                 img: "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80",
                 date: "Hôm nay • 5 phút đọc",
-                content: `Tiêu cự 35mm tái hiện góc nhìn rất gần với mắt người nhìn tự nhiên nhất. Không quá rộng như 24mm gây méo hình, cũng không quá bó hẹp như 85mm. 35mm giúp kể câu chuyện bối cảnh đi kèm cảm xúc nhân vật một cách trọn vẹn.`
+                content: `Trong thế giới quang học, tiêu cự 35mm từ lâu đã chiếm một vị thế độc tôn nhờ khả năng cân bằng hoàn hảo giữa góc nhìn bao quát bối cảnh và cảm xúc chân thực của nhân vật.\n\n1. Góc nhìn chân thực gần giống mắt người\nKhác với tiêu cự 24mm dễ gây méo hình ở các góc hoặc 50mm đôi khi quá bó hẹp, 35mm tái hiện không gian xung quanh một cách tự nhiên nhất, giúp người xem có cảm giác như họ đang trực tiếp có mặt tại hiện trường.\n\n2. Tính cơ động cao\nMột chiếc máy ảnh nhỏ gọn gắn ống kính 35mm khẩu độ lớn (f/1.4 hoặc f/2) là thứ vũ khí hoàn hảo cho nhiếp ảnh đường phố, du lịch và làm phim tài liệu đời thực.`
             },
             {
                 id: 8,
                 tag: "Âm thanh",
-                title: "Bí quyết lọc tiếng ồn tạp âm môi trường bằng AI chỉ với 1 cú click",
-                desc: "Đánh giá các công cụ khử nhiễu âm thanh tốt nhất cho dân làm video ngoài trời.",
+                title: "Cẩm nang khử nhiễu tạp âm môi trường bằng AI giúp giọng nói trong trẻo như thu âm studio",
+                desc: "Đánh giá hiệu quả của các công cụ lọc tiếng gió, tiếng xe cộ tiên tiến nhất dành cho nhà sáng tạo.",
                 img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&q=80",
-                date: "Hôm nay • 4 phút đọc",
-                content: `Âm thanh tệ sẽ khiến 90% người xem rời bỏ video trong 5 giây đầu tiên. Việc ứng dụng các công cụ AI như Adobe Podcast Enhance hoặc tính năng Voice Isolation trên các phần mềm dựng phim giúp loại bỏ hoàn toàn tiếng gió, tiếng xe cộ mà vẫn giữ nguyên độ ấm tự nhiên của giọng nói.`
+                date: "Hôm nay • 5 phút đọc",
+                content: `Một video có hình ảnh sắc nét đến đâu nhưng âm thanh bị vọng, lẫn tiếng ồn xe cộ chắc chắn sẽ bị người xem bỏ qua ngay lập tức.\n\n1. Sức mạnh của công nghệ AI Audio Enhancement\nCác mô hình AI hiện nay có khả năng phân biệt cực kỳ chính xác giữa tần số giọng nói con người và tạp âm môi trường xung quanh.\n\n2. Quy trình xử lý tối ưu\nChỉ cần tải tệp âm thanh gốc lên các công cụ trực tuyến hoặc sử dụng plugin tích hợp sẵn trên Premiere Pro, hệ thống sẽ tự động tái tạo lại tần số bị thiếu, mang lại chất giọng dày dặn, ấm áp như được thu trực tiếp trong phòng thu cách âm chuyên nghiệp.`
             },
             {
                 id: 9,
                 tag: "Xu hướng",
-                title: "Chiến lược sản xuất chuỗi Short-video triệu view cho dịch vụ Studio & Wedding",
-                desc: "Kế hoạch nội dung thực chiến giúp các media agency bùng nổ đơn hàng.",
+                title: "Chiến lược sản xuất chuỗi Short-video triệu view giúp Studio áo cưới và Media Agency bùng nổ doanh số",
+                desc: "Kế hoạch nội dung thực chiến biến khách hàng tiềm năng thành fan trung thành thông qua các nền tảng ngắn.",
                 img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-                date: "Hôm nay • 6 phút đọc",
-                content: `Thay vì chỉ đăng ảnh tĩnh thành phẩm, các studio hiện nay cần tập trung vào format 'Behind the Scenes' (Hậu trường vui nhộn), các clip biến hóa trước và sau khi makeup, kết hợp lồng tiếng chia sẻ kinh nghiệm cưới thực tế để thu hút khách hàng tiềm năng tự nhiên.`
+                date: "Hôm nay • 7 phút đọc",
+                content: `Ngành dịch vụ cưới hỏi và sản xuất truyền thông đang chứng kiến sự chuyển dịch mạnh mẽ sang hình thức marketing qua video ngắn.\n\n1. Khai thác nội dung Hậu trường (Behind the Scenes)\nKhách hàng hiện đại rất thích xem những khoảnh khắc tự nhiên, các tình huống vui nhộn hoặc sự tỉ mỉ của thợ makeup và thợ chụp hình trong suốt buổi chụp.\n\n2. Kịch bản 'Biến hóa thần kỳ'\nSử dụng công thức quay video góc rộng trước khi chỉnh sửa và chuyển cảnh mượt mà sang thành phẩm lung linh cuối cùng sẽ tạo ra hiệu ứng kích thích tò mò cực lớn, giúp tăng tương tác và chia sẻ tự nhiên.`
             },
             {
                 id: 10,
                 tag: "Thủ thuật",
-                title: "Cách tối ưu hóa bitrate và khung hình khi xuất video đăng Facebook Reels & TikTok",
-                desc: "Khắc phục tình trạng video bị nén vỡ hạt, mờ nhòe sau khi upload lên mạng xã hội.",
+                title: "Bảng thông số vàng xuất video chuẩn nét không bị nén vỡ hạt trên Facebook Reels & TikTok",
+                desc: "Giải mã các thiết lập xuất file Premiere, CapCut để giữ nguyên vẹn chất lượng hình ảnh sắc sảo sau khi đăng tải.",
                 img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
-                date: "Hôm nay • 4 phút đọc",
-                content: `Nhiều editor thường xuất file dung lượng quá lớn dẫn đến thuật toán nền tảng tự động nén mạnh tay gây vỡ hình. Thông số chuẩn vàng:\n- Độ phân giải: 1080x1920 (Vertical 9:16)\n- Tốc độ khung hình: 30fps hoặc 60fps\n- Định dạng: MP4 (H.264)\n- Bitrate mục tiêu: 15 - 20 Mbps với CBR hoặc VBR 2-pass.`
+                date: "Hôm nay • 5 phút đọc",
+                content: `Nhiều editor thường gặp phải tình trạng video vừa xuất ra máy tính rất đẹp nhưng cứ đăng lên Facebook Reels hay TikTok là bị mờ nhòe, vỡ hạt.\n\n1. Thông số xuất file chuẩn mực\n- Độ phân giải: 1080 x 1920 pixels (Tỷ lệ dọc 9:16).\n- Tốc độ khung hình: 30fps hoặc 60fps tùy thuộc vào chuyển động gốc của cảnh quay.\n- Định dạng: H.264 hoặc H.265 (MP4).\n\n2. Quản lý Bitrate thông minh\nKhông nên đẩy bitrate lên quá cao vì các thuật toán nén của nền tảng sẽ tự động bóp nghẹt file của bạn. Mức bitrate tối ưu dao động trong khoảng từ 15 Mbps đến 20 Mbps với thiết lập VBR 2-pass là lựa chọn hoàn hảo giúp video vừa nét vừa nhẹ nhàng tải lên.`
             }
         ];
 
-        // RENDER 10 BÀI VIẾT RA GIAO DIỆN
         function renderBlogList() {
             const grid = document.getElementById('blogGridContainer');
             if (!grid) return;
