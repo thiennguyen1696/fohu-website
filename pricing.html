@@ -4,25 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trở Thành Đối Tác & Bảng Giá - fohu</title>
-    <meta name="description" content="Lựa chọn gói thành viên Bán Chuyên hoặc Premium để mở gian hàng và nhận đơn đặt lịch trên fohu.">
+    <meta name="description" content="Lựa chọn gói thành viên Không Chuyên, Bán Chuyên hoặc Premium để mở gian hàng, nhận đơn đặt lịch và sở hữu huy hiệu định danh độc quyền trên fohu.">
     <link rel="icon" type="image/png" href="fohu 2.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK v9 (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <style>
-        :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --premium-gold: #d97706; --font-main: 'Inter', sans-serif; }
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-main: #f0f2f5;
+            --bg-card: #ffffff;
+            --dark: #111827;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(13, 148, 136, 0.12);
+            --premium-gold: #d97706;
+            --standard-gem: #06b6d4;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
         body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
+
+        /* Toast Notification */
+        #toastNotification {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
+            font-size: 0.88rem; font-weight: 600; z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px;
+        }
+        #toastNotification.show { transform: translateX(-50%) translateY(0); }
+
         nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
         .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .pricing-grid { max-width: 1160px; margin: 3rem auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; padding: 0 1rem; }
-        .pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; text-decoration: none; cursor: pointer; border: none; background: var(--primary); color: #fff; width: 100%; }
+
+        .pricing-grid { max-width: 1160px; margin: 2rem auto 6px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; padding: 0 1rem; }
+        .pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md); position: relative; }
+        .pricing-card.featured { border: 2px solid var(--primary); box-shadow: var(--shadow-md); }
+        .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .featured-badge.premium { background: var(--premium-gold); }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; text-decoration: none; cursor: pointer; border: none; background: var(--primary); color: #fff; width: 100%; transition: all 0.2s; }
+        .btn:hover { opacity: 0.9; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
+        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 1.5rem; text-align: center; }
     </style>
 </head>
 <body>
+
+    <div id="toastNotification">
+        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+        <span id="toastMsg">Thành công!</span>
+    </div>
+
     <nav>
         <div class="nav-container">
             <a href="index.html"><img src="fohu 2.png" alt="Logo" class="brand-logo-img"></a>
@@ -36,23 +90,128 @@
             </ul>
         </div>
     </nav>
-    <div style="text-align: center; margin-top: 3rem;">
+
+    <div style="text-align: center; margin-top: 2rem;">
         <h2>Trở Thành Đối Tác FOHU</h2>
         <p style="color: var(--text-muted);">Lựa chọn gói phù hợp để mở gian hàng và vinh danh thương hiệu của bạn.</p>
     </div>
+
+    <!-- BẢNG 3 GÓI ĐẦY ĐỦ -->
     <div class="pricing-grid">
         <div class="pricing-card">
-            <h3>Bán Chuyên (Standard)</h3>
-            <div style="font-size: 2rem; font-weight: 800; color: var(--primary); margin: 1rem 0;">99.000 đ / tháng</div>
-            <p>Hiển thị đầy đủ SĐT, Zalo và sở hữu Huy hiệu Kim cương 💎</p>
-            <button class="btn" style="margin-top: 1.5rem;">Đăng Ký Ngay</button>
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Không Chuyên</h3>
+                <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0;">0 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ vĩnh viễn</span></div>
+                <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Tạo Hồ sơ cá nhân cơ bản</li>
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);" onclick="openCheckoutModal('Không Chuyên', 0, 'Personal')">Đăng ký Không Chuyên</button>
         </div>
-        <div class="pricing-card" style="border: 2px solid var(--premium-gold);">
-            <h3>Chuyên Nghiệp (Premium)</h3>
-            <div style="font-size: 2rem; font-weight: 800; color: var(--premium-gold); margin: 1rem 0;">149.000 đ / tháng</div>
-            <p>Mở khóa toàn bộ đặc quyền, không giới hạn portfolio và Huy hiệu Vương miện 👑</p>
-            <button class="btn" style="background: var(--premium-gold); margin-top: 1.5rem;">Đăng Ký Premium</button>
+
+        <div class="pricing-card">
+            <span class="featured-badge" style="background: var(--standard-gem);">Đối tác Standard</span>
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Bán Chuyên</h3>
+                <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--standard-gem);">99.000 đ <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo liên hệ</li>
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Kim cương 💎</strong></li>
+                </ul>
+            </div>
+            <button class="btn" style="background: var(--standard-gem);" onclick="openCheckoutModal('Bán Chuyên (Standard)', 99000, 'Partner')">Đăng ký Bán Chuyên</button>
+        </div>
+
+        <div class="pricing-card featured">
+            <span class="featured-badge premium">ĐỐI TÁC PREMIUM</span>
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
+                <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--premium-gold);">149.000 đ <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ</li>
+                    <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Vương miện 👑</strong></li>
+                </ul>
+            </div>
+            <button class="btn" style="background: var(--premium-gold);" onclick="openCheckoutModal('Chuyên nghiệp (Premium)', 149000, 'VIP')">Đăng ký Premium</button>
         </div>
     </div>
+
+    <!-- MODAL THANH TOÁN QR CODE -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="checkoutModalTitle">Thanh Toán Gói Dịch Vụ</h3>
+                <button onclick="closeModal('checkoutModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">Quét mã QR qua ứng dụng Ngân hàng để thanh toán tự động.</p>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; display: inline-block; border: 1px solid var(--border); margin-bottom: 15px;">
+                    <img src="" alt="QR Code" style="width: 180px; height: 180px; object-fit: contain;" id="checkoutQrImg">
+                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 5px;">Nội dung chuyển khoản:</div>
+                <div id="checkoutSyntaxCode" style="background: var(--primary-light); color: var(--primary); padding: 8px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; margin-bottom: 20px;">FOHU UID</div>
+                <button class="btn" style="background: #10b981;" onclick="confirmPaymentSuccess()">Đã Chuyển Khoản & Kích Hoạt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
+            authDomain: "fohu-platform.firebaseapp.com",
+            projectId: "fohu-platform",
+            storageBucket: "fohu-platform.firebasestorage.app",
+            messagingSenderId: "696328353651",
+            appId: "1:696328353651:web:8add8d582b366c12ccf706"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        let pendingUpgradeRole = 'Personal';
+        function openCheckoutModal(packageName, amount, roleKey) {
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                showToast("Vui lòng đăng nhập từ trang chủ trước khi đăng ký!");
+                return;
+            }
+            pendingUpgradeRole = roleKey;
+            document.getElementById('checkoutModalTitle').innerText = "Thanh toán: " + packageName;
+            const syntax = "FOHU " + user.uid.substring(0, 6).toUpperCase() + " " + roleKey;
+            document.getElementById('checkoutSyntaxCode').innerText = syntax;
+            
+            const qrUrl = `https://api.vietqr.io/image/970422-0388277265-xxxx.jpg?amount=${amount}&addInfo=${encodeURIComponent(syntax)}&accountName=NGUYEN%20TRUONG%20HOANG%20THIEN`;
+            document.getElementById('checkoutQrImg').src = qrUrl;
+            
+            openModal('checkoutModal');
+        }
+
+        async function confirmPaymentSuccess() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+            try {
+                showToast("Đang xác thực giao dịch...");
+                await db.collection('users').doc(user.uid).set({
+                    role: pendingUpgradeRole
+                }, { merge: true });
+
+                closeModal('checkoutModal');
+                showToast("Thanh toán thành công! Đã kích hoạt gói đối tác.");
+            } catch (err) {
+                console.error(err);
+                showToast("Lỗi kích hoạt!");
+            }
+        }
+    </script>
 </body>
 </html>
