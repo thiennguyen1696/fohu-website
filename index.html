@@ -255,10 +255,6 @@
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
 
-        /* CUSTOM FILE UPLOAD STYLING */
-        .custom-file-upload { border: 2px dashed var(--border); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg-main); font-size: 0.85rem; transition: border-color 0.2s; }
-        .custom-file-upload:hover { border-color: var(--primary); }
-
         /* BACKSTAGE ADMIN */
         .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
         .admin-table th, .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
@@ -399,13 +395,14 @@
 
             <div class="post-box" id="postCreationBox" style="display: none;">
                 <textarea id="postContentInput" placeholder="Hôm nay bạn có tác phẩm hoặc câu chuyện gì muốn chia sẻ cùng cộng đồng?"></textarea>
-                <div id="mediaInputContainer" style="display: none; margin-bottom: 10px;">
-                    <input type="file" id="postMediaFileInput" accept="image/*,video/*" onchange="previewPostFile(event)" style="font-size: 0.85rem;">
-                    <div id="postFilePreviewName" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;"></div>
-                </div>
+                
+                <!-- Ẩn file input gốc, kích hoạt trực tiếp bằng nút Ảnh/Video -->
+                <input type="file" id="postMediaFileInput" accept="image/*,video/*" style="display: none;" onchange="handlePostFileSelect(event)">
+                <div id="postFilePreviewName" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 8px;"></div>
+
                 <div class="post-toolbar">
                     <div class="post-tools-left">
-                        <button class="ig-tool-btn" onclick="toggleMediaInput()"><i class="fa-regular fa-image" style="color: #10b981;"></i> Ảnh / Video</button>
+                        <button class="ig-tool-btn" onclick="document.getElementById('postMediaFileInput').click()"><i class="fa-regular fa-image" style="color: #10b981;"></i> Ảnh / Video</button>
                         <button class="ig-tool-btn" onclick="promptCheckin()"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Check-in</button>
                         <button class="ig-tool-btn" onclick="showToast('Đã gắn thẻ danh mục portfolio')"><i class="fa-solid fa-palette" style="color: #f59e0b;"></i> Portfolio</button>
                     </div>
@@ -610,7 +607,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHO PHÉP UPLOAD ẢNH TỪ THIẾT BỊ HOẶC CHỌN KHO ẢNH MẪU ĐỂ KHÔNG BỊ TRÀN FIRESTORE) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (ẨN NÚT CHỌN TỆP THÔ CỨNG, THAY BẰNG NÚT BẤM TRỰC QUAN) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -630,14 +627,25 @@
                     <label>Số điện thoại liên hệ</label>
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
+
+                <!-- Ẩn input file gốc, kích hoạt bằng nút bấm đẹp mắt -->
+                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'avatar')">
+                <input type="file" id="coverFileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'cover')">
+
                 <div class="modal-field-group">
-                    <label>Tải lên Ảnh đại diện từ thiết bị</label>
-                    <input type="file" id="avatarFileInput" accept="image/*" class="custom-file-upload" onchange="handleFileSelect(event, 'avatar')">
+                    <label>Ảnh đại diện (Avatar mới)</label>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.85rem;" onclick="document.getElementById('avatarFileInput').click()">
+                        <i class="fa-solid fa-camera"></i> <span id="avatarFileName">Tải lên ảnh đại diện</span>
+                    </button>
                 </div>
+
                 <div class="modal-field-group">
-                    <label>Tải lên Ảnh bìa từ thiết bị</label>
-                    <input type="file" id="coverFileInput" accept="image/*" class="custom-file-upload" onchange="handleFileSelect(event, 'cover')">
+                    <label>Ảnh bìa (Cover Photo mới)</label>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.85rem;" onclick="document.getElementById('coverFileInput').click()">
+                        <i class="fa-solid fa-image"></i> <span id="coverFileName">Tải lên ảnh bìa</span>
+                    </button>
                 </div>
+
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
             </div>
         </div>
@@ -732,6 +740,8 @@
         function openEditProfileModal() {
             if (!currentUser) return;
             document.getElementById('editNameInput').value = currentUser.displayName || '';
+            document.getElementById('avatarFileName').innerText = "Tải lên ảnh đại diện";
+            document.getElementById('coverFileName').innerText = "Tải lên ảnh bìa";
             uploadedAvatarUrl = "";
             uploadedCoverUrl = "";
 
@@ -752,14 +762,13 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Tạo một thẻ canvas để nén ảnh tối ưu kích thước tránh tràn Firestore
                 const img = new Image();
                 img.src = e.target.result;
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 400;
-                    const MAX_HEIGHT = 400;
+                    const MAX_WIDTH = 500;
+                    const MAX_HEIGHT = 500;
                     let width = img.width;
                     let height = img.height;
 
@@ -776,17 +785,19 @@
 
                     if (type === 'avatar') {
                         uploadedAvatarUrl = compressedDataUrl;
-                        showToast("Đã tải ảnh đại diện thành công!");
+                        document.getElementById('avatarFileName').innerText = "Đã chọn: " + file.name;
+                        showToast("Đã tải ảnh đại diện!");
                     } else if (type === 'cover') {
                         uploadedCoverUrl = compressedDataUrl;
-                        showToast("Đã tải ảnh bìa thành công!");
+                        document.getElementById('coverFileName').innerText = "Đã chọn: " + file.name;
+                        showToast("Đã tải ảnh bìa!");
                     }
                 }
             }
             reader.readAsDataURL(file);
         }
 
-        function previewPostFile(event) {
+        function handlePostFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -796,8 +807,8 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
+                    const MAX_WIDTH = 900;
+                    const MAX_HEIGHT = 900;
                     let width = img.width;
                     let height = img.height;
 
@@ -810,7 +821,8 @@
                     canvas.width = width;
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
-                    uploadedPostFileUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    uploadedPostFileUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('postFilePreviewName').innerText = "📁 Đã đính kèm: " + file.name;
                     showToast("Đã đính kèm ảnh vào bài viết!");
                 }
             }
@@ -846,8 +858,7 @@
         }
 
         function toggleMediaInput() {
-            const box = document.getElementById('mediaInputContainer');
-            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('postMediaFileInput').click();
         }
 
         function promptCheckin() {
@@ -1089,9 +1100,8 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).then(() => {
                     document.getElementById('postContentInput').value = '';
-                    document.getElementById('postMediaFileInput').value = '';
+                    document.getElementById('postFilePreviewName').innerText = '';
                     uploadedPostFileUrl = "";
-                    document.getElementById('mediaInputContainer').style.display = 'none';
                     showToast("Đã chia sẻ bài viết lên bảng tin!");
                     loadCommunityPosts();
                 });
