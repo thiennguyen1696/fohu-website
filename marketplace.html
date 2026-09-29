@@ -4,28 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đối Tác Sáng Tạo & Studio Media - fohu</title>
-    <meta name="description" content="Khám phá danh sách các Designer, Photographer, Editor và Studio chuyên nghiệp hàng đầu tại Việt Nam trên fohu.">
+    <meta name="description" content="Khám phá danh sách các Designer, Photographer và Studio chuyên nghiệp tại fohu.">
     <link rel="icon" type="image/png" href="fohu 2.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0d9488; --primary-light: #ccfbf1; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
+        :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-top: 90px; }
-        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: 90px; }
+        nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; }
         .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .marketplace-layout { max-width: 1440px; margin: 0 auto; padding: 20px 1.5rem 60px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
-        .marketplace-sidebar { background: var(--bg-card); border-radius: 16px; padding: 1.25rem; border: 1px solid var(--border); height: fit-content; }
-        .hub-sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
-        .hub-sidebar-tab { background: transparent; border: none; width: 100%; padding: 0.65rem 0.9rem; border-radius: 10px; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; }
-        .hub-sidebar-tab:hover, .hub-sidebar-tab.active { background: var(--primary-light); color: var(--primary); font-weight: 700; }
-        .partners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .partner-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; text-align: center; }
-        .partner-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--primary-light); }
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 0.82rem; text-decoration: none; cursor: pointer; border: none; background: var(--primary); color: #fff; margin-top: 10px; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
     </style>
 </head>
 <body>
@@ -42,25 +34,9 @@
             </ul>
         </div>
     </nav>
-    <div class="marketplace-layout">
-        <aside class="marketplace-sidebar">
-            <h3><i class="fa-solid fa-filter" style="color:var(--primary);"></i> Lĩnh vực</h3>
-            <ul class="hub-sidebar-list">
-                <li><button class="hub-sidebar-tab active"><i class="fa-solid fa-border-all"></i> Tất cả đối tác</button></li>
-                <li><button class="hub-sidebar-tab"><i class="fa-solid fa-camera"></i> Photographer</button></li>
-                <li><button class="hub-sidebar-tab"><i class="fa-solid fa-video"></i> Video Editor</button></li>
-            </ul>
-        </aside>
-        <main>
-            <div class="partners-grid">
-                <div class="partner-card">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80" alt="Partner">
-                    <h3>Studio Sáng Tạo Alpha</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin: 6px 0;">Chuyên gia sản xuất MV & Pre-wedding</p>
-                    <a href="contact.html" class="btn">Đặt Lịch Ngay</a>
-                </div>
-            </div>
-        </main>
+    <div class="container">
+        <h2>Danh Sách Đối Tác Sáng Tạo</h2>
+        <p style="color: var(--text-muted); margin-top: 10px;">Đang cập nhật các studio và freelancer hàng đầu...</p>
     </div>
 </body>
 </html>
