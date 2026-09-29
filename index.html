@@ -246,7 +246,7 @@
         .thread-actions { display: flex; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
         .thread-actions span:hover { color: var(--primary); }
 
-        /* PROFILE LAYOUT PERFECTED */
+        /* PROFILE LAYOUT */
         .profile-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
         .profile-cover-box { height: 260px; border-radius: 16px; background-size: cover; background-position: center; background-color: #cbd5e1; position: relative; }
         .profile-identity-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
@@ -254,6 +254,10 @@
         .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
+
+        /* CUSTOM FILE UPLOAD STYLING */
+        .custom-file-upload { border: 2px dashed var(--border); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg-main); font-size: 0.85rem; transition: border-color 0.2s; }
+        .custom-file-upload:hover { border-color: var(--primary); }
 
         /* BACKSTAGE ADMIN */
         .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
@@ -396,7 +400,8 @@
             <div class="post-box" id="postCreationBox" style="display: none;">
                 <textarea id="postContentInput" placeholder="Hôm nay bạn có tác phẩm hoặc câu chuyện gì muốn chia sẻ cùng cộng đồng?"></textarea>
                 <div id="mediaInputContainer" style="display: none; margin-bottom: 10px;">
-                    <input type="url" id="postMediaInput" placeholder="Dán link ảnh / video URL vào đây..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-main); color: var(--text-main); font-size: 0.85rem;">
+                    <input type="file" id="postMediaFileInput" accept="image/*,video/*" onchange="previewPostFile(event)" style="font-size: 0.85rem;">
+                    <div id="postFilePreviewName" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;"></div>
                 </div>
                 <div class="post-toolbar">
                     <div class="post-tools-left">
@@ -605,7 +610,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (ĐÃ TỐI ƯU URL ẢNH THAY CHO FILE UPLOAD TRÁNH QUÁ DUNG LƯỢNG) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHO PHÉP UPLOAD ẢNH TỪ THIẾT BỊ HOẶC CHỌN KHO ẢNH MẪU ĐỂ KHÔNG BỊ TRÀN FIRESTORE) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -626,12 +631,12 @@
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
                 <div class="modal-field-group">
-                    <label>Link Ảnh đại diện (Avatar URL)</label>
-                    <input type="url" id="editAvatarInput" placeholder="https://images.unsplash.com/photo-...">
+                    <label>Tải lên Ảnh đại diện từ thiết bị</label>
+                    <input type="file" id="avatarFileInput" accept="image/*" class="custom-file-upload" onchange="handleFileSelect(event, 'avatar')">
                 </div>
                 <div class="modal-field-group">
-                    <label>Link Ảnh bìa (Cover Photo URL)</label>
-                    <input type="url" id="editCoverInput" placeholder="https://images.unsplash.com/photo-...">
+                    <label>Tải lên Ảnh bìa từ thiết bị</label>
+                    <input type="file" id="coverFileInput" accept="image/*" class="custom-file-upload" onchange="handleFileSelect(event, 'cover')">
                 </div>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
             </div>
@@ -720,19 +725,96 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
         
+        let uploadedAvatarUrl = "";
+        let uploadedCoverUrl = "";
+        let uploadedPostFileUrl = "";
+
         function openEditProfileModal() {
             if (!currentUser) return;
             document.getElementById('editNameInput').value = currentUser.displayName || '';
+            uploadedAvatarUrl = "";
+            uploadedCoverUrl = "";
+
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
                     document.getElementById('editBioInput').value = data.bio || '';
                     document.getElementById('editPhoneInput').value = data.phone || '';
-                    document.getElementById('editAvatarInput').value = data.avatar || '';
-                    document.getElementById('editCoverInput').value = data.coverUrl || '';
+                    uploadedAvatarUrl = data.avatar || '';
+                    uploadedCoverUrl = data.coverUrl || '';
                 }
             });
             openModal('editProfileModal');
+        }
+
+        function handleFileSelect(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Tạo một thẻ canvas để nén ảnh tối ưu kích thước tránh tràn Firestore
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 400;
+                    const MAX_HEIGHT = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+                    if (type === 'avatar') {
+                        uploadedAvatarUrl = compressedDataUrl;
+                        showToast("Đã tải ảnh đại diện thành công!");
+                    } else if (type === 'cover') {
+                        uploadedCoverUrl = compressedDataUrl;
+                        showToast("Đã tải ảnh bìa thành công!");
+                    }
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function previewPostFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    uploadedPostFileUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    showToast("Đã đính kèm ảnh vào bài viết!");
+                }
+            }
+            reader.readAsDataURL(file);
         }
 
         function saveUserProfileSettings() {
@@ -740,8 +822,6 @@
             const newName = document.getElementById('editNameInput').value.trim();
             const newBio = document.getElementById('editBioInput').value.trim();
             const newPhone = document.getElementById('editPhoneInput').value.trim();
-            const newAvatar = document.getElementById('editAvatarInput').value.trim();
-            const newCover = document.getElementById('editCoverInput').value.trim();
 
             let updateData = {
                 name: newName,
@@ -749,19 +829,19 @@
                 phone: newPhone
             };
 
-            if (newAvatar) updateData.avatar = newAvatar;
-            if (newCover) updateData.coverUrl = newCover;
+            if (uploadedAvatarUrl) updateData.avatar = uploadedAvatarUrl;
+            if (uploadedCoverUrl) updateData.coverUrl = uploadedCoverUrl;
 
             db.collection('users').doc(currentUser.uid).set(updateData, { merge: true }).then(() => {
                 closeModal('editProfileModal');
                 showToast("Đã lưu thay đổi thành công!");
                 loadUserProfileData();
-                if (newAvatar) {
-                    document.getElementById('loggedUserAvatar').src = newAvatar;
+                if (uploadedAvatarUrl) {
+                    document.getElementById('loggedUserAvatar').src = uploadedAvatarUrl;
                 }
             }).catch((err) => {
                 console.error(err);
-                showToast("Lỗi lưu dữ liệu. Vui lòng kiểm tra lại!");
+                showToast("Lỗi lưu dữ liệu. Vui lòng thử lại!");
             });
         }
 
@@ -903,10 +983,11 @@
             document.getElementById('loggedUserName').innerText = user.displayName || 'Thành viên';
             
             db.collection('users').doc(user.uid).get().then((doc) => {
-                if (doc.exists && doc.data().avatar) {
-                    document.getElementById('loggedUserAvatar').src = doc.data().avatar;
-                } else {
-                    document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.name) document.getElementById('loggedUserName').innerText = data.name;
+                    if (data.avatar) document.getElementById('loggedUserAvatar').src = data.avatar;
+                    else document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
                 }
             });
         }
@@ -986,7 +1067,6 @@
 
         function createNewPost() {
             const content = document.getElementById('postContentInput').value.trim();
-            const mediaUrl = document.getElementById('postMediaInput').value.trim();
             if (!content) {
                 showToast("Vui lòng nhập nội dung bài viết!");
                 return;
@@ -1005,11 +1085,12 @@
                     authorName: userName,
                     authorAvatar: userAvatar,
                     content: content,
-                    mediaUrl: mediaUrl,
+                    mediaUrl: uploadedPostFileUrl,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).then(() => {
                     document.getElementById('postContentInput').value = '';
-                    document.getElementById('postMediaInput').value = '';
+                    document.getElementById('postMediaFileInput').value = '';
+                    uploadedPostFileUrl = "";
                     document.getElementById('mediaInputContainer').style.display = 'none';
                     showToast("Đã chia sẻ bài viết lên bảng tin!");
                     loadCommunityPosts();
