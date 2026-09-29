@@ -33,7 +33,8 @@
             --border: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(13, 148, 136, 0.12);
-            --vip-gold: #d97706;
+            --premium-gold: #d97706;
+            --standard-gem: #06b6d4;
             --font-serif: 'Playfair Display', serif;
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
         }
@@ -109,6 +110,15 @@
             cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
         }
         .partner-handshake-btn:hover { background: var(--primary); color: #fff; transform: scale(1.05); }
+
+        /* AVATAR WRAPPER VỚI HUY HIỆU ĐỊNH DANH */
+        .avatar-badge-container { position: relative; display: inline-block; }
+        .badge-icon-overlay {
+            position: absolute; bottom: 0; right: 0; width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #fff; border: 2px solid var(--bg-card);
+        }
+        .badge-standard { background: var(--standard-gem); }
+        .badge-premium { background: var(--premium-gold); }
 
         /* DROPDOWN USER */
         .user-logged-badge {
@@ -187,13 +197,6 @@
         .hero-description { font-size: 1.02rem; color: var(--text-muted); margin-bottom: 1.75rem; max-width: 580px; }
         .hero-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
 
-        .home-search-bar {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 0.5rem;
-            box-shadow: var(--shadow-md); display: flex; gap: 0.5rem; margin-top: 1.25rem; align-items: center;
-        }
-        .home-search-input { flex: 1; border: none; padding: 0.65rem 0.85rem; outline: none; font-size: 0.9rem; width: 100%; background: transparent; color: var(--text-main); }
-        .home-search-select { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0.75rem; outline: none; background: var(--bg-card); color: var(--text-main); font-size: 0.85rem; font-weight: 600; width: 100%; }
-
         /* MARKETPLACE & PRICING */
         .marketplace-layout {
             max-width: 1440px; margin: 0 auto; padding: 20px 1.5rem 60px;
@@ -221,7 +224,7 @@
         .pricing-card.featured { border: 2px solid var(--primary); box-shadow: var(--shadow-md); position: relative; }
         .pricing-card-with-badge { position: relative; }
         .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .featured-badge.vip { background: var(--vip-gold); }
+        .featured-badge.premium { background: var(--premium-gold); }
 
         /* BLOG GRID */
         .blog-grid { max-width: 1200px; margin: 1.5rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
@@ -318,7 +321,6 @@
             </ul>
 
             <div class="nav-auth">
-                <!-- Nút biểu tượng bắt tay 🤝 trỏ về trang Trở thành đối tác -->
                 <button class="partner-handshake-btn" onclick="switchPage('pricing')" title="Trở thành đối tác"><i class="fa-solid fa-handshake"></i></button>
                 
                 <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">
@@ -327,7 +329,10 @@
 
                 <!-- Badge User & Dropdown -->
                 <div class="user-logged-badge" id="userLoggedBadge" onclick="toggleUserDropdown(event)">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+                    <div class="avatar-badge-container">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+                        <div id="loggedUserBadgeIcon" class="badge-icon-overlay" style="display: none;"></div>
+                    </div>
                     <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
                     <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 2px;"></i>
 
@@ -433,7 +438,11 @@
             <div class="profile-cover-box" id="profileCoverBg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80');"></div>
             
             <div class="profile-identity-section">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+                <div class="avatar-badge-container" style="margin-top: -65px; margin-bottom: 12px; display: inline-block;">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar" style="margin-top: 0; margin-bottom: 0;" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+                    <div id="profileBadgeIcon" class="badge-icon-overlay" style="display: none; width: 24px; height: 24px; font-size: 0.8rem;"></div>
+                </div>
+
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
                     <div>
                         <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Tên User</h2>
@@ -502,7 +511,7 @@
         </div>
     </div>
 
-    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC (TÍCH HỢP QUY TRÌNH NÂNG CẤP VAI TRÒ) -->
+    <!-- TRANG 4: TRỞ THÀNH ĐỐI TÁC -->
     <div id="page-pricing" class="page-section">
         <section style="padding: 20px 1rem 60px;">
             <div style="text-align: center; margin-bottom: 2.5rem;">
@@ -520,33 +529,33 @@
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 3 tác phẩm portfolio</li>
                         </ul>
                     </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="upgradeUserRole('Personal')">Đăng ký Không Chuyên</button>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openCheckoutModal('Không Chuyên', 0, 'Personal')">Đăng ký Không Chuyên</button>
                 </div>
 
                 <div class="pricing-card pricing-card-with-badge">
-                    <span class="featured-badge">Đối tác Standar</span>
+                    <span class="featured-badge">Đối tác Standard</span>
                     <div>
                         <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Bán Chuyên</h3>
                         <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--primary);">99.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Hiển thị đầy đủ SĐT, Zalo liên hệ</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Đăng tối đa 15 tác phẩm portfolio</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Kim cương 💎</strong></li>
                         </ul>
                     </div>
-                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="upgradeUserRole('Partner')">Đăng ký Bán Chuyên</button>
+                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="openCheckoutModal('Bán Chuyên (Standard)', 99000, 'Partner')">Đăng ký Bán Chuyên</button>
                 </div>
 
                 <div class="pricing-card featured pricing-card-with-badge">
-                    <span class="featured-badge vip">ĐỐI TÁC VIP</span>
+                    <span class="featured-badge premium">ĐỐI TÁC PREMIUM</span>
                     <div>
                         <h3 style="font-size: 1.2rem; font-weight: 800; margin-top: 8px;">Chuyên nghiệp</h3>
-                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--vip-gold);">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 0.5rem 0; color: var(--premium-gold);">149.000 đồng <span style="font-size: 0.9rem; color: var(--text-muted);">/ tháng</span></div>
                         <ul style="list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.88rem;">
                             <li><i class="fa-solid fa-check" style="color: #10b981;"></i> Mở khóa toàn bộ thông tin liên hệ</li>
-                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Không giới hạn</strong> tác phẩm & video</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981;"></i> <strong>Huy hiệu Vương miện 👑</strong></li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--vip-gold);" onclick="upgradeUserRole('VIP')">Đăng ký Chuyên nghiệp</button>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--premium-gold);" onclick="openCheckoutModal('Chuyên nghiệp (Premium)', 149000, 'VIP')">Đăng ký Premium</button>
                 </div>
             </div>
         </section>
@@ -560,17 +569,8 @@
                 <p style="color: var(--text-muted);">Cập nhật kiến thức chuyên sâu về nhiếp ảnh, thiết bị công nghệ và cuộc thi ảnh quốc tế.</p>
             </div>
             
-            <div class="blog-grid">
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Nhiếp ảnh</span><h3>Xu hướng "Cảm xúc & Tính chân thực" lên ngôi trong nhiếp ảnh 2026</h3><p>Sự dịch chuyển từ ảnh dàn dựng sang phong cách candid tự nhiên.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Thiết kế</span><h3>Sự bùng nổ của phong cách thiết kế và màu sắc "Hyper-Bloom"</h3><p>Kết hợp thiên nhiên siêu thực và hiệu ứng mờ sương.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Công nghệ</span><h3>Đánh giá chi tiết dòng máy ảnh Mirrorless Full-frame toàn diện năm 2026</h3><p>Điểm mặt những cỗ máy tích hợp AI Autofocus mạnh mẽ.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Thiết bị</span><h3>Cuộc đua máy ảnh Medium Format: Hasselblad X2D II 100C ra mắt</h3><p>Cảm biến 100MP định nghĩa lại tiêu chuẩn nhiếp ảnh thương mại.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Trào lưu</span><h3>Xu hướng "Candid Camera Roll": Khi Gen Z chuộng phong cách flash thô ráp</h3><p>Hiệu ứng chân thực đang làm mưa làm gió trong cộng đồng.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Hậu kỳ</span><h3>Cẩm nang tối ưu quy trình hậu kỳ với Trí tuệ nhân tạo (AI)</h3><p>Tự động hóa color grading và tách nền thông minh.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Cuộc thi ảnh</span><h3>Điểm danh 15 tác phẩm xuất sắc nhất tại Sony World Photography Awards</h3><p>Chiêm ngưỡng những khoảnh khắc ấn tượng nhất hành tinh.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Thiết kế F&B</span><h3>Xu hướng thiết kế nhận diện thương hiệu "Micro-Industrial" cho quán Cafe</h3><p>Vũ khí thị giác mới mô phỏng nhãn y tế và typography thô.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Thị trường</span><h3>Máy ảnh dòng Retro (Hoài cổ) tiếp tục thống trị thị trường Việt Nam</h3><p>Sức hút từ thiết kế cổ điển kết hợp công nghệ hiện đại.</p></div></article>
-                <article class="blog-card"><div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80');"></div><div class="blog-body"><span class="blog-tag">Sự nghiệp</span><h3>Hướng dẫn chiến lược định giá dịch vụ cho Freelancer Designer & Photographer</h3><p>Bí quyết cân đối chi phí và thời gian dựng hình.</p></div></article>
+            <div class="blog-grid" id="blogGridContainer">
+                <!-- Sẽ được render tự động qua danh sách bài báo -->
             </div>
         </section>
     </div>
@@ -583,6 +583,39 @@
                 <p style="color: var(--text-muted);">Hotline: 0909097326</p>
             </div>
         </section>
+    </div>
+
+    <!-- MODAL THANH TOÁN (CHECKOUT QR CODE) -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="modal-header">
+                <h3 id="checkoutModalTitle">Thanh Toán Gói Dịch Vụ</h3>
+                <button onclick="closeModal('checkoutModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">Quét mã QR qua ứng dụng Ngân hàng để thanh toán tự động.</p>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; display: inline-block; border: 1px solid var(--border); margin-bottom: 15px;">
+                    <img src="https://api.vietqr.io/image/970422-0388277265-xxxx.jpg?amount=0&addInfo=FOHU&accountName=NGUYEN%20TRUONG%20HOANG%20THIEN" alt="QR Code" style="width: 180px; height: 180px; object-fit: contain;" id="checkoutQrImg">
+                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 5px;">Nội dung chuyển khoản:</div>
+                <div id="checkoutSyntaxCode" style="background: var(--primary-light); color: var(--primary); padding: 8px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; margin-bottom: 20px;">FOHU UID</div>
+                <button class="btn btn-primary" style="width: 100%; justify-content: center; background: #10b981;" onclick="confirmPaymentSuccess()">Đã Chuyển Khoản & Kích Hoạt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ĐỌC BÁO CHI TIẾT (BLOG DETAIL) -->
+    <div class="modal-overlay" id="blogDetailModal">
+        <div class="modal-box" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 id="blogDetailTitle">Tiêu đề bài viết</h3>
+                <button onclick="closeModal('blogDetailModal')" style="border:none; background:none; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <img id="blogDetailImg" src="" style="width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem;" alt="Blog">
+                <div id="blogDetailContent" style="font-size: 0.95rem; line-height: 1.7; color: var(--text-main); white-space: pre-wrap;"></div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL CHỌN VAI TRÒ -->
@@ -715,6 +748,56 @@
 
         const ADMIN_EMAIL = "thien.nguyen1696@gmail.com";
 
+        // DANH SÁCH BÀI VIẾT TIN TỨC (CLICKABLE BLOGS)
+        const blogArticles = [
+            { id: 1, tag: "Nhiếp ảnh", title: 'Xu hướng "Cảm xúc & Tính chân thực" lên ngôi trong nhiếp ảnh 2026', desc: 'Sự dịch chuyển từ ảnh dàn dựng sang phong cách candid tự nhiên.', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80', content: 'Trong kỷ nguyên nhiếp ảnh số 2026, các khách hàng thương mại và cặp đôi không còn chuộng phong cách chỉnh màu rực rỡ, dàn dựng cứng nhắc. Thay vào đó, cảm xúc chân thật, những khoảnh khắc đời thường (candid) bắt trọn bằng ánh sáng tự nhiên đang trở thành xu hướng chủ đạo...' },
+            { id: 2, tag: "Thiết kế", title: 'Sự bùng nổ của phong cách thiết kế và màu sắc "Hyper-Bloom"', desc: 'Kết hợp thiên nhiên siêu thực và hiệu ứng mờ sương.', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80', content: 'Phong cách Hyper-Bloom đang làm mưa làm gió trong cộng đồng Designer quốc tế với các tông màu chuyển sắc (gradient) lấy cảm hứng từ sinh học quang phổ và các lớp kính mờ ảo...' },
+            { id: 3, tag: "Công nghệ", title: 'Đánh giá chi tiết dòng máy ảnh Mirrorless Full-frame toàn diện năm 2026', desc: 'Điểm mặt những cỗ máy tích hợp AI Autofocus mạnh mẽ.', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80', content: 'Trí tuệ nhân tạo đã thực sự thay đổi cách chúng ta chụp ảnh. Các thuật toán nhận diện chủ thể dựa trên thần kinh nhân tạo giúp máy ảnh khóa nét động vật, mắt người và xe chuyển động với độ chính xác gần như tuyệt đối...' },
+            { id: 4, tag: "Thiết bị", title: 'Cuộc đua máy ảnh Medium Format: Hasselblad X2D II 100C ra mắt', desc: 'Cảm biến 100MP định nghĩa lại tiêu chuẩn nhiếp ảnh thương mại.', img: 'https://images.unsplash.com/photo-1500634245200-e524fc6753fa?w=800&q=80', content: 'Hasselblad vừa chính thức vén màn dòng máy ảnh medium format mới với dải tương phản động lên tới 16 stop, mang lại chi tiết vùng tối và vùng sáng cực kỳ kinh ngạc cho các nhiếp ảnh gia thời trang và phong cảnh...' },
+            { id: 5, tag: "Trào lưu", title: 'Xu hướng "Candid Camera Roll": Khi Gen Z chuộng phong cách flash thô ráp', desc: 'Hiệu ứng chân thực đang làm mưa làm gió trong cộng đồng.', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80', content: 'Không cần studio đắt đỏ, giới trẻ hiện nay đang tạo ra trào lưu chụp ảnh bằng đèn flash trực diện vào ban đêm, giữ nguyên các khuyết điểm da và khung cảnh thô ráp để tạo nên nét đẹp cá tính riêng...' },
+            { id: 6, tag: "Hậu kỳ", title: 'Cẩm nang tối ưu quy trình hậu kỳ với Trí tuệ nhân tạo (AI)', desc: 'Tự động hóa color grading và tách nền thông minh.', img: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80', content: 'Khám phá các plugin Premiere và Photoshop tích hợp AI giúp tiết kiệm 70% thời gian dựng phim và cân chỉnh màu sắc trong các dự án quảng cáo lớn...' }
+        ];
+
+        function renderBlogGrid() {
+            const grid = document.getElementById('blogGridContainer');
+            if (!grid) return;
+            let html = '';
+            blogArticles.forEach(b => {
+                html += `
+                    <article class="blog-card" onclick="openBlogDetail(${b.id})">
+                        <div class="blog-img" style="background-image: url('${b.img}');"></div>
+                        <div class="blog-body">
+                            <span class="blog-tag">${b.tag}</span>
+                            <h3>${b.title}</h3>
+                            <p>${b.desc}</p>
+                        </div>
+                    </article>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function openBlogDetail(id) {
+            const blog = blogArticles.find(b => b.id === id);
+            if (!blog) return;
+            document.getElementById('blogDetailTitle').innerText = blog.title;
+            document.getElementById('blogDetailImg').src = blog.img;
+            document.getElementById('blogDetailContent').innerText = blog.content;
+            openModal('blogDetailModal');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderBlogGrid();
+            const savedTheme = localStorage.getItem('fohu_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                const menuText = document.getElementById('themeToggleMenuText');
+                if (menuText) {
+                    menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
+                }
+            }
+        });
+
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
             document.getElementById('toastMsg').innerText = message;
@@ -740,34 +823,48 @@
         function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
+
+        // THANH TOÁN QR CODE & KÍCH HOẠT GÓI
+        let pendingUpgradeRole = 'Personal';
+        function openCheckoutModal(packageName, amount, roleKey) {
+            if (!currentUser) {
+                showToast("Vui lòng đăng nhập trước khi đăng ký gói đối tác!");
+                openLoginRoleModal();
+                return;
+            }
+            pendingUpgradeRole = roleKey;
+            document.getElementById('checkoutModalTitle').innerText = "Thanh toán gói: " + packageName;
+            const syntax = "FOHU " + currentUser.uid.substring(0, 6).toUpperCase() + " " + roleKey;
+            document.getElementById('checkoutSyntaxCode').innerText = syntax;
+            
+            // VietQR Dynamic API
+            const qrUrl = `https://api.vietqr.io/image/970422-0388277265-xxxx.jpg?amount=${amount}&addInfo=${encodeURIComponent(syntax)}&accountName=NGUYEN%20TRUONG%20HOANG%20THIEN`;
+            document.getElementById('checkoutQrImg').src = qrUrl;
+            
+            openModal('checkoutModal');
+        }
+
+        async function confirmPaymentSuccess() {
+            if (!currentUser) return;
+            try {
+                showToast("Đang xác thực giao dịch...");
+                await db.collection('users').doc(currentUser.uid).set({
+                    role: pendingUpgradeRole
+                }, { merge: true });
+
+                closeModal('checkoutModal');
+                showToast("Thanh toán thành công! Đã kích hoạt gói đối tác.");
+                loadUserProfileData();
+                updateUserUI(currentUser);
+            } catch (err) {
+                console.error(err);
+                showToast("Lỗi kích hoạt. Vui lòng liên hệ hotline!");
+            }
+        }
         
         let uploadedAvatarUrl = undefined;
         let uploadedCoverUrl = undefined;
         let uploadedPostFileUrl = "";
-
-        // HÀM NÂNG CẤP VAI TRÒ ĐỐI TÁC KHI USER NHẤN ĐĂNG KÝ
-        async function upgradeUserRole(roleLevel) {
-            if (!currentUser) {
-                showToast("Vui lòng đăng nhập trước khi đăng ký đối tác!");
-                openLoginRoleModal();
-                return;
-            }
-
-            try {
-                showToast("Đang xử lý nâng cấp tài khoản...");
-                await db.collection('users').doc(currentUser.uid).set({
-                    role: roleLevel
-                }, { merge: true });
-
-                showToast("Chúc mừng bạn đã đăng ký thành công gói " + roleLevel + "!");
-                setTimeout(() => {
-                    switchPage('profile');
-                }, 1000);
-            } catch (err) {
-                console.error(err);
-                showToast("Lỗi nâng cấp. Vui lòng thử lại!");
-            }
-        }
 
         function openEditProfileModal() {
             if (!currentUser) return;
@@ -894,13 +991,7 @@
                 closeModal('editProfileModal');
                 showToast("Đã lưu thay đổi thành công!");
                 loadUserProfileData();
-                
-                if (uploadedAvatarUrl) {
-                    document.getElementById('loggedUserAvatar').src = uploadedAvatarUrl;
-                }
-                if (newName) {
-                    document.getElementById('loggedUserName').innerText = newName;
-                }
+                updateUserUI(currentUser);
             } catch (err) {
                 console.error("Lỗi Firestore:", err);
                 showToast("Lỗi lưu dữ liệu. Vui lòng kiểm tra quyền Firestore Rules!");
@@ -936,17 +1027,6 @@
                 showToast("Đã bật chế độ Sáng");
             }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('fohu_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                const menuText = document.getElementById('themeToggleMenuText');
-                if (menuText) {
-                    menuText.innerHTML = `<i class="fa-solid fa-sun" id="themeMenuIcon"></i> Giao diện: Tối`;
-                }
-            }
-        });
 
         function toggleUserDropdown(event) {
             event.stopPropagation();
@@ -1041,6 +1121,7 @@
             loadCommunityPosts();
         });
 
+        // CẬP NHẬT GIAO DIỆN AVATAR & HUY HIỆU ĐỊNH DANH (💎 / 👑)
         function updateUserUI(user) {
             document.getElementById('loginNavBtn').style.display = 'none';
             const badge = document.getElementById('userLoggedBadge');
@@ -1053,6 +1134,22 @@
                     if (data.name) document.getElementById('loggedUserName').innerText = data.name;
                     if (data.avatar) document.getElementById('loggedUserAvatar').src = data.avatar;
                     else document.getElementById('loggedUserAvatar').src = user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+
+                    // Gắn huy hiệu trên Navbar
+                    const badgeIcon = document.getElementById('loggedUserBadgeIcon');
+                    if (data.role === 'Partner') {
+                        badgeIcon.style.display = 'flex';
+                        badgeIcon.className = 'badge-icon-overlay badge-standard';
+                        badgeIcon.innerHTML = '💎';
+                        badgeIcon.title = 'Đối tác Bán Chuyên (Standard)';
+                    } else if (data.role === 'VIP') {
+                        badgeIcon.style.display = 'flex';
+                        badgeIcon.className = 'badge-icon-overlay badge-premium';
+                        badgeIcon.innerHTML = '👑';
+                        badgeIcon.title = 'Đối tác Chuyên nghiệp (Premium)';
+                    } else {
+                        badgeIcon.style.display = 'none';
+                    }
                 }
             });
         }
@@ -1077,9 +1174,21 @@
                     const data = doc.data();
                     if (data.name) document.getElementById('profileName').innerText = data.name;
                     
-                    let roleText = 'Thành viên';
-                    if (data.role === 'Partner') roleText = 'Đối tác Bán Chuyên';
-                    if (data.role === 'VIP') roleText = 'Đối tác Chuyên nghiệp (VIP)';
+                    let roleText = 'Thành viên cá nhân';
+                    const profileBadge = document.getElementById('profileBadgeIcon');
+                    if (data.role === 'Partner') {
+                        roleText = 'Đối tác Bán Chuyên (Standard)';
+                        profileBadge.style.display = 'flex';
+                        profileBadge.className = 'badge-icon-overlay badge-standard';
+                        profileBadge.innerHTML = '💎';
+                    } else if (data.role === 'VIP') {
+                        roleText = 'Đối tác Chuyên nghiệp (Premium)';
+                        profileBadge.style.display = 'flex';
+                        profileBadge.className = 'badge-icon-overlay badge-premium';
+                        profileBadge.innerHTML = '👑';
+                    } else {
+                        profileBadge.style.display = 'none';
+                    }
                     document.getElementById('profileRoleBadge').innerText = roleText;
 
                     document.getElementById('profileBio').innerText = data.bio || 'Chưa có tiểu sử cá nhân.';
@@ -1149,11 +1258,13 @@
             db.collection('users').doc(currentUser.uid).get().then((userDoc) => {
                 const userAvatar = (userDoc.exists && userDoc.data().avatar) ? userDoc.data().avatar : (currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80');
                 const userName = (userDoc.exists && userDoc.data().name) ? userDoc.data().name : (currentUser.displayName || 'Thành viên fohu');
+                const userRole = (userDoc.exists && userDoc.data().role) ? userDoc.data().role : 'Personal';
                 
                 db.collection('posts').add({
                     authorId: currentUser.uid,
                     authorName: userName,
                     authorAvatar: userAvatar,
+                    authorRole: userRole,
                     content: content,
                     mediaUrl: uploadedPostFileUrl,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1170,13 +1281,18 @@
         function renderPostCard(p) {
             const timeStr = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleString('vi-VN') : 'Vừa xong';
             const mediaTag = p.mediaUrl ? `<img src="${p.mediaUrl}" class="thread-media" style="display:block;" alt="Media">` : '';
+            
+            let badgeHtml = '';
+            if (p.authorRole === 'Partner') badgeHtml = `<span style="background:var(--standard-gem); color:#fff; font-size:0.6rem; padding:1px 5px; border-radius:999px; margin-left:4px;" title="Standard">💎</span>`;
+            if (p.authorRole === 'VIP') badgeHtml = `<span style="background:var(--premium-gold); color:#fff; font-size:0.6rem; padding:1px 5px; border-radius:999px; margin-left:4px;" title="Premium">👑</span>`;
+
             return `
                 <div class="thread-item">
                     <div class="thread-header">
                         <div class="thread-author-wrap">
                             <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
                             <div>
-                                <div class="thread-author">${p.authorName}</div>
+                                <div class="thread-author">${p.authorName} ${badgeHtml}</div>
                                 <div class="thread-time">${timeStr}</div>
                             </div>
                         </div>
