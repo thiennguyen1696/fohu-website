@@ -86,15 +86,30 @@
             .nav-mobile-toggle { display: block; }
         }
 
-        .nav-auth { display: flex; align-items: center; gap: 0.75rem; }
+        .nav-auth { display: flex; align-items: center; gap: 0.75rem; position: relative; }
 
-        /* User Logged Badge */
+        /* TINHTE USER DROPDOWN MENU */
         .user-logged-badge {
             display: none; align-items: center; gap: 6px; background: #f3f4f6;
             padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
-            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
         }
+        .user-logged-badge:hover { background: #e5e7eb; }
         .user-logged-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+
+        .tinhte-user-dropdown {
+            position: absolute; top: 110%; right: 0; width: 260px; background: #fff;
+            border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; flex-direction: column; padding: 6px 0; z-index: 3000;
+        }
+        .tinhte-user-dropdown.active { display: flex; }
+        .tinhte-dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+            font-size: 0.88rem; font-weight: 500; color: var(--text-main); text-decoration: none; cursor: pointer; transition: background 0.15s;
+        }
+        .tinhte-dropdown-item:hover { background: #f1f5f9; color: var(--primary); }
+        .tinhte-dropdown-item i { width: 18px; text-align: center; color: var(--text-muted); }
+        .tinhte-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
         /* NÚT BẤM */
         .btn {
@@ -261,11 +276,24 @@
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
                 </button>
 
-                <!-- Badge Hiển Thị Khi Đăng Nhập Thành Công -->
-                <div class="user-logged-badge" id="userLoggedBadge" onclick="logoutFirebase()" title="Bấm để đăng xuất">
+                <!-- Badge User & Dropdown chuẩn phong cách Tinh Tế -->
+                <div class="user-logged-badge" id="userLoggedBadge" onclick="toggleUserDropdown(event)">
                     <img src="" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar">
                     <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
-                    <i class="fa-solid fa-right-from-bracket" style="font-size: 0.75rem; color: #ef4444; margin-left: 4px;"></i>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 2px;"></i>
+
+                    <!-- Menu thả xuống -->
+                    <div class="tinhte-user-dropdown" id="tinhteDropdown">
+                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Trang cá nhân')"><i class="fa-regular fa-user"></i> Trang cá nhân</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Thông tin cá nhân')"><i class="fa-solid fa-gear"></i> Thông tin cá nhân</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Bookmark')"><i class="fa-regular fa-bookmark"></i> Bookmark</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Bài viết nháp')"><i class="fa-regular fa-file-lines"></i> Bài viết nháp</div>
+                        <div class="tinhte-dropdown-divider"></div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Cài đặt khác')"><i class="fa-solid fa-sliders"></i> Cài đặt khác</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Đã đổi giao diện sáng/tối')"><i class="fa-solid fa-moon"></i> Giao diện: Sáng</div>
+                        <div class="tinhte-dropdown-divider"></div>
+                        <div class="tinhte-dropdown-item" style="color: #ef4444;" onclick="logoutFirebase()"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Đăng xuất</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -332,7 +360,7 @@
         </div>
     </div>
 
-    <!-- TRANG 3: DIỄN ĐÀN (CÓ CHỨC NĂNG ĐĂNG BÀI & HIỂN THỊ BẢNG TIN) -->
+    <!-- TRANG 3: DIỄN ĐÀN -->
     <div id="page-community" class="page-section">
         <div class="community-container">
             <div style="margin-bottom: 1.5rem;">
@@ -340,7 +368,6 @@
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Chia sẻ kinh nghiệm, tìm kiếm dự án và kết nối với đồng nghiệp.</p>
             </div>
 
-            <!-- Khung Đăng Bài (Chỉ hiện khi đã đăng nhập) -->
             <div class="post-box" id="postCreationBox" style="display: none;">
                 <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--dark);"><i class="fa-solid fa-pen-nib" style="color:var(--primary);"></i> Đăng bài thảo luận mới</div>
                 <textarea id="postContentInput" placeholder="Bạn muốn chia sẻ điều gì với cộng đồng fohu hôm nay?"></textarea>
@@ -349,15 +376,12 @@
                 </div>
             </div>
 
-            <!-- Thông báo khi chưa đăng nhập -->
             <div class="post-box" id="loginPromptBox" style="text-align: center; padding: 1.5rem;">
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Vui lòng đăng nhập tài khoản Google để tham gia đăng bài và bình luận cùng cộng đồng.</p>
                 <button class="btn btn-dark" onclick="openLoginRoleModal()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập ngay</button>
             </div>
 
-            <!-- Danh sách bài đăng -->
             <div id="threadsFeedContainer">
-                <!-- Bài mẫu chào mừng -->
                 <div class="thread-item">
                     <div class="thread-header">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="thread-avatar">
@@ -532,6 +556,19 @@
         function openRegisterBoothModal(plan) { showToast("Chọn gói: " + plan); }
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
+
+        // MỞ / ĐÓNG DROPDOWN MENU KHI BẤM VÀO USER (PHONG CÁCH TINH TẾ)
+        function toggleUserDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('tinhteDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Đóng dropdown khi bấm ra ngoài màn hình
+        window.addEventListener('click', () => {
+            const dropdown = document.getElementById('tinhteDropdown');
+            if (dropdown) dropdown.classList.remove('active');
+        });
 
         // ĐĂNG NHẬP GOOGLE
         function loginWithGoogleFirebase() {
