@@ -7,29 +7,59 @@
     <meta name="description" content="Kết nối trực tiếp với Designer, Photographer, Editor và AI Artist chuyên nghiệp tại Việt Nam.">
     <link rel="icon" type="image/png" href="fohu 2.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK v9 (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root { --primary: #0d9488; --bg-main: #f0f2f5; --bg-card: #ffffff; --dark: #111827; --text-main: #1f2937; --text-muted: #6b7280; --border: #e2e8f0; --font-main: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
         body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: 90px; }
+        
+        #toastNotification {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
+            font-size: 0.88rem; font-weight: 600; z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px;
+        }
+        #toastNotification.show { transform: translateX(-50%) translateY(0); }
+
         nav { position: fixed; top: 0; width: 100%; background: var(--bg-card); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; }
         .nav-container { max-width: 1440px; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem; }
         .brand-logo-img { height: 52px; width: auto; object-fit: contain; cursor: pointer; }
         .nav-links { display: flex; gap: 0.3rem; list-style: none; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.88rem; padding: 0.4rem 0.7rem; border-radius: 999px; }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: var(--dark); }
-        .nav-auth { display: flex; align-items: center; gap: 0.75rem; }
+        
+        .nav-auth { display: flex; align-items: center; gap: 0.75rem; position: relative; }
         .partner-handshake-btn { background: #ccfbf1; color: var(--primary); border: 1px solid var(--primary); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        
+        .user-logged-badge { display: none; align-items: center; gap: 6px; background: #f0f2f5; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+        .user-logged-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; text-decoration: none; cursor: pointer; border: none; }
         .btn-primary { background-color: var(--primary); color: #fff; }
         .btn-dark { background-color: var(--dark); color: #fff; }
+        
         .hero { padding: 40px 1.5rem 60px; max-width: 1320px; margin: auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center; }
         footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); text-align: center; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--bg-card); color: var(--text-main); width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--border); }
+        .modal-header { border: none; padding-bottom: 0; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
+
+    <div id="toastNotification">
+        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+        <span id="toastMsg">Thành công!</span>
+    </div>
+
     <nav>
         <div class="nav-container">
             <a href="index.html"><img src="fohu 2.png" alt="Logo" class="brand-logo-img"></a>
@@ -43,7 +73,17 @@
             </ul>
             <div class="nav-auth">
                 <a href="pricing.html" class="partner-handshake-btn"><i class="fa-solid fa-handshake"></i></a>
-                <a href="profile.html" class="btn btn-dark"><i class="fa-solid fa-user"></i> Tài khoản</a>
+                
+                <!-- Nút Đăng nhập (Hiện khi chưa đăng nhập) -->
+                <button class="btn btn-dark" id="loginNavBtn" onclick="openLoginRoleModal()">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
+                </button>
+
+                <!-- Nút Tài khoản / Avatar (Hiện khi đã đăng nhập) -->
+                <div class="user-logged-badge" id="userLoggedBadge" onclick="goToProfilePage()">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar">
+                    <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">Tài khoản</span>
+                </div>
             </div>
         </div>
     </nav>
@@ -59,6 +99,81 @@
         </div>
     </section>
 
+    <!-- MODAL ĐĂNG NHẬP GOOGLE -->
+    <div class="modal-overlay" id="loginRoleModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="width: 100%; font-size: 1.25rem; font-weight: 800;">Đăng Nhập FOHU</h3>
+                <button onclick="closeModal('loginRoleModal')" style="border:none; background:none; cursor:pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 20px;">
+                <p style="font-size: 0.88rem; color: #6b7280; margin-bottom: 20px;">Vui lòng đăng nhập Google để truy cập trang cá nhân.</p>
+                <button class="btn btn-primary" style="width:100%; justify-content: center; padding: 12px; background: #ea4335;" onclick="loginWithGoogleFirebase()">
+                    <i class="fa-brands fa-google"></i> Đăng nhập với Google
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer><p>&copy; 2026 fohu Platform. All rights reserved.</p></footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
+            authDomain: "fohu-platform.firebaseapp.com",
+            projectId: "fohu-platform",
+            storageBucket: "fohu-platform.firebasestorage.app",
+            messagingSenderId: "696328353651",
+            appId: "1:696328353651:web:8add8d582b366c12ccf706"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openLoginRoleModal() { openModal('loginRoleModal'); }
+
+        // Kiểm tra trạng thái đăng nhập
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('loginNavBtn').style.display = 'none';
+                document.getElementById('userLoggedBadge').style.display = 'flex';
+                document.getElementById('loggedUserName').innerText = user.displayName || 'Tài khoản';
+                if (user.photoURL) document.getElementById('loggedUserAvatar').src = user.photoURL;
+            } else {
+                document.getElementById('loginNavBtn').style.display = 'inline-flex';
+                document.getElementById('userLoggedBadge').style.display = 'none';
+            }
+        });
+
+        function loginWithGoogleFirebase() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    closeModal('loginRoleModal');
+                    showToast("Đăng nhập thành công!");
+                    window.location.href = 'profile.html';
+                })
+                .catch((error) => {
+                    showToast("Lỗi đăng nhập: " + error.code);
+                });
+        }
+
+        function goToProfilePage() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                window.location.href = 'profile.html';
+            } else {
+                openLoginRoleModal();
+            }
+        }
+    </script>
 </body>
 </html>
