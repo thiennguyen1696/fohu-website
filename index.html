@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fohu - Mạng Xã Hội & Nền Tảng Đặt Lịch Sáng Tạo Hàng Đầu Việt Nam</title>
-    <meta name="description" content="Nền tảng mạng xã hội kết nối trực tiếp Designer, Photographer, Editor, AI Artist và studio chuyên nghiệp.">
+    <meta name="description" content="Nền tảng mạng xã hội kết nối trực tiếp Designer, Photographer, Editor, AI Artist và các giải pháp studio chuyên nghiệp tại Việt Nam.">
+    <meta name="keywords" content="fohu, social network, thợ chụp ảnh, editor video, designer, thuê studio, đặt lịch media">
+    <meta name="author" content="fohu Platform">
     
     <!-- Favicon logo chính thức FOHU -->
     <link rel="icon" type="image/png" href="fohu 2.png">
     
+    <!-- Open Graph SEO -->
+    <meta property="og:title" content="fohu - Mạng Xã Hội Sáng Tạo & Đặt Lịch Media">
+    <meta property="og:description" content="Kết nối nhanh chóng với hàng ngàn Designer, Photographer và Editor chuyên nghiệp.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80">
+    <meta property="og:type" content="website">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,7 +67,7 @@
         #toastNotification {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
-            font-size: 0.88rem; font-weight: 600; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-size: 0.88rem; font-weight: 600; z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px;
         }
         #toastNotification.show { transform: translateX(-50%) translateY(0); }
@@ -246,7 +254,7 @@
         .thread-actions { display: flex; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
         .thread-actions span:hover { color: var(--primary); }
 
-        /* PROFILE LAYOUT CLEAN & MODERN */
+        /* PROFILE LAYOUT */
         .profile-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
         .profile-cover-box { height: 260px; border-radius: 16px; background-size: cover; background-position: center; background-color: #cbd5e1; position: relative; }
         .profile-identity-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
@@ -254,10 +262,6 @@
         .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
-
-        /* UPLOAD BUTTON STYLING */
-        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
 
         /* BACKSTAGE ADMIN */
         .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
@@ -424,10 +428,8 @@
     <!-- TRANG CÁ NHÂN (PROFILE) -->
     <div id="page-profile" class="page-section">
         <div class="profile-container">
-            <!-- Ảnh bìa -->
             <div class="profile-cover-box" id="profileCoverBg"></div>
             
-            <!-- Phần thông tin định danh & Avatar -->
             <div class="profile-identity-section">
                 <img src="" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
@@ -611,7 +613,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHO PHÉP UPLOAD ẢNH TỪ MÁY TÍNH) -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (UPLOAD ẢNH CHUẨN UX/UI) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -632,17 +634,17 @@
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
                 <div class="modal-field-group">
-                    <label>Tải lên Ảnh đại diện (Avatar mới)</label>
-                    <div class="upload-btn-wrapper">
-                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fa-solid fa-camera"></i> Chọn ảnh từ thiết bị</button>
-                        <input type="file" id="avatarFileInput" accept="image/*" onchange="previewAvatarUpload(event)">
+                    <label>Ảnh đại diện (Avatar mới)</label>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img id="previewAvatarModal" src="" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border);">
+                        <input type="file" id="avatarFileInput" accept="image/*" onchange="previewImageUpload(event, 'avatar')" style="font-size: 0.82rem;">
                     </div>
                 </div>
                 <div class="modal-field-group">
-                    <label>Tải lên Ảnh bìa (Cover Photo mới)</label>
-                    <div class="upload-btn-wrapper">
-                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fa-solid fa-image"></i> Chọn ảnh từ thiết bị</button>
-                        <input type="file" id="coverFileInput" accept="image/*" onchange="previewCoverUpload(event)">
+                    <label>Ảnh bìa (Cover Photo mới)</label>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img id="previewCoverModal" src="" style="width: 70px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border);">
+                        <input type="file" id="coverFileInput" accept="image/*" onchange="previewImageUpload(event, 'cover')" style="font-size: 0.82rem;">
                     </div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
@@ -740,35 +742,33 @@
             document.getElementById('editNameInput').value = currentUser.displayName || '';
             tempAvatarBase64 = "";
             tempCoverBase64 = "";
+
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
                     document.getElementById('editBioInput').value = data.bio || '';
                     document.getElementById('editPhoneInput').value = data.phone || '';
+                    document.getElementById('previewAvatarModal').src = data.avatar || currentUser.photoURL;
+                    document.getElementById('previewCoverModal').src = data.coverUrl || 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&q=80';
                 }
             });
             openModal('editProfileModal');
         }
 
-        function previewAvatarUpload(event) {
+        function previewImageUpload(event, type) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    tempAvatarBase64 = e.target.result;
-                    showToast("Đã tải ảnh đại diện lên!");
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function previewCoverUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    tempCoverBase64 = e.target.result;
-                    showToast("Đã tải ảnh bìa lên!");
+                    if (type === 'avatar') {
+                        tempAvatarBase64 = e.target.result;
+                        document.getElementById('previewAvatarModal').src = tempAvatarBase64;
+                        showToast("Đã chọn ảnh đại diện mới!");
+                    } else if (type === 'cover') {
+                        tempCoverBase64 = e.target.result;
+                        document.getElementById('previewCoverModal').src = tempCoverBase64;
+                        showToast("Đã chọn ảnh bìa mới!");
+                    }
                 }
                 reader.readAsDataURL(file);
             }
@@ -796,8 +796,11 @@
 
             db.collection('users').doc(currentUser.uid).set(updateData, { merge: true }).then(() => {
                 closeModal('editProfileModal');
-                showToast("Đã cập nhật thông tin thành công!");
+                showToast("Đã lưu thay đổi thành công!");
                 loadUserProfileData();
+            }).catch((err) => {
+                console.error(err);
+                showToast("Lỗi lưu dữ liệu. Vui lòng thử lại!");
             });
         }
 
