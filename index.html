@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase SDK v9 (Compat) -->
+    <!-- Firebase SDK v9 (Compat bản đầy đủ để chạy mượt mà với Auth) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -472,15 +472,17 @@
     </div>
 
     <script>
-        // CẤU HÌNH FIREBASE THỰC TẾ (Thay thế thông tin từ Firebase Console của bạn nếu cần)
+        // CẤU HÌNH FIREBASE THỰC TẾ CỦA BẠN
         const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForTemplate",
+            apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
             authDomain: "fohu-platform.firebaseapp.com",
             projectId: "fohu-platform",
-            storageBucket: "fohu-platform.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123:web:abc"
+            storageBucket: "fohu-platform.firebasestorage.app",
+            messagingSenderId: "696328353651",
+            appId: "1:696328353651:web:8add8d582b366c12ccf706"
         };
+        
+        // KHỞI TẠO FIREBASE
         firebase.initializeApp(firebaseConfig);
 
         function showToast(message) {
@@ -509,7 +511,7 @@
             openModal('loginRoleModal'); 
         }
 
-        // HÀM ĐĂNG NHẬP FIREBASE AUTH THỰC TẾ
+        // HÀM ĐĂNG NHẬP GOOGLE FIREBASE AUTH THỰC TẾ
         function loginWithGoogleFirebase() {
             const provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider)
