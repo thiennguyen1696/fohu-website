@@ -211,7 +211,7 @@
         .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--dark); line-height: 1.4; margin-bottom: 0.5rem; }
         .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* DIỄN ĐÀN STYLES */
+        /* DIỄN ĐÀN & TRANG CÁ NHÂN STYLES */
         .community-container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
         .post-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
         .post-box textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; outline: none; resize: none; font-size: 0.95rem; min-height: 90px; margin-bottom: 0.75rem; }
@@ -221,6 +221,16 @@
         .thread-author { font-weight: 700; font-size: 0.92rem; color: var(--dark); }
         .thread-time { font-size: 0.75rem; color: var(--text-muted); }
         .thread-content { font-size: 0.95rem; color: var(--text-main); line-height: 1.6; white-space: pre-wrap; }
+
+        /* PROFILE PAGE STYLES */
+        .profile-banner { background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%); height: 160px; border-radius: 16px; margin-bottom: 50px; position: relative; }
+        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; position: absolute; bottom: -40px; left: 30px; object-fit: cover; background: #fff; }
+        .profile-info-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 3rem 1.5rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+
+        /* BACKSTAGE ADMIN STYLES */
+        .admin-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
+        .admin-table th, .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        .admin-table th { background: #f1f5f9; font-weight: 700; color: var(--dark); }
 
         /* FOOTER */
         footer { background-color: #0f172a; color: #94a3b8; padding: 3rem 1rem 1.5rem; font-size: 0.88rem; border-top: 1px solid var(--border); }
@@ -236,12 +246,14 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 0.75rem; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: #fff; width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-box { background: #fff; width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 1.25rem; overflow-y: auto; }
-        .modal-field-group { margin-bottom: 0.85rem; }
-        .modal-field-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-main); }
-        .modal-field-group input, .modal-field-group select, .modal-field-group textarea { width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; outline: none; background: #fff; font-size: 0.9rem; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; }
+        .modal-field-group { margin-bottom: 1rem; }
+        .modal-field-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-main); }
+        .modal-field-group input, .modal-field-group select, .modal-field-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 10px; outline: none; background: #fff; font-size: 0.9rem; }
+        .role-option-card { border: 2px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .role-option-card:hover, .role-option-card.selected { border-color: var(--primary); background: var(--primary-light); }
     </style>
 </head>
 <body>
@@ -266,6 +278,8 @@
                 <li><a onclick="switchPage('pricing'); closeMobileMenu();" id="nav-pricing">Trở thành đối tác</a></li>
                 <li><a onclick="switchPage('blog'); closeMobileMenu();" id="nav-blog">Tin tức</a></li>
                 <li><a onclick="switchPage('contact'); closeMobileMenu();" id="nav-contact">Liên hệ</a></li>
+                <!-- Nút Admin Backstage chỉ hiển thị khi đúng email admin -->
+                <li id="adminNavTab" style="display: none;"><a onclick="switchPage('admin'); closeMobileMenu();" id="nav-admin" style="color: #d97706;"><i class="fa-solid fa-shield-halved"></i> Backstage</a></li>
             </ul>
 
             <div class="nav-auth">
@@ -276,7 +290,7 @@
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập
                 </button>
 
-                <!-- Badge User & Dropdown chuẩn phong cách Tinh Tế -->
+                <!-- Badge User & Dropdown phong cách Tinh Tế -->
                 <div class="user-logged-badge" id="userLoggedBadge" onclick="toggleUserDropdown(event)">
                     <img src="" alt="Avatar" class="user-logged-avatar" id="loggedUserAvatar">
                     <span id="loggedUserName" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
@@ -284,13 +298,12 @@
 
                     <!-- Menu thả xuống -->
                     <div class="tinhte-user-dropdown" id="tinhteDropdown">
-                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Trang cá nhân')"><i class="fa-regular fa-user"></i> Trang cá nhân</div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Thông tin cá nhân')"><i class="fa-solid fa-gear"></i> Thông tin cá nhân</div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Bookmark')"><i class="fa-regular fa-bookmark"></i> Bookmark</div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Bài viết nháp')"><i class="fa-regular fa-file-lines"></i> Bài viết nháp</div>
+                        <div class="tinhte-dropdown-item" onclick="switchPage('profile')"><i class="fa-regular fa-user"></i> Trang cá nhân</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Thông tin tài khoản bảo mật')"><i class="fa-solid fa-gear"></i> Thông tin cá nhân</div>
+                        <div class="tinhte-dropdown-item" onclick="switchPage('bookings')"><i class="fa-regular fa-calendar-check"></i> Đặt lịch của bạn</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Không có bài viết nháp')"><i class="fa-regular fa-file-lines"></i> Bài viết nháp</div>
                         <div class="tinhte-dropdown-divider"></div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Mở Cài đặt khác')"><i class="fa-solid fa-sliders"></i> Cài đặt khác</div>
-                        <div class="tinhte-dropdown-item" onclick="showToast('Đã đổi giao diện sáng/tối')"><i class="fa-solid fa-moon"></i> Giao diện: Sáng</div>
+                        <div class="tinhte-dropdown-item" onclick="showToast('Đã chuyển chế độ sáng')"><i class="fa-solid fa-moon"></i> Giao diện: Sáng</div>
                         <div class="tinhte-dropdown-divider"></div>
                         <div class="tinhte-dropdown-item" style="color: #ef4444;" onclick="logoutFirebase()"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Đăng xuất</div>
                     </div>
@@ -312,27 +325,13 @@
                 </p>
 
                 <div class="hero-cta-group">
-                    <button onclick="switchPage('marketplace')" class="btn btn-primary">
-                        <i class="fa-solid fa-compass"></i> Khám Phá Ngay
-                    </button>
-                    <button onclick="openJobRequestModal()" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
-                        <i class="fa-solid fa-bullhorn"></i> Đăng Yêu Cầu
-                    </button>
-                </div>
-
-                <div class="home-search-bar">
-                    <input type="text" class="home-search-input" placeholder="Tìm dịch vụ (Designer, Chụp ảnh...)...">
-                    <select class="home-search-select">
-                        <option value="">Toàn quốc</option>
-                        <option value="Hà Nội">Hà Nội</option>
-                        <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                    </select>
-                    <button class="btn btn-dark" onclick="switchPage('marketplace')"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button onclick="switchPage('marketplace')" class="btn btn-primary"><i class="fa-solid fa-compass"></i> Khám Phá Ngay</button>
+                    <button onclick="openJobRequestModal()" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);"><i class="fa-solid fa-bullhorn"></i> Đăng Yêu Cầu</button>
                 </div>
             </div>
 
             <div style="position: relative;">
-                <div class="hero-slider-container" id="heroSlider">
+                <div class="hero-slider-container">
                     <div class="hero-slide-item active">
                         <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Service">
                         <div class="hero-slide-caption">
@@ -377,21 +376,73 @@
             </div>
 
             <div class="post-box" id="loginPromptBox" style="text-align: center; padding: 1.5rem;">
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Vui lòng đăng nhập tài khoản Google để tham gia đăng bài và bình luận cùng cộng đồng.</p>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Vui lòng đăng nhập tài khoản Google để tham gia đăng bài và tương tác.</p>
                 <button class="btn btn-dark" onclick="openLoginRoleModal()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập ngay</button>
             </div>
 
-            <div id="threadsFeedContainer">
-                <div class="thread-item">
-                    <div class="thread-header">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="thread-avatar">
-                        <div>
-                            <div class="thread-author">Fohu Official</div>
-                            <div class="thread-time">Hôm nay</div>
-                        </div>
-                    </div>
-                    <div class="thread-content">Chào mừng các Designer, Photographer, Editor và AI Artist đến với không gian sinh hoạt chung của fohu! Hãy đăng bài giới thiệu portfolio hoặc trao đổi kinh nghiệm ngay nhé.</div>
+            <div id="threadsFeedContainer"></div>
+        </div>
+    </div>
+
+    <!-- TRANG CÁ NHÂN (PROFILE) -->
+    <div id="page-profile" class="page-section">
+        <div class="community-container">
+            <div class="profile-banner">
+                <img src="" alt="Avatar" class="profile-avatar-large" id="profileAvatar">
+            </div>
+            <div class="profile-info-box">
+                <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--dark);">Tên User</h2>
+                <p id="profileEmail" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2px;">email@domain.com</p>
+                <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary-hover); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem;" id="profileRoleBadge">
+                    Vai trò: Thành viên
                 </div>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 1rem;">Bài đăng của bạn</h3>
+            <div id="userPostsContainer"></div>
+        </div>
+    </div>
+
+    <!-- TRANG ĐẶT LỊCH CỦA BẠN (BOOKINGS) -->
+    <div id="page-bookings" class="page-section">
+        <div class="community-container">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);">Lịch Đặt Dịch Vụ & Studio</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Quản lý các lịch hẹn làm việc với Photographer, Editor và Studio của bạn.</p>
+            </div>
+            <div class="thread-item" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 700; color: var(--dark); font-size: 1rem;">Gói Chụp Ảnh Pre-wedding (Studio Sáng Tạo)</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Thời gian: 15:00 - 18:00 • Ngày 10/10/2026</div>
+                </div>
+                <span style="background: #ccfbf1; color: #0f766e; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 0.78rem;">Đã xác nhận</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANG BACKSTAGE ADMIN -->
+    <div id="page-admin" class="page-section">
+        <div style="max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="font-family: var(--font-serif); font-weight: 700; color: var(--dark);"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Backstage - Quản Trị Hệ Thống fohu</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Khu vực kiểm soát tài khoản người dùng, đối tác và bài đăng trên toàn hệ thống.</p>
+            </div>
+            <div style="background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
+                <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Danh sách tài khoản thành viên</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Vai trò hệ thống</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersTableBody">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted);">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -479,6 +530,52 @@
         </section>
     </div>
 
+    <!-- MODAL CHỌN VAI TRÒ KHI ĐĂNG NHẬP LẦN ĐẦU -->
+    <div class="modal-overlay" id="roleSelectionModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Chọn Vai Trò Tài Khoản</h3>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">Vui lòng chọn vai trò phù hợp để trải nghiệm hệ thống fohu tốt nhất.</p>
+                
+                <div class="role-option-card selected" id="roleCardPersonal" onclick="selectRole('Personal')">
+                    <i class="fa-solid fa-user" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <div>
+                        <div style="font-weight: 700; color: var(--dark);">Người dùng cá nhân</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Tìm kiếm dịch vụ, đặt lịch và tham gia thảo luận diễn đàn.</div>
+                    </div>
+                </div>
+
+                <div class="role-option-card" id="roleCardPartner" onclick="selectRole('Partner')">
+                    <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <div>
+                        <div style="font-weight: 700; color: var(--dark);">Đối tác sáng tạo / Media</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Mở gian hàng, đăng portfolio portfolio và nhận đơn đặt lịch.</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" onclick="saveUserRoleAndContinue()">Xác nhận & Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ĐĂNG NHẬP GOOGLE -->
+    <div class="modal-overlay" id="loginRoleModal">
+        <div class="modal-box" style="max-width: 400px; padding: 20px; text-align: center;">
+            <div class="modal-header" style="border:none; padding-bottom: 0;">
+                <h3 style="width: 100%; font-size: 1.25rem; font-weight: 800;">Đăng Nhập FOHU</h3>
+                <button onclick="closeModal('loginRoleModal')" style="border:none; background:none; cursor:pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 20px;">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Xác thực tài khoản Google để tham gia hệ sinh thái.</p>
+                <button class="btn btn-primary" style="width:100%; justify-content: center; padding: 12px; background: #ea4335;" onclick="loginWithGoogleFirebase()">
+                    <i class="fa-brands fa-google"></i> Đăng nhập với Google
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer>
         <div class="footer-container">
@@ -504,22 +601,6 @@
         </div>
     </footer>
 
-    <!-- MODAL ĐĂNG NHẬP GOOGLE -->
-    <div class="modal-overlay" id="loginRoleModal">
-        <div class="modal-box" style="max-width: 400px; padding: 20px; text-align: center;">
-            <div class="modal-header" style="border:none; padding-bottom: 0;">
-                <h3 style="width: 100%; font-size: 1.25rem; font-weight: 800;">Đăng Nhập FOHU</h3>
-                <button onclick="closeModal('loginRoleModal')" style="border:none; background:none; cursor:pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body" style="padding-top: 20px;">
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Xác thực tài khoản Google để đồng bộ hồ sơ chuyên gia của bạn.</p>
-                <button class="btn btn-primary" style="width:100%; justify-content: center; padding: 12px; background: #ea4335;" onclick="loginWithGoogleFirebase()">
-                    <i class="fa-brands fa-google"></i> Đăng nhập với Google
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // CẤU HÌNH FIREBASE THỰC TẾ
         const firebaseConfig = {
@@ -533,6 +614,9 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        // Email cấu hình độc quyền làm Admin Backstage
+        const ADMIN_EMAIL = "thien.nguyen1696@gmail.com";
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -548,6 +632,9 @@
             const navT = document.getElementById('nav-' + pageId);
             if (navT) navT.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pageId === 'profile') loadUserProfileData();
+            if (pageId === 'admin') loadAdminBackstageData();
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
@@ -557,18 +644,24 @@
         function openJobRequestModal() { openModal('jobRequestModal'); }
         function openLoginRoleModal() { openModal('loginRoleModal'); }
 
-        // MỞ / ĐÓNG DROPDOWN MENU KHI BẤM VÀO USER (PHONG CÁCH TINH TẾ)
+        // DROPDOWN USER
         function toggleUserDropdown(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('tinhteDropdown');
             dropdown.classList.toggle('active');
         }
 
-        // Đóng dropdown khi bấm ra ngoài màn hình
         window.addEventListener('click', () => {
             const dropdown = document.getElementById('tinhteDropdown');
             if (dropdown) dropdown.classList.remove('active');
         });
+
+        let selectedRoleChoice = 'Personal';
+        function selectRole(role) {
+            selectedRoleChoice = role;
+            document.getElementById('roleCardPersonal').classList.toggle('selected', role === 'Personal');
+            document.getElementById('roleCardPartner', role === 'Partner').classList.toggle('selected', role === 'Partner');
+        }
 
         // ĐĂNG NHẬP GOOGLE
         function loginWithGoogleFirebase() {
@@ -577,8 +670,7 @@
                 .then((result) => {
                     const user = result.user;
                     closeModal('loginRoleModal');
-                    showToast("Xin chào, " + user.displayName + "!");
-                    updateUserUI(user);
+                    checkUserRoleInFirestore(user);
                 })
                 .catch((error) => {
                     console.error("Lỗi đăng nhập:", error);
@@ -587,6 +679,49 @@
         }
 
         let currentUser = null;
+        let currentUserRole = 'Personal';
+
+        function checkUserRoleInFirestore(user) {
+            db.collection('users').doc(user.uid).get().then((doc) => {
+                if (doc.exists && doc.data().role) {
+                    currentUserRole = doc.data().role;
+                    finishLogin(user);
+                } else {
+                    // Chưa chọn vai trò -> Hiện modal chọn
+                    currentUser = user;
+                    openModal('roleSelectionModal');
+                }
+            });
+        }
+
+        function saveUserRoleAndContinue() {
+            if (!currentUser) return;
+            db.collection('users').doc(currentUser.uid).set({
+                uid: currentUser.uid,
+                name: currentUser.displayName,
+                email: currentUser.email,
+                avatar: currentUser.photoURL,
+                role: selectedRoleChoice,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).then(() => {
+                currentUserRole = selectedRoleChoice;
+                closeModal('roleSelectionModal');
+                finishLogin(currentUser);
+            });
+        }
+
+        function finishLogin(user) {
+            currentUser = user;
+            updateUserUI(user);
+            showToast("Xin chào, " + user.displayName + "!");
+            document.getElementById('postCreationBox').style.display = 'block';
+            document.getElementById('loginPromptBox').style.display = 'none';
+
+            // Kiểm tra quyền Admin
+            if (user.email === ADMIN_EMAIL) {
+                document.getElementById('adminNavTab').style.display = 'block';
+            }
+        }
 
         // THEO DÕI TRẠNG THÁI ĐĂNG NHẬP
         firebase.auth().onAuthStateChanged((user) => {
@@ -595,10 +730,14 @@
                 updateUserUI(user);
                 document.getElementById('postCreationBox').style.display = 'block';
                 document.getElementById('loginPromptBox').style.display = 'none';
+                if (user.email === ADMIN_EMAIL) {
+                    document.getElementById('adminNavTab').style.display = 'block';
+                }
             } else {
                 currentUser = null;
                 document.getElementById('postCreationBox').style.display = 'none';
                 document.getElementById('loginPromptBox').style.display = 'block';
+                document.getElementById('adminNavTab').style.display = 'none';
             }
             loadCommunityPosts();
         });
@@ -615,8 +754,77 @@
             firebase.auth().signOut().then(() => {
                 document.getElementById('loginNavBtn').style.display = 'inline-flex';
                 document.getElementById('userLoggedBadge').style.display = 'none';
+                document.getElementById('adminNavTab').style.display = 'none';
                 switchPage('home');
                 showToast("Đã đăng xuất!");
+            });
+        }
+
+        // TẢI TRANG CÁ NHÂN
+        function loadUserProfileData() {
+            if (!currentUser) return;
+            document.getElementById('profileAvatar').src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+            document.getElementById('profileName').innerText = currentUser.displayName;
+            document.getElementById('profileEmail').innerText = currentUser.email;
+
+            db.collection('users').doc(currentUser.uid).get().then((doc) => {
+                if (doc.exists) {
+                    const r = doc.data().role;
+                    document.getElementById('profileRoleBadge').innerText = "Vai trò: " + (r === 'Partner' ? 'Đối tác sáng tạo / Media' : 'Người dùng cá nhân');
+                }
+            });
+
+            // Tải bài đăng của riêng user này
+            const container = document.getElementById('userPostsContainer');
+            db.collection('posts').where('authorId', '==', currentUser.uid).orderBy('createdAt', 'desc').get()
+                .then((snapshot) => {
+                    let html = '';
+                    if (snapshot.empty) {
+                        html = `<div class="thread-item" style="text-align:center; color:var(--text-muted);">Bạn chưa đăng bài viết nào.</div>`;
+                    } else {
+                        snapshot.forEach((doc) => {
+                            const p = doc.data();
+                            html += `
+                                <div class="thread-item">
+                                    <div class="thread-header">
+                                        <img src="${p.authorAvatar}" alt="Avatar" class="thread-avatar">
+                                        <div>
+                                            <div class="thread-author">${p.authorName}</div>
+                                            <div class="thread-time">Bài viết của bạn</div>
+                                        </div>
+                                    </div>
+                                    <div class="thread-content">${escapeHtml(p.content)}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                    container.innerHTML = html;
+                });
+        }
+
+        // TẢI BACKSTAGE ADMIN
+        function loadAdminBackstageData() {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+                showToast("Bạn không có quyền truy cập Backstage!");
+                switchPage('home');
+                return;
+            }
+
+            const tbody = document.getElementById('adminUsersTableBody');
+            db.collection('users').get().then((snapshot) => {
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const u = doc.data();
+                    html += `
+                        <tr>
+                            <td><b>${u.name || 'Không tên'}</b></td>
+                            <td>${u.email}</td>
+                            <td><span style="background:var(--primary-light); color:var(--primary-hover); padding:2px 8px; border-radius:6px; font-weight:700; font-size:0.75rem;">${u.role || 'Personal'}</span></td>
+                            <td><button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('Đã xem chi tiết user')">Chi tiết</button></td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
             });
         }
 
@@ -633,6 +841,7 @@
             }
 
             db.collection('posts').add({
+                authorId: currentUser.uid,
                 authorName: currentUser.displayName || 'Thành viên fohu',
                 authorAvatar: currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
                 content: content,
@@ -674,9 +883,6 @@
                         });
                     }
                     feedContainer.innerHTML = html;
-                })
-                .catch((error) => {
-                    console.error("Lỗi tải bài viết:", error);
                 });
         }
 
