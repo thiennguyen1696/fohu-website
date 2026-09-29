@@ -225,7 +225,7 @@
         .blog-card h3 { font-size: 1.05rem; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 0.5rem; }
         .blog-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* SOCIAL FEED (INSTAGRAM / FACEBOOK HYBRID STYLE) */
+        /* SOCIAL FEED */
         .community-container { max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
         .post-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
         .post-box textarea { width: 100%; border: none; outline: none; resize: none; font-size: 0.98rem; min-height: 70px; background: transparent; color: var(--text-main); }
@@ -246,15 +246,19 @@
         .thread-actions { display: flex; gap: 20px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
         .thread-actions span:hover { color: var(--primary); }
 
-        /* PROFILE STYLE */
+        /* PROFILE LAYOUT CLEAN & MODERN */
         .profile-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .profile-cover-wrap { height: 240px; border-radius: 16px; background-size: cover; background-position: center; position: relative; background-color: #cbd5e1; }
-        .profile-avatar-wrap { position: absolute; bottom: -50px; left: 30px; display: flex; align-items: flex-end; gap: 16px; }
-        .profile-avatar-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bg-card); object-fit: cover; background: var(--bg-card); }
-        .profile-header-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 60px 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
+        .profile-cover-box { height: 260px; border-radius: 16px; background-size: cover; background-position: center; background-color: #cbd5e1; position: relative; }
+        .profile-identity-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 2rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); position: relative; }
+        .profile-avatar-positioned { width: 130px; height: 130px; border-radius: 50%; border: 5px solid var(--bg-card); object-fit: cover; background: var(--bg-card); margin-top: -65px; margin-bottom: 12px; box-shadow: var(--shadow-md); }
         .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
         .profile-tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .profile-tab-btn.active { color: var(--primary); border-color: var(--primary); }
+
+        /* PRESET SELECTION FOR COVER/AVATAR */
+        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+        .preset-item { height: 70px; border-radius: 8px; background-size: cover; background-position: center; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .preset-item:hover, .preset-item.selected { border-color: var(--primary); transform: scale(1.03); }
 
         /* BACKSTAGE ADMIN */
         .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-top: 1rem; }
@@ -394,7 +398,6 @@
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Không gian kết nối, chia sẻ tác phẩm và câu chuyện cảm hứng của các nhà sáng tạo.</p>
             </div>
 
-            <!-- Khung đăng bài chuẩn IG / FB -->
             <div class="post-box" id="postCreationBox" style="display: none;">
                 <textarea id="postContentInput" placeholder="Hôm nay bạn có tác phẩm hoặc câu chuyện gì muốn chia sẻ cùng cộng đồng?"></textarea>
                 <div id="mediaInputContainer" style="display: none; margin-bottom: 10px;">
@@ -422,23 +425,22 @@
     <!-- TRANG CÁ NHÂN (PROFILE) -->
     <div id="page-profile" class="page-section">
         <div class="profile-container">
-            <div class="profile-cover-wrap" id="profileCoverBg">
-                <div class="profile-avatar-wrap">
-                    <img src="" alt="Avatar" class="profile-avatar-img" id="profileAvatar">
-                    <div style="margin-bottom: 10px;">
-                        <h2 id="profileName" style="font-size: 1.4rem; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Tên User</h2>
-                        <span id="profileRoleBadge" style="background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 0.75rem;">Thành viên</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Ảnh bìa -->
+            <div class="profile-cover-box" id="profileCoverBg"></div>
             
-            <div class="profile-header-card">
-                <p id="profileBio" style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 12px;">Chưa có tiểu sử cá nhân. Hãy vào Cài đặt tài khoản để cập nhật thêm về bạn!</p>
-                <div style="display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-muted);">
-                    <div><i class="fa-solid fa-envelope"></i> <span id="profileEmailDisplay">email@domain.com</span></div>
-                    <div><i class="fa-solid fa-phone"></i> <span id="profilePhoneDisplay">Chưa cập nhật SĐT</span></div>
-                </div>
-                <div style="margin-top: 15px;">
+            <!-- Phần thông tin định danh & Avatar nằm ngoài ảnh bìa -->
+            <div class="profile-identity-section">
+                <img src="" alt="Avatar" class="profile-avatar-positioned" id="profileAvatar">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 id="profileName" style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Tên User</h2>
+                        <span id="profileRoleBadge" style="background: var(--primary-light); color: var(--primary); padding: 3px 10px; border-radius: 999px; font-weight: 700; font-size: 0.75rem; display: inline-block; margin-top: 4px;">Thành viên</span>
+                        <p id="profileBio" style="color: var(--text-muted); font-size: 0.92rem; margin-top: 10px; max-width: 600px;">Chưa có tiểu sử cá nhân. Hãy vào Cài đặt tài khoản để cập nhật thêm về bạn!</p>
+                        <div style="display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">
+                            <div><i class="fa-solid fa-envelope"></i> <span id="profileEmailDisplay">email@domain.com</span></div>
+                            <div><i class="fa-solid fa-phone"></i> <span id="profilePhoneDisplay">Chưa cập nhật SĐT</span></div>
+                        </div>
+                    </div>
                     <button class="btn btn-secondary" onclick="openEditProfileModal()"><i class="fa-solid fa-pen"></i> Chỉnh sửa trang cá nhân</button>
                 </div>
             </div>
@@ -610,7 +612,7 @@
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN -->
+    <!-- MODAL CÀI ĐẶT TÀI KHOẢN (CHỌN MẪU ẢNH BÌA THAY VÌ GÕ URL) -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -624,15 +626,20 @@
                 </div>
                 <div class="modal-field-group">
                     <label>Tiểu sử (Bio)</label>
-                    <textarea id="editBioInput" placeholder="Ví dụ: Chuyên gia thiết kế đồ họa & nhiếp ảnh thương mại tại TP.HCM..." rows="3"></textarea>
+                    <textarea id="editBioInput" placeholder="Giới thiệu ngắn gọn về bạn..." rows="2"></textarea>
                 </div>
                 <div class="modal-field-group">
                     <label>Số điện thoại liên hệ</label>
                     <input type="tel" id="editPhoneInput" placeholder="0909xxxxxx">
                 </div>
                 <div class="modal-field-group">
-                    <label>Link Ảnh bìa (Cover Photo URL)</label>
-                    <input type="url" id="editCoverInput" placeholder="https://images.unsplash.com/photo-...">
+                    <label>Chọn mẫu Ảnh bìa (Cover Photo):</label>
+                    <div class="preset-grid">
+                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80')"></div>
+                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80')"></div>
+                        <div class="preset-item" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&q=80')" onclick="selectCoverPreset('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200&q=80')"></div>
+                    </div>
+                    <input type="hidden" id="editCoverInput">
                 </div>
                 <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="saveUserProfileSettings()">Lưu thay đổi</button>
             </div>
@@ -735,6 +742,11 @@
             openModal('editProfileModal');
         }
 
+        function selectCoverPreset(url) {
+            document.getElementById('editCoverInput').value = url;
+            showToast("Đã chọn mẫu ảnh bìa mới!");
+        }
+
         function saveUserProfileSettings() {
             if (!currentUser) return;
             const newName = document.getElementById('editNameInput').value.trim();
@@ -746,7 +758,7 @@
                 name: newName,
                 bio: newBio,
                 phone: newPhone,
-                coverUrl: newCover
+                coverUrl: newCover || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80"
             }, { merge: true }).then(() => {
                 closeModal('editProfileModal');
                 showToast("Đã cập nhật thông tin thành công!");
