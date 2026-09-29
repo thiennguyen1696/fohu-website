@@ -491,24 +491,21 @@
             openModal('loginRoleModal'); 
         }
 
-        // SỬ DỤNG REDIRECT THAY CHO POPUP ĐỂ CHỐNG LỖI DOMAIN 100%
+        // ĐĂNG NHẬP GOOGLE DÙNG POPUP AN TOÀN
         function loginWithGoogleFirebase() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithRedirect(provider);
-        }
-
-        // TỰ ĐỘNG XỬ LÝ KHI GOOGLE CHUYỂN HƯỚNG TRẢ VỀ TRANG WEB
-        firebase.auth().getRedirectResult()
-            .then((result) => {
-                if (result.user) {
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
                     const user = result.user;
+                    closeModal('loginRoleModal');
                     showToast("Xin chào, " + user.displayName + "!");
                     updateUserUI(user);
-                }
-            }).catch((error) => {
-                console.error("Lỗi xác thực:", error);
-                showToast("Đăng nhập thất bại: " + error.message);
-            });
+                })
+                .catch((error) => {
+                    console.error("Lỗi đăng nhập:", error);
+                    showToast("Lỗi đăng nhập: " + error.code);
+                });
+        }
 
         // KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP SẴN CÓ
         firebase.auth().onAuthStateChanged((user) => {
