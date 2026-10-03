@@ -1,312 +1,244 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FOHU - Nền tảng kết nối sáng tạo và đặt lịch media</title>
-<meta name="description" content="Kết nối trực tiếp với Designer, Photographer, Editor và AI Artist chuyên nghiệp tại Việt Nam.">
-<meta name="theme-color" content="#0f766e">
-
-<!-- Open Graph: thêm og:url và og:image (URL tuyệt đối, 1200x630) khi đã có tên miền -->
-<meta property="og:type" content="website">
-<meta property="og:locale" content="vi_VN">
-<meta property="og:site_name" content="FOHU">
-<meta property="og:title" content="FOHU - Nền tảng kết nối sáng tạo và đặt lịch media">
-<meta property="og:description" content="Kết nối trực tiếp với Designer, Photographer, Editor và AI Artist chuyên nghiệp tại Việt Nam.">
-<meta name="twitter:card" content="summary_large_image">
-
-<!-- Đổi tên file "fohu 2.png" thành "fohu-logo.png" (không dấu cách) -->
-<link rel="icon" type="image/png" href="fohu-logo.png">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
-
-<style>
-:root {
-  --primary: #0f766e;            /* đậm hơn #0d9488 để chữ trắng đạt tỉ lệ tương phản AA */
-  --primary-soft: #ccfbf1;
-  --bg-main: #f0f2f5;
-  --bg-card: #ffffff;
-  --dark: #111827;
-  --text-main: #1f2937;
-  --text-muted: #4b5563;         /* đậm hơn #6b7280 để đủ tương phản trên nền xám */
-  --border: #e2e8f0;
-  --nav-h: 72px;
-  --font-main: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-}
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-padding-top: var(--nav-h); }
-body { font-family: var(--font-main); background: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: var(--nav-h); }
-img { max-width: 100%; height: auto; display: block; }
-button { font-family: inherit; }
-:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-
-/* Toast */
-.toast {
-  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(120px);
-  background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
-  font-size: .88rem; font-weight: 600; z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,.2);
-  transition: transform .3s cubic-bezier(.4,0,.2,1); max-width: calc(100% - 2rem);
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* Nav */
-nav { position: fixed; top: 0; inset-inline: 0; height: var(--nav-h); background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
-.nav-container { max-width: 1440px; height: 100%; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; gap: 1rem; }
-.brand-logo-img { height: 48px; width: auto; }
-.nav-links { display: flex; gap: .3rem; list-style: none; align-items: center; }
-.nav-links a { display: block; text-decoration: none; color: var(--text-main); font-weight: 600; font-size: .88rem; padding: .4rem .7rem; border-radius: 999px; }
-.nav-links a:hover, .nav-links a[aria-current="page"] { color: #fff; background: var(--dark); }
-.nav-right { display: flex; align-items: center; gap: .5rem; }
-.nav-toggle { display: none; width: 44px; height: 44px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 12px; cursor: pointer; align-items: center; justify-content: center; }
-
-/* Auth area: tránh nháy sai trạng thái trước khi Firebase trả kết quả */
-.nav-auth[data-state="loading"] #loginNavBtn { visibility: hidden; }
-.nav-auth[data-state="in"] #loginNavBtn { display: none; }
-#userBadge { display: none; align-items: center; gap: 8px; background: var(--bg-main); padding: 4px 12px 4px 4px; border-radius: 999px; border: 1px solid var(--border); font-size: .82rem; font-weight: 600; color: var(--text-main); text-decoration: none; }
-.nav-auth[data-state="in"] #userBadge { display: flex; }
-#userBadge img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
-#userName { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* Buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; min-height: 44px; border-radius: 999px; font-weight: 600; font-size: .88rem; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
-.btn:disabled { opacity: .6; cursor: progress; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-dark { background: var(--dark); color: #fff; }
-.btn-google { width: 100%; background: #fff; color: #1f1f1f; border-color: #747775; padding: 12px; }
-.btn-google:hover:not(:disabled) { background: #f8f9fa; }
-
-/* Hero */
-.hero { padding: 40px 1.5rem 60px; max-width: 1320px; margin: auto; display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; align-items: center; }
-.hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); line-height: 1.2; font-weight: 700; color: var(--dark); margin-bottom: 1rem; }
-.hero p { color: var(--text-muted); margin-bottom: 1.5rem; max-width: 60ch; }
-.hero img { width: 100%; border-radius: 20px; }
-
-/* Footer */
-footer { background: #0f172a; color: #cbd5e1; padding: 2.5rem 1rem 1.5rem; font-size: .88rem; text-align: center; }
-.footer-links { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.5rem; margin-bottom: 1rem; }
-.footer-links a { color: #e2e8f0; text-decoration: none; }
-.footer-links a:hover { text-decoration: underline; }
-
-/* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: .75rem; }
-.modal-overlay.active { display: flex; }
-.modal-box { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--border); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
-.modal-header h2 { flex: 1; font-size: 1.25rem; font-weight: 800; padding-left: 44px; }
-.modal-close { width: 44px; height: 44px; border: none; background: none; cursor: pointer; border-radius: 50%; display: grid; place-items: center; }
-.modal-body { padding-top: 16px; }
-.modal-body p { font-size: .88rem; color: var(--text-muted); margin-bottom: 20px; }
-#loginMsg { margin-top: 14px; font-size: .85rem; color: #b91c1c; min-height: 1.2em; }
-
-@media (max-width: 900px) {
-  .nav-toggle { display: inline-flex; }
-  .nav-links { display: none; position: absolute; top: var(--nav-h); inset-inline: 0; flex-direction: column; align-items: stretch; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: .75rem 1.5rem 1rem; gap: .25rem; }
-  .nav-links.open { display: flex; }
-  .nav-links a { padding: .75rem 1rem; font-size: 1rem; }
-  .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 24px; }
-  .hero img { order: -1; }
-}
-@media (max-width: 420px) {
-  .nav-container { padding: 0 1rem; }
-  #userName { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; scroll-behavior: auto !important; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fohu.asia - Nền tảng Sáng tạo Hình ảnh & Video Toàn diện</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome cho Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1rem;
+        }
+        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
+        @media (min-width: 1280px) { .masonry-grid { column-count: 5; } }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <a href="#" class="text-2xl font-extrabold tracking-tighter text-black flex items-center gap-1">
+                    <span class="bg-black text-white px-2 py-1 rounded-lg text-lg">Fo</span>hu
+                </a>
+                <span class="hidden sm:inline-block text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">Visual Creator Hub</span>
+            </div>
 
-<nav aria-label="Điều hướng chính">
-  <div class="nav-container">
-    <a href="./" aria-label="FOHU - Trang chủ"><img src="fohu-logo.png" alt="FOHU" class="brand-logo-img" width="150" height="48"></a>
+            <!-- Thanh tìm kiếm -->
+            <div class="flex-1 max-w-2xl relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input type="text" placeholder="Tìm kiếm creator, videographer, máy cơ Sony/Canon, studio, preset..." 
+                    class="w-full pl-10 pr-4 py-2.5 bg-gray-100 hover:bg-gray-200/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 rounded-full text-sm transition-all">
+            </div>
 
-    <ul class="nav-links" id="navLinks">
-      <li><a href="./" aria-current="page">Trang chủ</a></li>
-      <li><a href="marketplace.html">Đối tác</a></li>
-      <li><a href="community.html">Bảng tin</a></li>
-      <li><a href="pricing.html">Trở thành đối tác</a></li>
-      <li><a href="blog.html">Tin tức</a></li>
-      <li><a href="contact.html">Liên hệ</a></li>
-    </ul>
+            <!-- Menu phải -->
+            <div class="flex items-center gap-3">
+                <button id="btnUpgrade" onclick="openPricingModal()" class="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-full shadow-sm transition">
+                    <i class="fa-solid fa-crown text-yellow-300"></i> Trở thành Creator (149k)
+                </button>
 
-    <div class="nav-right">
-      <div class="nav-auth" id="navAuth" data-state="loading">
-        <button type="button" class="btn btn-dark" id="loginNavBtn">Đăng nhập</button>
-        <a href="profile.html" id="userBadge" aria-label="Trang cá nhân">
-          <img id="userAvatar" alt="" width="30" height="30" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' fill='%23cbd5e1'/%3E%3Ccircle cx='15' cy='12' r='5' fill='%2364748b'/%3E%3Cpath d='M5 27c1-6 6-8 10-8s9 2 10 8z' fill='%2364748b'/%3E%3C/svg%3E">
-          <span id="userName">Tài khoản</span>
-        </a>
-      </div>
-      <button type="button" class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false" aria-controls="navLinks">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
+                <button id="btnUpload" onclick="alert('Mở Studio đăng tải Ảnh/Video cho Creator!')" class="hidden bg-black hover:bg-gray-800 text-white text-xs font-bold px-3.5 py-2 rounded-full transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Đăng tải
+                </button>
+
+                <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                </button>
+
+                <!-- Avatar & Switcher -->
+                <div class="relative group">
+                    <button class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" class="w-9 h-9 rounded-full object-cover border">
+                    </button>
+                    <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 hidden group-hover:block z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p id="userNameDisplay" class="text-xs font-bold text-gray-900">Nguyễn Trương Hoàng Thiện</p>
+                            <p id="userRoleBadge" class="text-[10px] text-gray-500 font-medium">Thành viên Thường</p>
+                        </div>
+                        <a href="#" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"><i class="fa-regular fa-bookmark mr-2"></i> Bộ sưu tập đã lưu</a>
+                        <a href="#" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"><i class="fa-solid fa-gear mr-2"></i> Cài đặt tài khoản</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <button onclick="toggleUserRole()" class="w-full text-left px-4 py-2 text-xs text-indigo-600 font-semibold hover:bg-indigo-50">
+                            🔄 Đổi Role (Test Thường ⇄ Pro)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SUB-NAV: Danh mục khám phá toàn diện -->
+    <nav class="bg-white border-b border-gray-100 py-2.5 px-4 overflow-x-auto whitespace-nowrap">
+        <div class="max-w-7xl mx-auto flex items-center gap-2">
+            <a href="#" class="px-4 py-1.5 bg-black text-white text-xs font-bold rounded-full">Tất cả</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🎬 Videographer / Reels</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">📷 Máy cơ (DSLR / Mirrorless)</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">📱 Phone Photography</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">💄 Makeup Artist (MUA)</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🤖 AI Artist</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🏠 Mini Studio</a>
+            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">👗 Thuê trang phục</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT: Masonry Grid -->
+    <main class="max-w-7xl mx-auto p-4 lg:p-6">
+        <div class="masonry-grid">
+            
+            <!-- Item 1 -->
+            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+                <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600" alt="Video Reel" class="w-full object-cover">
+                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                    <i class="fa-solid fa-video text-red-400"></i> Videographer
+                </div>
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
+                    <div class="flex justify-end">
+                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
+                    </div>
+                    <div class="flex items-center justify-between text-white">
+                        <div class="flex items-center gap-2">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-6 h-6 rounded-full border">
+                            <span class="text-xs font-medium">Hoàng Thện <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600" alt="Camera Photo" class="w-full object-cover">
+                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    Sony A7IV • 50mm f/1.4
+                </div>
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
+                    <div class="flex justify-end">
+                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
+                    </div>
+                    <div class="flex items-center justify-between text-white">
+                        <div class="flex items-center gap-2">
+                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-6 h-6 rounded-full border">
+                            <span class="text-xs font-medium">Minh Tuấn Pro <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
+                <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600" alt="Makeup" class="w-full object-cover">
+                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    Makeup Artist
+                </div>
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
+                    <div class="flex justify-end">
+                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
+                    </div>
+                    <div class="flex items-center justify-between text-white">
+                        <div class="flex items-center gap-2">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="w-6 h-6 rounded-full border">
+                            <span class="text-xs font-medium">Linh Chi MUA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL ĐĂNG KÝ GÓI CREATOR (149K/THÁNG) -->
+    <div id="pricingModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closePricingModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <div class="inline-flex p-3 bg-purple-100 text-purple-600 rounded-2xl text-2xl mb-2">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h3 class="text-xl font-extrabold text-gray-900">Đăng ký Tài khoản Creator Pro</h3>
+                <p class="text-xs text-gray-500 mt-1">Mở khóa tính năng đăng tải, portfolio và nhận booking dịch vụ</p>
+            </div>
+
+            <!-- Giá tiền -->
+            <div class="bg-gradient-to-br from-purple-900 to-indigo-900 text-white rounded-2xl p-4 text-center mb-5 shadow-inner">
+                <span class="text-3xl font-black">149.000đ</span> <span class="text-xs text-purple-200">/ tháng</span>
+            </div>
+
+            <!-- Chọn Chuyên ngành đăng ký -->
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-gray-700 mb-2">Chọn lĩnh vực chuyên môn chính của bạn:</label>
+                <select id="creatorRoleSelect" class="w-full text-xs bg-gray-100 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="dslr">📷 Nhiếp ảnh gia Máy cơ (DSLR / Mirrorless)</option>
+                    <option value="video">🎬 Videographer / Quay phim ngắn / Reels</option>
+                    <option value="phone">📱 Phone Photographer & Preset Creator</option>
+                    <option value="mua">💄 Chuyên gia Trang điểm (Makeup Artist)</option>
+                    <option value="ai">🤖 AI Artist / Concept Generator</option>
+                    <option value="studio">🏠 Mini Studio / Cho thuê không gian</option>
+                    <option value="costume">👗 Dịch vụ cho thuê Trang phục</option>
+                </select>
+            </div>
+
+            <button onclick="simulateUpgrade()" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition text-sm">
+                Xác nhận thanh toán 149.000đ
+            </button>
+        </div>
     </div>
-  </div>
-</nav>
 
-<main>
-  <section class="hero">
-    <div>
-      <h1>Kết nối Designer, Photographer, Editor và AI Artist chuyên nghiệp</h1>
-      <p>Tìm đúng người làm sáng tạo, xem hồ sơ và đặt lịch trực tiếp trên FOHU.</p>
-      <a href="marketplace.html" class="btn btn-primary">Khám phá đối tác</a>
-    </div>
-    <img
-      src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80"
-      srcset="https://images.unsplash.com/photo-1519741497674-611481863552?w=480&q=80 480w,
-              https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80 800w,
-              https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80 1200w"
-      sizes="(max-width: 900px) 100vw, 45vw"
-      width="800" height="533" fetchpriority="high" decoding="async"
-      alt="Hai người đang cùng chụp ảnh tại buổi tiệc ngoài trời">
-  </section>
-</main>
+    <!-- SCRIPT -->
+    <script>
+        let isProCreator = false;
 
-<footer>
-  <ul class="footer-links">
-    <li><a href="privacy.html">Chính sách bảo mật</a></li>
-    <li><a href="terms.html">Điều khoản sử dụng</a></li>
-    <li><a href="contact.html">Liên hệ</a></li>
-  </ul>
-  <p>&copy; 2026 FOHU. Bảo lưu mọi quyền.</p>
-</footer>
+        function toggleUserRole() {
+            isProCreator = !isProCreator;
+            const btnUpgrade = document.getElementById('btnUpgrade');
+            const btnUpload = document.getElementById('btnUpload');
+            const userRoleBadge = document.getElementById('userRoleBadge');
 
-<!-- Modal đăng nhập -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-    <div class="modal-header">
-      <h2 id="loginTitle">Đăng nhập FOHU</h2>
-      <button type="button" class="modal-close" id="loginClose" aria-label="Đóng">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>Đăng nhập bằng Google để vào trang cá nhân.</p>
-      <button type="button" class="btn btn-google" id="googleBtn">
-        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
-        Đăng nhập với Google
-      </button>
-      <p id="loginMsg" role="alert"></p>
-    </div>
-  </div>
-</div>
+            if (isProCreator) {
+                btnUpgrade.classList.add('hidden');
+                btnUpload.classList.remove('hidden');
+                userRoleBadge.innerText = 'Creator Pro (149k/tháng)';
+                userRoleBadge.className = 'text-[10px] text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-0.5';
+                alert('Đã chuyển sang giao diện Creator Pro thành công!');
+            } else {
+                btnUpgrade.classList.remove('hidden');
+                btnUpload.classList.add('hidden');
+                userRoleBadge.innerText = 'Thành viên Thường';
+                userRoleBadge.className = 'text-[10px] text-gray-500 font-medium';
+                alert('Đã chuyển về tài khoản Thường!');
+            }
+        }
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        function openPricingModal() {
+            document.getElementById('pricingModal').classList.remove('hidden');
+        }
 
-// Khóa web của Firebase không phải bí mật. An toàn nằm ở Security Rules, giới hạn referrer cho API key và App Check.
-const app = initializeApp({
-  apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
-  authDomain: "fohu-platform.firebaseapp.com",
-  projectId: "fohu-platform",
-  storageBucket: "fohu-platform.firebasestorage.app",
-  messagingSenderId: "696328353651",
-  appId: "1:696328353651:web:8add8d582b366c12ccf706"
-});
-const auth = getAuth(app);
-const $ = (id) => document.getElementById(id);
+        function closePricingModal() {
+            document.getElementById('pricingModal').classList.add('hidden');
+        }
 
-/* Toast */
-let toastTimer;
-function showToast(msg) {
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
-}
-
-/* Menu mobile */
-const navToggle = $("navToggle"), navLinks = $("navLinks");
-navToggle.addEventListener("click", () => {
-  const open = navLinks.classList.toggle("open");
-  navToggle.setAttribute("aria-expanded", String(open));
-  navToggle.setAttribute("aria-label", open ? "Đóng menu" : "Mở menu");
-});
-
-/* Modal: ESC, click nền, giữ focus trong hộp thoại, trả focus khi đóng */
-const modal = $("loginModal");
-let lastFocus = null;
-const focusables = () => [...modal.querySelectorAll("button:not([disabled]), [href]")];
-function openModal() {
-  lastFocus = document.activeElement;
-  $("loginMsg").textContent = "";
-  modal.classList.add("active");
-  $("googleBtn").focus();
-}
-function closeModal() {
-  modal.classList.remove("active");
-  if (lastFocus) lastFocus.focus();
-}
-$("loginNavBtn").addEventListener("click", openModal);
-$("loginClose").addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-document.addEventListener("keydown", (e) => {
-  if (!modal.classList.contains("active")) return;
-  if (e.key === "Escape") return closeModal();
-  if (e.key === "Tab") {
-    const f = focusables();
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
-});
-
-/* Trạng thái đăng nhập */
-onAuthStateChanged(auth, (user) => {
-  $("navAuth").dataset.state = user ? "in" : "out";
-  if (user) {
-    $("userName").textContent = user.displayName || "Tài khoản";
-    if (user.photoURL) $("userAvatar").src = user.photoURL;
-  }
-});
-
-/* Đăng nhập Google */
-const IN_APP = /FBAN|FBAV|Instagram|Zalo|TikTok|Line\/|MicroMessenger/i;
-const ERRORS = {
-  "auth/popup-closed-by-user": null,        // người dùng tự đóng, không phải lỗi
-  "auth/cancelled-popup-request": null,
-  "auth/network-request-failed": "Mất kết nối mạng. Kiểm tra internet rồi thử lại.",
-  "auth/unauthorized-domain": "Tên miền này chưa được cấp quyền đăng nhập. Liên hệ quản trị viên.",
-  "auth/too-many-requests": "Thử quá nhiều lần. Vui lòng đợi ít phút rồi thử lại."
-};
-
-$("googleBtn").addEventListener("click", async () => {
-  const msg = $("loginMsg"), btn = $("googleBtn");
-  msg.textContent = "";
-  if (IN_APP.test(navigator.userAgent)) {
-    msg.textContent = "Google không cho đăng nhập trong trình duyệt của ứng dụng này. Hãy mở trang bằng Chrome hoặc Safari.";
-    return;
-  }
-  const provider = new GoogleAuthProvider();
-  btn.disabled = true;
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal();
-    showToast("Đăng nhập thành công");
-    setTimeout(() => { location.href = "profile.html"; }, 700);
-  } catch (e) {
-    if (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment") {
-      await signInWithRedirect(auth, provider);   // dự phòng khi popup bị chặn
-      return;
-    }
-    msg.textContent = e.code in ERRORS ? (ERRORS[e.code] || "") : "Không đăng nhập được. Vui lòng thử lại.";
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-/* Hoàn tất luồng redirect (nếu có) */
-getRedirectResult(auth).then((r) => { if (r && r.user) location.href = "profile.html"; }).catch(() => {});
-</script>
+        function simulateUpgrade() {
+            const selectedRole = document.getElementById('creatorRoleSelect').value;
+            closePricingModal();
+            isProCreator = false;
+            toggleUserRole();
+        }
+    </script>
 </body>
 </html>
