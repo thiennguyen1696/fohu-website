@@ -46,9 +46,9 @@ main{max-width:1000px;margin:0 auto;padding:16px}
 .fn{font-size:13px;color:var(--mu);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fv{width:100%;max-height:200px;object-fit:contain;border-radius:10px}.fv[hidden]{display:none}
 .mod .fp{display:flex;margin:0;font-size:inherit;color:inherit}
-.lb{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
-.lb img,.lb video{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:8px}
-.lbx{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff3;color:#fff;font-size:20px;cursor:pointer}
+.lb{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:30}
+.lb img,.lb video{width:100vw;height:100vh;height:100dvh;object-fit:contain;background:#000}
+.lbx{z-index:2;position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff3;color:#fff;font-size:20px;cursor:pointer}
 </style></head><body>
 <nav id="nav"></nav><main id="app"></main><div id="toast"></div><div id="modal"></div><div id="lb"></div>
 <script type="module">
@@ -69,6 +69,7 @@ let Z=[],J=[],apps=[],au=null,me=null,P=[],U={},C={},open={},chats=[],cid=null,m
 const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2600)};
 const safe=s=>typeof s==='string'&&s.startsWith('data:image/')?s:'';
 const rz=(f,m,q=.8)=>new Promise(r=>{const i=new Image;i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=URL.createObjectURL(f)});
+const rzFit=async f=>{for(const [m,q] of [[1600,.82],[1280,.75],[1000,.7],[800,.65]]){const d=await rz(f,m,q);if(d.length<900000)return d}throw{code:'anh-qua-lon'}};
 const av=(u,s,z)=>safe(u?.av||u?.avatar)?`<img class="av" width="${s}" height="${s}" src="${u.av||u.avatar}"${z?` style="cursor:zoom-in" onclick="zoomI(${zk(u.av||u.avatar)})"`:''}>`:`<span class="av" style="width:${s}px;height:${s}px;font-size:${s/2.4}px">${E((u?.name||'?')[0]).toUpperCase()}</span>`;
 const bdg=p=>p&&p!=='free'?`<span class="bdg ${p}">${PL[p].toUpperCase()}</span>`:'';
 const isV=u=>MEDIA_BASE&&typeof u==='string'&&u.startsWith(MEDIA_BASE+'/');
@@ -158,10 +159,10 @@ const A={login,go,closeM,draw,
   ${me?.plan==='free'?'<p style="font-size:12px;color:var(--mu)">Gói Free: bài đăng không được chứa số điện thoại hoặc địa chỉ.</p>':''}<div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" id="pb" onclick="post()">Đăng</button>`)},
  post:async()=>{const c=$('#cap').value.trim(),f=$('#f').files[0],e=$('#er');if(!f)return e.textContent='Vui lòng chọn ảnh hoặc video';
   if(me.plan==='free'&&(PHONE.test(c)||ADDR.test(c)))return e.textContent='Nội dung chứa số điện thoại/địa chỉ. Nâng cấp gói đối tác để đăng thông tin liên hệ.';
-  $('#pb').disabled=true;try{const d={uid:au.uid,cap:c,likedBy:[],at:serverTimestamp()};if(f.type.startsWith('video/'))d.video=await upVideo(f);else d.img=await rz(f,900);await addDoc(collection(db,'posts'),d);closeM();toast('Đã đăng bài')}catch(x){e.textContent='Lỗi: '+x.code;$('#pb').disabled=false;$('#pb').textContent='Đăng'}},
+  $('#pb').disabled=true;try{const d={uid:au.uid,cap:c,likedBy:[],at:serverTimestamp()};if(f.type.startsWith('video/'))d.video=await upVideo(f);else d.img=await rzFit(f);await addDoc(collection(db,'posts'),d);closeM();toast('Đã đăng bài')}catch(x){e.textContent='Lỗi: '+x.code;$('#pb').disabled=false;$('#pb').textContent='Đăng'}},
  editP:()=>{const pr=me.plan!=='free';modal(`<h3>Chỉnh sửa hồ sơ</h3><label>Ảnh đại diện</label>${fp('a','image/*','Chọn ảnh đại diện')}<label>Ảnh bìa</label>${fp('cv','image/*','Chọn ảnh bìa')}<label>Tên hiển thị</label><input id="nm" value="${E(me.name)}">
   ${pr?`<label>Mô tả</label><textarea id="bio" rows="3">${E(me.bio)}</textarea><label>Số điện thoại</label><input id="ph" value="${E(me.phone)}"><label>Địa chỉ</label><input id="ad" value="${E(me.addr)}">`:'<p style="font-size:12px;color:var(--mu)">Mô tả & liên hệ dành cho gói đối tác.</p>'}<button class="btn" style="width:100%;margin-top:14px" onclick="saveP()">Lưu</button>`)},
- saveP:async()=>{const d={name:$('#nm').value.trim()||me.name},a=$('#a').files[0],c=$('#cv').files[0];if(a)d.av=await rz(a,256);if(c)d.cover=await rz(c,1000);
+ saveP:async()=>{const d={name:$('#nm').value.trim()||me.name},a=$('#a').files[0],c=$('#cv').files[0];if(a)d.av=await rz(a,512,.85);if(c)d.cover=await rzFit(c);
   if($('#bio'))Object.assign(d,{bio:$('#bio').value,phone:$('#ph').value,addr:$('#ad').value});await updateDoc(doc(db,'users',au.uid),d);closeM();toast('Đã lưu')},
  hlt:async id=>{const h=me.hl||[];if(h.includes(id))return updateDoc(doc(db,'users',au.uid),{hl:arrayRemove(id)});if(h.length>=HL[me.plan])return toast(`Gói ${PL[me.plan]} chỉ được ${HL[me.plan]} mục nổi bật`);updateDoc(doc(db,'users',au.uid),{hl:arrayUnion(id)})},
  buy:k=>{if(need_login()||k==='free'||me.plan===k)return;if(req?.status==='pending')return payQR(req.plan);
