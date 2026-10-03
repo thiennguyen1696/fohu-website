@@ -1,170 +1,312 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="utf-8"><title>FOHU – Mạng xã hội media Việt</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="fohu-icon.png">
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOHU - Nền tảng kết nối sáng tạo và đặt lịch media</title>
+<meta name="description" content="Kết nối trực tiếp với Designer, Photographer, Editor và AI Artist chuyên nghiệp tại Việt Nam.">
+<meta name="theme-color" content="#0f766e">
+
+<!-- Open Graph: thêm og:url và og:image (URL tuyệt đối, 1200x630) khi đã có tên miền -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:site_name" content="FOHU">
+<meta property="og:title" content="FOHU - Nền tảng kết nối sáng tạo và đặt lịch media">
+<meta property="og:description" content="Kết nối trực tiếp với Designer, Photographer, Editor và AI Artist chuyên nghiệp tại Việt Nam.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Đổi tên file "fohu 2.png" thành "fohu-logo.png" (không dấu cách) -->
+<link rel="icon" type="image/png" href="fohu-logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+
 <style>
-:root{--bg:#faf7f5;--card:#fff;--tx:#241f1f;--mu:#80787a;--ac:#e8554e;--bd:#ece6e3;--gold:#d99a1c}
-[data-theme=dark]{--bg:#17141a;--card:#221e26;--tx:#f3eeee;--mu:#a59ea3;--bd:#342e39}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-button,input,textarea,select{font:inherit;color:inherit}
-nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto}
-nav img{height:30px;width:auto;margin-right:auto;cursor:pointer}[data-theme=dark] nav>img{filter:invert(1) brightness(1.1)}
-nav a{padding:8px 12px;border-radius:20px;cursor:pointer;color:var(--mu);white-space:nowrap;font-size:14px}
-nav a.on{background:var(--tx);color:var(--bg)}
-.btn{background:var(--ac);color:#fff;border:0;border-radius:20px;padding:9px 18px;cursor:pointer;font-weight:600}.btn.g{background:var(--bd);color:var(--tx)}
-main{max-width:1000px;margin:0 auto;padding:16px}
-.masonry{columns:4 200px;column-gap:12px}
-.pin{break-inside:avoid;background:var(--card);border-radius:16px;margin-bottom:12px;overflow:hidden;border:1px solid var(--bd)}
-.pin .im{width:100%;display:block}.pin .bd{padding:10px 12px}.pin p{margin:0 0 8px;font-size:14px;word-break:break-word}
-.au{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
-.av{border-radius:50%;background:linear-gradient(135deg,#f6a,#fa6);flex:none;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-.bdg{font-size:10px;padding:2px 7px;border-radius:10px;color:#fff;font-weight:700}.bdg.standard{background:#3b82c4}.bdg.premium{background:var(--gold)}
-.act{display:flex;gap:14px;margin-top:8px;font-size:13px;color:var(--mu)}.act span{cursor:pointer}.act .lk{color:var(--ac)}
-.cm{font-size:12px;color:var(--mu);margin-top:6px}.cm input{width:100%;border:1px solid var(--bd);background:var(--bg);border-radius:12px;padding:6px 10px;margin-top:6px}
-.cover{height:180px;border-radius:16px;background:linear-gradient(120deg,#ffb88c,#de6262) center/cover}
-.ph{display:flex;gap:18px;align-items:flex-end;margin:-46px 16px 0;flex-wrap:wrap}.ph .av{border:4px solid var(--bg)}
-.hl{display:flex;gap:14px;overflow-x:auto;padding:8px 0}.hl div{text-align:center;font-size:12px;flex:none}.hl i{display:block;width:64px;height:64px;border-radius:50%;border:2px solid var(--ac);margin-bottom:4px;background:center/cover}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px}.grid div{aspect-ratio:1;position:relative;background:center/cover}
-.grid em{position:absolute;right:6px;top:4px;cursor:pointer;font-style:normal;color:#fff;text-shadow:0 0 4px #000}
-.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.plan{background:var(--card);border:2px solid var(--bd);border-radius:20px;padding:22px}.plan.pr{border-color:var(--gold)}
-.plan h3{margin:0}.plan .pc{font-size:26px;font-weight:800;margin:8px 0}.plan ul{padding-left:18px;font-size:14px;line-height:1.8;color:var(--mu)}
-.box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:12px}
-.row{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid var(--bd)}
-.mod{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9;padding:16px}
-.mod>div{background:var(--card);border-radius:20px;padding:22px;width:100%;max-width:440px;max-height:90vh;overflow:auto}
-.mod label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
-.mod input,.mod textarea{width:100%;padding:9px;border:1px solid var(--bd);background:var(--bg);border-radius:10px}
-.err{color:#d33;font-size:13px;margin-top:8px}
-.chat{display:grid;grid-template-columns:200px 1fr;gap:12px;min-height:420px}
-.msg{padding:8px 12px;border-radius:14px;margin:4px 0;max-width:75%;font-size:14px;background:var(--bd)}.msg.me{background:var(--ac);color:#fff;margin-left:auto}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:20px;display:none;z-index:99;font-size:14px}
-@media(max-width:600px){.chat{grid-template-columns:1fr}}
-</style></head><body>
-<nav id="nav"></nav><main id="app"></main><div id="toast"></div><div id="modal"></div>
+:root {
+  --primary: #0f766e;            /* đậm hơn #0d9488 để chữ trắng đạt tỉ lệ tương phản AA */
+  --primary-soft: #ccfbf1;
+  --bg-main: #f0f2f5;
+  --bg-card: #ffffff;
+  --dark: #111827;
+  --text-main: #1f2937;
+  --text-muted: #4b5563;         /* đậm hơn #6b7280 để đủ tương phản trên nền xám */
+  --border: #e2e8f0;
+  --nav-h: 72px;
+  --font-main: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-padding-top: var(--nav-h); }
+body { font-family: var(--font-main); background: var(--bg-main); color: var(--text-main); line-height: 1.6; padding-top: var(--nav-h); }
+img { max-width: 100%; height: auto; display: block; }
+button { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(120px);
+  background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 999px;
+  font-size: .88rem; font-weight: 600; z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,.2);
+  transition: transform .3s cubic-bezier(.4,0,.2,1); max-width: calc(100% - 2rem);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Nav */
+nav { position: fixed; top: 0; inset-inline: 0; height: var(--nav-h); background: var(--bg-card); border-bottom: 1px solid var(--border); z-index: 1000; }
+.nav-container { max-width: 1440px; height: 100%; margin: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; gap: 1rem; }
+.brand-logo-img { height: 48px; width: auto; }
+.nav-links { display: flex; gap: .3rem; list-style: none; align-items: center; }
+.nav-links a { display: block; text-decoration: none; color: var(--text-main); font-weight: 600; font-size: .88rem; padding: .4rem .7rem; border-radius: 999px; }
+.nav-links a:hover, .nav-links a[aria-current="page"] { color: #fff; background: var(--dark); }
+.nav-right { display: flex; align-items: center; gap: .5rem; }
+.nav-toggle { display: none; width: 44px; height: 44px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 12px; cursor: pointer; align-items: center; justify-content: center; }
+
+/* Auth area: tránh nháy sai trạng thái trước khi Firebase trả kết quả */
+.nav-auth[data-state="loading"] #loginNavBtn { visibility: hidden; }
+.nav-auth[data-state="in"] #loginNavBtn { display: none; }
+#userBadge { display: none; align-items: center; gap: 8px; background: var(--bg-main); padding: 4px 12px 4px 4px; border-radius: 999px; border: 1px solid var(--border); font-size: .82rem; font-weight: 600; color: var(--text-main); text-decoration: none; }
+.nav-auth[data-state="in"] #userBadge { display: flex; }
+#userBadge img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+#userName { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; min-height: 44px; border-radius: 999px; font-weight: 600; font-size: .88rem; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+.btn:disabled { opacity: .6; cursor: progress; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-dark { background: var(--dark); color: #fff; }
+.btn-google { width: 100%; background: #fff; color: #1f1f1f; border-color: #747775; padding: 12px; }
+.btn-google:hover:not(:disabled) { background: #f8f9fa; }
+
+/* Hero */
+.hero { padding: 40px 1.5rem 60px; max-width: 1320px; margin: auto; display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; align-items: center; }
+.hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); line-height: 1.2; font-weight: 700; color: var(--dark); margin-bottom: 1rem; }
+.hero p { color: var(--text-muted); margin-bottom: 1.5rem; max-width: 60ch; }
+.hero img { width: 100%; border-radius: 20px; }
+
+/* Footer */
+footer { background: #0f172a; color: #cbd5e1; padding: 2.5rem 1rem 1.5rem; font-size: .88rem; text-align: center; }
+.footer-links { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.5rem; margin-bottom: 1rem; }
+.footer-links a { color: #e2e8f0; text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 2000; display: none; align-items: center; justify-content: center; padding: .75rem; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--border); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.modal-header h2 { flex: 1; font-size: 1.25rem; font-weight: 800; padding-left: 44px; }
+.modal-close { width: 44px; height: 44px; border: none; background: none; cursor: pointer; border-radius: 50%; display: grid; place-items: center; }
+.modal-body { padding-top: 16px; }
+.modal-body p { font-size: .88rem; color: var(--text-muted); margin-bottom: 20px; }
+#loginMsg { margin-top: 14px; font-size: .85rem; color: #b91c1c; min-height: 1.2em; }
+
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-flex; }
+  .nav-links { display: none; position: absolute; top: var(--nav-h); inset-inline: 0; flex-direction: column; align-items: stretch; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: .75rem 1.5rem 1rem; gap: .25rem; }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: .75rem 1rem; font-size: 1rem; }
+  .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 24px; }
+  .hero img { order: -1; }
+}
+@media (max-width: 420px) {
+  .nav-container { padding: 0 1rem; }
+  #userName { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<nav aria-label="Điều hướng chính">
+  <div class="nav-container">
+    <a href="./" aria-label="FOHU - Trang chủ"><img src="fohu-logo.png" alt="FOHU" class="brand-logo-img" width="150" height="48"></a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="./" aria-current="page">Trang chủ</a></li>
+      <li><a href="marketplace.html">Đối tác</a></li>
+      <li><a href="community.html">Bảng tin</a></li>
+      <li><a href="pricing.html">Trở thành đối tác</a></li>
+      <li><a href="blog.html">Tin tức</a></li>
+      <li><a href="contact.html">Liên hệ</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="nav-auth" id="navAuth" data-state="loading">
+        <button type="button" class="btn btn-dark" id="loginNavBtn">Đăng nhập</button>
+        <a href="profile.html" id="userBadge" aria-label="Trang cá nhân">
+          <img id="userAvatar" alt="" width="30" height="30" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' fill='%23cbd5e1'/%3E%3Ccircle cx='15' cy='12' r='5' fill='%2364748b'/%3E%3Cpath d='M5 27c1-6 6-8 10-8s9 2 10 8z' fill='%2364748b'/%3E%3C/svg%3E">
+          <span id="userName">Tài khoản</span>
+        </a>
+      </div>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false" aria-controls="navLinks">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>Kết nối Designer, Photographer, Editor và AI Artist chuyên nghiệp</h1>
+      <p>Tìm đúng người làm sáng tạo, xem hồ sơ và đặt lịch trực tiếp trên FOHU.</p>
+      <a href="marketplace.html" class="btn btn-primary">Khám phá đối tác</a>
+    </div>
+    <img
+      src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80"
+      srcset="https://images.unsplash.com/photo-1519741497674-611481863552?w=480&q=80 480w,
+              https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80 800w,
+              https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80 1200w"
+      sizes="(max-width: 900px) 100vw, 45vw"
+      width="800" height="533" fetchpriority="high" decoding="async"
+      alt="Hai người đang cùng chụp ảnh tại buổi tiệc ngoài trời">
+  </section>
+</main>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="privacy.html">Chính sách bảo mật</a></li>
+    <li><a href="terms.html">Điều khoản sử dụng</a></li>
+    <li><a href="contact.html">Liên hệ</a></li>
+  </ul>
+  <p>&copy; 2026 FOHU. Bảo lưu mọi quyền.</p>
+</footer>
+
+<!-- Modal đăng nhập -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-header">
+      <h2 id="loginTitle">Đăng nhập FOHU</h2>
+      <button type="button" class="modal-close" id="loginClose" aria-label="Đóng">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Đăng nhập bằng Google để vào trang cá nhân.</p>
+      <button type="button" class="btn btn-google" id="googleBtn">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Đăng nhập với Google
+      </button>
+      <p id="loginMsg" role="alert"></p>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {getFirestore,collection,doc,setDoc,getDoc,addDoc,deleteDoc,updateDoc,onSnapshot,query,orderBy,limit,where,serverTimestamp,arrayUnion,arrayRemove,writeBatch,increment} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* ===== DÁN firebaseConfig CỦA BẠN VÀO ĐÂY (Firebase → Project settings → Your apps → Web) ===== */
-const cfg={apiKey:"AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",authDomain:"fohu-platform.firebaseapp.com",projectId:"fohu-platform",appId:"1:696328353651:web:8add8d582b366c12ccf706"};
-/* ================================================================================================ */
-
-const MEDIA_BASE="https://media.fohu.asia"; // đổi thành địa chỉ công khai của bucket R2
-const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
-const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
-const PL={free:'Free',standard:'Standard',premium:'Premium'},HL={free:0,standard:3,premium:6};
-const PHONE=/(\+?84|0)[\s.\-]?\d([\s.\-]?\d){8,9}/,ADDR=/(số\s?\d+|ngõ|ngách|hẻm|đường\s|phố\s|phường|quận\s|huyện|xã\s|tp\.|thôn)/i;
-let J=[],apps=[],au=null,me=null,P=[],U={},C={},open={},chats=[],cid=null,msgs=[],req=null,unM=()=>{};
-const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2600)};
-const safe=s=>typeof s==='string'&&s.startsWith('data:image/')?s:'';
-const rz=(f,m,q=.8)=>new Promise(r=>{const i=new Image;i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=URL.createObjectURL(f)});
-const av=(u,s)=>safe(u?.av)?`<img class="av" width="${s}" height="${s}" src="${u.av}">`:`<span class="av" style="width:${s}px;height:${s}px;font-size:${s/2.4}px">${E((u?.name||'?')[0]).toUpperCase()}</span>`;
-const bdg=p=>p&&p!=='free'?`<span class="bdg ${p}">${PL[p].toUpperCase()}</span>`:'';
-const isV=u=>typeof u==='string'&&u.startsWith(MEDIA_BASE+'/');
-const vthumb=p=>isV(p.video)?`<video src="${E(p.video)}#t=0.1" muted preload="metadata" playsinline style="width:100%;height:100%;object-fit:cover"></video><em style="left:6px;right:auto;pointer-events:none">▶</em>`:'';
-const upVideo=async f=>{if(f.size>100*1048576)throw{code:'video-vuot-100MB'};const t=await au.getIdToken();
- const r=await fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify({type:f.type,size:f.size})});
- if(!r.ok)throw{code:'upload-'+r.status};const {url,publicUrl}=await r.json();
- await new Promise((ok,no)=>{const x=new XMLHttpRequest();x.open('PUT',url);x.setRequestHeader('Content-Type',f.type);x.upload.onprogress=e=>$('#pb').textContent='Đang tải '+Math.round(e.loaded/e.total*100)+'%';x.onload=()=>x.status<300?ok():no({code:'r2-'+x.status});x.onerror=()=>no({code:'r2-network/cors'});x.send(f)});
- return publicUrl};
-const need=async ids=>{const m=[...new Set(ids)].filter(i=>i&&!U[i]);await Promise.all(m.map(async i=>{const s=await getDoc(doc(db,'users',i));U[i]=s.exists()?s.data():{name:'Người dùng',plan:'free'}}));if(m.length)draw()};
-const need_login=()=>{if(!au){login();return true}};
-const modal=h=>$('#modal').innerHTML=`<div class="mod" onclick="if(event.target===this)closeM()"><div>${h}</div></div>`;
-const closeM=()=>$('#modal').innerHTML='';
-const login=()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>toast('Không đăng nhập được: '+e.code));
-const route=()=>location.hash.slice(1)||'home';
-const go=r=>{if(['inbox','settings','me'].includes(r)&&!au)return login();location.hash=r};
-
-/* ---- Auth & dữ liệu ---- */
-onAuthStateChanged(auth,async u=>{au=u;if(!u){me=null;draw();return}
- const ref=doc(db,'users',u.uid);if(!(await getDoc(ref)).exists())await setDoc(ref,{name:u.displayName||u.email.split('@')[0],email:u.email,plan:'free',kyc:false,bio:'',phone:'',addr:'',hl:[],applied:0,at:serverTimestamp()});
- onSnapshot(ref,s=>{me=s.data();U[u.uid]=me;draw()});
- onSnapshot(query(collection(db,'chats'),where('members','array-contains',u.uid)),s=>{chats=s.docs.map(d=>({id:d.id,...d.data()}));need(chats.flatMap(c=>c.members));draw()});
- onSnapshot(query(collection(db,'applications'),where('uid','==',u.uid)),s=>{apps=s.docs.map(d=>d.data().job);draw()});
- onSnapshot(doc(db,'partnerRequests',u.uid),s=>{req=s.exists()?s.data():null;draw()});
+// Khóa web của Firebase không phải bí mật. An toàn nằm ở Security Rules, giới hạn referrer cho API key và App Check.
+const app = initializeApp({
+  apiKey: "AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",
+  authDomain: "fohu-platform.firebaseapp.com",
+  projectId: "fohu-platform",
+  storageBucket: "fohu-platform.firebasestorage.app",
+  messagingSenderId: "696328353651",
+  appId: "1:696328353651:web:8add8d582b366c12ccf706"
 });
-onSnapshot(query(collection(db,'jobs'),orderBy('at','desc'),limit(50)),s=>{J=s.docs.map(d=>({id:d.id,...d.data()}));need(J.map(j=>j.uid));draw()});
-onSnapshot(query(collection(db,'posts'),orderBy('at','desc'),limit(60)),s=>{P=s.docs.map(d=>({id:d.id,...d.data()}));need(P.map(p=>p.uid));draw()},e=>toast('Lỗi tải bài: '+e.code));
+const auth = getAuth(app);
+const $ = (id) => document.getElementById(id);
 
-/* ---- Vẽ giao diện ---- */
-function draw(){const r=route().split('/')[0];
- document.documentElement.dataset.theme=localStorage.th||'';
- $('#nav').innerHTML=`<img src="fohu-logo.png" alt="FOHU" onclick="go('home')">`+[['home','Trang chủ'],['jobs','Việc làm'],['inbox','Tin nhắn'],['partner','Đối tác'],['settings','Cài đặt'],['me','Cá nhân']].map(([k,v])=>`<a class="${r==k?'on':''}" onclick="go('${k}')">${v}</a>`).join('')+(au?`<button class="btn" onclick="compose()">+ Đăng</button>`:`<button class="btn" onclick="login()">Đăng nhập Google</button>`);
- $('#app').innerHTML=(cfg.apiKey==='DAN_API_KEY'?'<div class="box err">Chưa dán firebaseConfig vào index.html.</div>':'')+({home,jobs,inbox,partner,settings,me:profile,u:profile}[r]||home)()}
-function pin(p){const u=U[p.uid]||{},liked=au&&(p.likedBy||[]).includes(au.uid),n=(p.likedBy||[]).length;
- return `<div class="pin">${safe(p.img)?`<img class="im" src="${p.img}">`:isV(p.video)?`<video class="im" src="${E(p.video)}" controls preload="metadata" playsinline></video>`:''}<div class="bd"><p>${E(p.cap)}</p>
- <div class="au" onclick="location.hash='u/${p.uid}'">${av(u,26)}<span>${E(u.name)}</span>${bdg(u.plan)}</div>
- <div class="act"><span class="${liked?'lk':''}" onclick="like('${p.id}')">${liked?'♥':'♡'} ${n}</span><span onclick="toggleC('${p.id}')">💬 Bình luận</span><span onclick="share('${p.id}')">↗ Chia sẻ</span>${au&&au.uid!==p.uid?`<span onclick="dm('${p.uid}')">✉</span>`:''}${au&&au.uid===p.uid?`<span onclick="del('${p.id}')">🗑</span>`:''}</div>
- ${open[p.id]?`<div class="cm">${(C[p.id]||[]).map(c=>`<div><b>${E(U[c.uid]?.name||'')}</b>: ${E(c.t)}</div>`).join('')}<input placeholder="Viết bình luận…" onkeydown="if(event.key==='Enter'&&this.value){cmt('${p.id}',this)}"></div>`:''}</div></div>`}
-const home=()=>`<div class="masonry">${P.map(pin).join('')||'<p style="color:var(--mu)">Chưa có bài đăng. Hãy là người đầu tiên!</p>'}</div>`;
+/* Toast */
+let toastTimer;
+function showToast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
 
-function profile(){const uid=route().startsWith('u/')?route().slice(2):au?.uid;if(!uid)return '<p>Vui lòng đăng nhập.</p>';need([uid]);
- const u=U[uid];if(!u)return '<p>Đang tải…</p>';const own=au&&au.uid===uid,mine=P.filter(p=>p.uid===uid),paid=u.plan!=='free';
- return `<div class="cover" style="${safe(u.cover)?`background-image:url(${u.cover})`:''}"></div><div class="ph">${av(u,92)}<div style="flex:1"><h2 style="margin:0">${E(u.name)} ${bdg(u.plan)}</h2><span style="color:var(--mu);font-size:14px">${own?E(u.email):''}</span></div>${own?`<button class="btn g" onclick="editP()">Chỉnh sửa</button>`:au?`<button class="btn" onclick="dm('${uid}')">Nhắn tin</button>`:''}</div>
- <div style="padding:0 16px"><p style="margin:12px 0"><b>${mine.length}</b> bài đăng</p>
- ${paid?`<div class="box" style="font-size:14px"><p style="margin:0 0 6px">${E(u.bio)||'Chưa có mô tả.'}</p>📞 ${E(u.phone)||'—'} · 📍 ${E(u.addr)||'—'}${u.kyc?' · ✅ Đã xác minh':''}</div>
- <b>Nổi bật (${(u.hl||[]).length}/${HL[u.plan]})</b><div class="hl">${(u.hl||[]).map(id=>P.find(p=>p.id===id)).filter(Boolean).map(p=>`<div><i style="background-image:url(${safe(p.img)})"></i>${E(p.cap).slice(0,10)}</div>`).join('')||'<span style="color:var(--mu);font-size:13px">Bấm ☆ trên ảnh để ghim</span>'}</div>`
- :own?`<div class="box" style="font-size:14px">Tài khoản thường chỉ đăng ảnh. <a href="#partner" style="color:var(--ac)">Trở thành đối tác</a> để mở mô tả, liên hệ, mục nổi bật.</div>`:''}
- <div class="grid">${mine.map(p=>`<div style="background-image:url(${safe(p.img)})">${vthumb(p)}${own&&paid?`<em onclick="hlt('${p.id}')">${(u.hl||[]).includes(p.id)?'★':'☆'}</em>`:''}</div>`).join('')}</div></div>`}
+/* Menu mobile */
+const navToggle = $("navToggle"), navLinks = $("navLinks");
+navToggle.addEventListener("click", () => {
+  const open = navLinks.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", String(open));
+  navToggle.setAttribute("aria-label", open ? "Đóng menu" : "Mở menu");
+});
 
-function partner(){const pl=(k,pc,fs)=>`<div class="plan ${k=='premium'?'pr':''}"><h3>${PL[k]} ${bdg(k)}</h3><div class="pc">${pc}</div><ul>${fs.map(f=>`<li>${f}</li>`).join('')}</ul><button class="btn ${me?.plan==k?'g':''}" style="width:100%" onclick="buy('${k}')">${me?.plan==k?'Gói hiện tại':k=='free'?'Dùng miễn phí':'Nâng cấp'}</button></div>`;
- return `<h2 style="text-align:center">Trở thành đối tác</h2><p style="text-align:center;color:var(--mu)">Photographer, makeup artist, videographer, studio, cho thuê trang phục, AI artist, designer…</p>${req?`<div class="box" style="text-align:center">Yêu cầu gói <b>${PL[req.plan]}</b>: <b>${{pending:'đang chờ duyệt',approved:'đã duyệt',rejected:'bị từ chối'}[req.status]}</b>${req.status==='pending'?` · <a style="color:var(--ac);cursor:pointer" onclick="payQR('${req.plan}')">Xem mã QR thanh toán</a>`:''}</div>`:''}<div class="plans">`+
- pl('free','0đ',['Đăng ảnh','Like, comment, inbox','Bị lọc SĐT & địa chỉ trong bài','Không có mục nổi bật','Không ứng tuyển job'])+
- pl('standard','99.000đ/tháng',['Mô tả & liên hệ trên trang','Không bị lọc SĐT/địa chỉ','Huy hiệu Standard','3 album/video nổi bật','Ứng tuyển tối đa 5 job'])+
- pl('premium','249.000đ/tháng',['Mọi quyền lợi Standard','Huy hiệu Premium','6 album/video nổi bật','Ứng tuyển không giới hạn','Ưu tiên hiển thị'])+`</div>`}
+/* Modal: ESC, click nền, giữ focus trong hộp thoại, trả focus khi đóng */
+const modal = $("loginModal");
+let lastFocus = null;
+const focusables = () => [...modal.querySelectorAll("button:not([disabled]), [href]")];
+function openModal() {
+  lastFocus = document.activeElement;
+  $("loginMsg").textContent = "";
+  modal.classList.add("active");
+  $("googleBtn").focus();
+}
+function closeModal() {
+  modal.classList.remove("active");
+  if (lastFocus) lastFocus.focus();
+}
+$("loginNavBtn").addEventListener("click", openModal);
+$("loginClose").addEventListener("click", closeModal);
+modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener("keydown", (e) => {
+  if (!modal.classList.contains("active")) return;
+  if (e.key === "Escape") return closeModal();
+  if (e.key === "Tab") {
+    const f = focusables();
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
 
-const LIMJ={free:0,standard:5,premium:Infinity};
-function jobs(){const pl=me?.plan||'free',L=LIMJ[pl],n=me?.applied||0;
- return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h2 style="margin:0">Việc làm</h2>${pl!=='free'?'<button class="btn" onclick="postJob()">+ Đăng tuyển</button>':''}</div>
- ${au?`<p style="color:var(--mu);font-size:14px">${pl==='free'?'Gói Free không ứng tuyển được. <a href="#partner" style="color:var(--ac)">Nâng cấp</a>':`Đã ứng tuyển: ${n}/${L===Infinity?'∞':L}`}</p>`:'<p style="color:var(--mu);font-size:14px">Đăng nhập để ứng tuyển.</p>'}
- ${J.map(j=>{const u=U[j.uid]||{},done=apps.includes(j.id),own=au&&au.uid===j.uid;return `<div class="box"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><b>${E(j.title)}</b><div style="color:var(--mu);font-size:13px;margin:4px 0">${E(j.place)} · ${E(j.pay)}</div><div class="au" onclick="location.hash='u/${j.uid}'">${av(u,24)}<span>${E(u.name)}</span>${bdg(u.plan)}</div></div>
- <div>${own?`<button class="btn g" onclick="delJob('${j.id}')">Xóa</button>`:`<button class="btn ${done?'g':''}" ${done?'disabled':''} onclick="applyJob('${j.id}')">${done?'Đã ứng tuyển':'Ứng tuyển'}</button>`}</div></div><p style="font-size:14px;margin:8px 0 0">${E(j.desc)}</p></div>`}).join('')||'<p style="color:var(--mu)">Chưa có tin tuyển dụng.</p>'}`}
-function inbox(){const o=id=>chats.find(c=>c.id===id)?.members.find(m=>m!==au.uid);
- return `<h2>Tin nhắn</h2><div class="chat"><div class="box" style="padding:8px">${chats.map(c=>{const u=U[o(c.id)];return `<div class="au" style="padding:8px;border-radius:10px;${c.id==cid?'background:var(--bd)':''}" onclick="openChat('${c.id}')">${av(u,30)}<span>${E(u?.name)}</span></div>`}).join('')||'<span style="color:var(--mu);font-size:13px">Chưa có hội thoại. Bấm ✉ trên bài viết để nhắn.</span>'}</div>
- <div class="box" style="display:flex;flex-direction:column">${cid?`<div style="flex:1;margin-bottom:10px">${msgs.map(m=>`<div class="msg ${m.from===au.uid?'me':''}">${E(m.t)}</div>`).join('')}</div><input style="border:1px solid var(--bd);background:var(--bg);border-radius:20px;padding:9px 14px" placeholder="Nhập tin nhắn…" onkeydown="if(event.key==='Enter'&&this.value){send(this)}">`:'<span style="color:var(--mu)">Chọn một hội thoại</span>'}</div></div>`}
+/* Trạng thái đăng nhập */
+onAuthStateChanged(auth, (user) => {
+  $("navAuth").dataset.state = user ? "in" : "out";
+  if (user) {
+    $("userName").textContent = user.displayName || "Tài khoản";
+    if (user.photoURL) $("userAvatar").src = user.photoURL;
+  }
+});
 
-function settings(){return `<h2>Cài đặt</h2><div class="box"><b>Tài khoản</b><div class="row"><span>Email</span><span style="color:var(--mu)">${E(me?.email)}</span></div><div class="row"><span>Hồ sơ</span><button class="btn g" onclick="editP()">Chỉnh sửa</button></div><div class="row"><span>Gói hiện tại</span><span>${PL[me?.plan||'free']}</span></div></div>
- <div class="box"><b>Trình duyệt</b><div class="row"><span>Giao diện</span><select onchange="localStorage.th=this.value;draw()"><option value="" ${localStorage.th?'':'selected'}>Sáng</option><option value="dark" ${localStorage.th=='dark'?'selected':''}>Tối</option></select></div></div>
- <button class="btn g" onclick="out()">Đăng xuất</button>`}
+/* Đăng nhập Google */
+const IN_APP = /FBAN|FBAV|Instagram|Zalo|TikTok|Line\/|MicroMessenger/i;
+const ERRORS = {
+  "auth/popup-closed-by-user": null,        // người dùng tự đóng, không phải lỗi
+  "auth/cancelled-popup-request": null,
+  "auth/network-request-failed": "Mất kết nối mạng. Kiểm tra internet rồi thử lại.",
+  "auth/unauthorized-domain": "Tên miền này chưa được cấp quyền đăng nhập. Liên hệ quản trị viên.",
+  "auth/too-many-requests": "Thử quá nhiều lần. Vui lòng đợi ít phút rồi thử lại."
+};
 
-/* ---- Hành động ---- */
-const A={login,go,closeM,draw,
- like:async id=>{if(need_login())return;const p=P.find(x=>x.id===id),l=(p.likedBy||[]).includes(au.uid);await updateDoc(doc(db,'posts',id),{likedBy:l?arrayRemove(au.uid):arrayUnion(au.uid)})},
- toggleC:id=>{open[id]=!open[id];if(open[id]&&!C[id])onSnapshot(query(collection(db,'posts',id,'comments'),orderBy('at')),s=>{C[id]=s.docs.map(d=>d.data());need(C[id].map(c=>c.uid));draw()});draw()},
- cmt:async(id,el)=>{if(need_login())return;const t=el.value;el.value='';await addDoc(collection(db,'posts',id,'comments'),{uid:au.uid,t,at:serverTimestamp()})},
- share:id=>{navigator.clipboard?.writeText(location.origin+'/#home');toast('Đã sao chép liên kết')},
- del:async id=>{if(confirm('Xóa bài này?'))await deleteDoc(doc(db,'posts',id))},
- out:()=>signOut(auth).then(()=>go('home')),
- compose:()=>{modal(`<h3>Đăng bài mới</h3><label>Ảnh hoặc video (mp4/webm/mov, tối đa 100MB)</label><input type="file" id="f" accept="image/*,video/mp4,video/webm,video/quicktime"><label>Nội dung</label><textarea id="cap" rows="3"></textarea>
-  ${me?.plan==='free'?'<p style="font-size:12px;color:var(--mu)">Gói Free: bài đăng không được chứa số điện thoại hoặc địa chỉ.</p>':''}<div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" id="pb" onclick="post()">Đăng</button>`)},
- post:async()=>{const c=$('#cap').value.trim(),f=$('#f').files[0],e=$('#er');if(!f)return e.textContent='Vui lòng chọn ảnh hoặc video';
-  if(me.plan==='free'&&(PHONE.test(c)||ADDR.test(c)))return e.textContent='Nội dung chứa số điện thoại/địa chỉ. Nâng cấp gói đối tác để đăng thông tin liên hệ.';
-  $('#pb').disabled=true;try{const d={uid:au.uid,cap:c,likedBy:[],at:serverTimestamp()};if(f.type.startsWith('video/'))d.video=await upVideo(f);else d.img=await rz(f,900);await addDoc(collection(db,'posts'),d);closeM();toast('Đã đăng bài')}catch(x){e.textContent='Lỗi: '+x.code;$('#pb').disabled=false;$('#pb').textContent='Đăng'}},
- editP:()=>{const pr=me.plan!=='free';modal(`<h3>Chỉnh sửa hồ sơ</h3><label>Ảnh đại diện</label><input type="file" id="a" accept="image/*"><label>Ảnh bìa</label><input type="file" id="cv" accept="image/*"><label>Tên hiển thị</label><input id="nm" value="${E(me.name)}">
-  ${pr?`<label>Mô tả</label><textarea id="bio" rows="3">${E(me.bio)}</textarea><label>Số điện thoại</label><input id="ph" value="${E(me.phone)}"><label>Địa chỉ</label><input id="ad" value="${E(me.addr)}">`:'<p style="font-size:12px;color:var(--mu)">Mô tả & liên hệ dành cho gói đối tác.</p>'}<button class="btn" style="width:100%;margin-top:14px" onclick="saveP()">Lưu</button>`)},
- saveP:async()=>{const d={name:$('#nm').value.trim()||me.name},a=$('#a').files[0],c=$('#cv').files[0];if(a)d.av=await rz(a,256);if(c)d.cover=await rz(c,1000);
-  if($('#bio'))Object.assign(d,{bio:$('#bio').value,phone:$('#ph').value,addr:$('#ad').value});await updateDoc(doc(db,'users',au.uid),d);closeM();toast('Đã lưu')},
- hlt:async id=>{const h=me.hl||[];if(h.includes(id))return updateDoc(doc(db,'users',au.uid),{hl:arrayRemove(id)});if(h.length>=HL[me.plan])return toast(`Gói ${PL[me.plan]} chỉ được ${HL[me.plan]} mục nổi bật`);updateDoc(doc(db,'users',au.uid),{hl:arrayUnion(id)})},
- buy:k=>{if(need_login()||k==='free'||me.plan===k)return;if(req?.status==='pending')return payQR(req.plan);
-  modal(`<h3>Đăng ký đối tác – ${PL[k]}</h3><label>Căn cước công dân – mặt trước</label><input type="file" id="k1" accept="image/*"><label>Căn cước công dân – mặt sau</label><input type="file" id="k2" accept="image/*"><label>Số điện thoại</label><input id="kp"><label>Địa chỉ</label><input id="ka"><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:14px" id="kb" onclick="kyc('${k}')">Gửi yêu cầu</button>`)},
- kyc:async k=>{const e=$('#er'),f1=$('#k1').files[0],f2=$('#k2').files[0],p=$('#kp').value.replace(/\s/g,''),a=$('#ka').value.trim();
-  if(!f1||!f2)return e.textContent='Vui lòng tải lên cả 2 mặt CCCD';if(!/^(0|\+84)\d{9}$/.test(p))return e.textContent='Số điện thoại không hợp lệ';if(a.length<8)return e.textContent='Vui lòng nhập địa chỉ đầy đủ';
-  $('#kb').disabled=true;try{await setDoc(doc(db,'partnerRequests',au.uid),{plan:k,phone:p,addr:a,front:await rz(f1,800,.7),back:await rz(f2,800,.7),status:'pending',at:serverTimestamp()});payQR(k)}catch(x){e.textContent='Lỗi: '+x.code;$('#kb').disabled=false}},
- postJob:()=>modal(`<h3>Đăng tin tuyển</h3><label>Tiêu đề</label><input id="jt"><label>Địa điểm</label><input id="jp"><label>Thù lao</label><input id="jy"><label>Mô tả</label><textarea id="jd" rows="3"></textarea><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" onclick="saveJob()">Đăng</button>`),
- saveJob:async()=>{const d={title:$('#jt').value.trim(),place:$('#jp').value.trim(),pay:$('#jy').value.trim(),desc:$('#jd').value.trim()};if(!d.title)return $('#er').textContent='Nhập tiêu đề';try{await addDoc(collection(db,'jobs'),{...d,uid:au.uid,at:serverTimestamp()});closeM();toast('Đã đăng tin')}catch(x){$('#er').textContent='Lỗi: '+x.code}},
- delJob:async id=>{if(confirm('Xóa tin này?'))await deleteDoc(doc(db,'jobs',id))},
- applyJob:async id=>{if(need_login())return;const pl=me.plan,n=me.applied||0;if(pl==='free'){toast('Cần gói đối tác để ứng tuyển');return go('partner')}
-  if(n>=LIMJ[pl])return toast('Đã hết 5 lượt ứng tuyển – nâng cấp Premium để không giới hạn');const j=J.find(x=>x.id===id),b=writeBatch(db);
-  b.set(doc(db,'applications',id+'_'+au.uid),{job:id,uid:au.uid,jobOwner:j.uid,at:serverTimestamp()});b.update(doc(db,'users',au.uid),{applied:increment(1)});
-  try{await b.commit();toast('Đã gửi ứng tuyển')}catch(x){toast('Không thể ứng tuyển: '+x.code)}},
- payQR:k=>{const amt=k==='standard'?'99.000đ':'249.000đ',note='FOHU '+au.uid.slice(0,6).toUpperCase()+' '+k.toUpperCase();
-  modal(`<h3>Thanh toán gói ${PL[k]}</h3><div style="text-align:center"><img src="pay-qr.png" alt="Mã QR thanh toán" style="max-width:260px;width:100%;border-radius:12px;border:1px solid var(--bd)" onerror="this.outerHTML='<p class=err>Chưa có ảnh pay-qr.png trên website</p>'">
-  <p style="margin:10px 0 2px">Số tiền: <b>${amt}</b></p><p style="margin:0">Nội dung chuyển khoản:</p><p><b style="font-size:18px">${note}</b></p><button class="btn g" onclick="navigator.clipboard?.writeText('${note}');toast('Đã sao chép nội dung')">Sao chép nội dung</button>
-  <p style="font-size:13px;color:var(--mu)">Hồ sơ của bạn đã được gửi. Quét mã, chuyển đúng số tiền và nội dung; chúng tôi sẽ kiểm tra và kích hoạt gói cho bạn.</p><button class="btn" style="width:100%" onclick="closeM()">Đóng</button></div>`)},
- dm:async uid=>{if(need_login())return;const id=[au.uid,uid].sort().join('_');await setDoc(doc(db,'chats',id),{members:[au.uid,uid]},{merge:true});openChat(id);go('inbox')},
- openChat:id=>{unM();cid=id;msgs=[];unM=onSnapshot(query(collection(db,'chats',id,'messages'),orderBy('at')),s=>{msgs=s.docs.map(d=>d.data());draw()});draw()},
- send:async el=>{const t=el.value;el.value='';await addDoc(collection(db,'chats',cid,'messages'),{from:au.uid,t,at:serverTimestamp()})}};
-Object.assign(window,A);window.addEventListener('hashchange',draw);draw();
-</script></body></html>
+$("googleBtn").addEventListener("click", async () => {
+  const msg = $("loginMsg"), btn = $("googleBtn");
+  msg.textContent = "";
+  if (IN_APP.test(navigator.userAgent)) {
+    msg.textContent = "Google không cho đăng nhập trong trình duyệt của ứng dụng này. Hãy mở trang bằng Chrome hoặc Safari.";
+    return;
+  }
+  const provider = new GoogleAuthProvider();
+  btn.disabled = true;
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal();
+    showToast("Đăng nhập thành công");
+    setTimeout(() => { location.href = "profile.html"; }, 700);
+  } catch (e) {
+    if (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment") {
+      await signInWithRedirect(auth, provider);   // dự phòng khi popup bị chặn
+      return;
+    }
+    msg.textContent = e.code in ERRORS ? (ERRORS[e.code] || "") : "Không đăng nhập được. Vui lòng thử lại.";
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* Hoàn tất luồng redirect (nếu có) */
+getRedirectResult(auth).then((r) => { if (r && r.user) location.href = "profile.html"; }).catch(() => {});
+</script>
+</body>
+</html>
