@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"><title>FOHU – Mạng xã hội media Việt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="fohu-icon.png">
+<style>
+:root{--bg:#faf7f5;--card:#fff;--tx:#241f1f;--mu:#80787a;--ac:#e8554e;--bd:#ece6e3;--gold:#d99a1c}
+[data-theme=dark]{--bg:#17141a;--card:#221e26;--tx:#f3eeee;--mu:#a59ea3;--bd:#342e39}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,textarea,select{font:inherit;color:inherit}
+nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto}
+nav img{height:30px;width:auto;margin-right:auto;cursor:pointer}[data-theme=dark] nav>img{filter:invert(1) brightness(1.1)}
+nav a{padding:8px 12px;border-radius:20px;cursor:pointer;color:var(--mu);white-space:nowrap;font-size:14px}
+nav a.on{background:var(--tx);color:var(--bg)}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:20px;padding:9px 18px;cursor:pointer;font-weight:600}.btn.g{background:var(--bd);color:var(--tx)}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.masonry{columns:4 200px;column-gap:12px}
+.pin{break-inside:avoid;background:var(--card);border-radius:16px;margin-bottom:12px;overflow:hidden;border:1px solid var(--bd)}
+.pin .im{width:100%;display:block}.pin .bd{padding:10px 12px}.pin p{margin:0 0 8px;font-size:14px;word-break:break-word}
+.au{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.av{border-radius:50%;background:linear-gradient(135deg,#f6a,#fa6);flex:none;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.bdg{font-size:10px;padding:2px 7px;border-radius:10px;color:#fff;font-weight:700}.bdg.standard{background:#3b82c4}.bdg.premium{background:var(--gold)}
+.act{display:flex;gap:14px;margin-top:8px;font-size:13px;color:var(--mu)}.act span{cursor:pointer}.act .lk{color:var(--ac)}
+.cm{font-size:12px;color:var(--mu);margin-top:6px}.cm input{width:100%;border:1px solid var(--bd);background:var(--bg);border-radius:12px;padding:6px 10px;margin-top:6px}
+.cover{height:180px;border-radius:16px;background:linear-gradient(120deg,#ffb88c,#de6262) center/cover}
+.ph{display:flex;gap:18px;align-items:flex-end;margin:-46px 16px 0;flex-wrap:wrap}.ph .av{border:4px solid var(--bg)}
+.hl{display:flex;gap:14px;overflow-x:auto;padding:8px 0}.hl div{text-align:center;font-size:12px;flex:none}.hl i{display:block;width:64px;height:64px;border-radius:50%;border:2px solid var(--ac);margin-bottom:4px;background:center/cover}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px}.grid div{aspect-ratio:1;position:relative;background:center/cover}
+.grid em{position:absolute;right:6px;top:4px;cursor:pointer;font-style:normal;color:#fff;text-shadow:0 0 4px #000}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.plan{background:var(--card);border:2px solid var(--bd);border-radius:20px;padding:22px}.plan.pr{border-color:var(--gold)}
+.plan h3{margin:0}.plan .pc{font-size:26px;font-weight:800;margin:8px 0}.plan ul{padding-left:18px;font-size:14px;line-height:1.8;color:var(--mu)}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid var(--bd)}
+.mod{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9;padding:16px}
+.mod>div{background:var(--card);border-radius:20px;padding:22px;width:100%;max-width:440px;max-height:90vh;overflow:auto}
+.mod label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
+.mod input,.mod textarea{width:100%;padding:9px;border:1px solid var(--bd);background:var(--bg);border-radius:10px}
+.err{color:#d33;font-size:13px;margin-top:8px}
+.chat{display:grid;grid-template-columns:200px 1fr;gap:12px;min-height:420px}
+.msg{padding:8px 12px;border-radius:14px;margin:4px 0;max-width:75%;font-size:14px;background:var(--bd)}.msg.me{background:var(--ac);color:#fff;margin-left:auto}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:20px;display:none;z-index:99;font-size:14px}
+@media(max-width:600px){.chat{grid-template-columns:1fr}}
+</style></head><body>
+<nav id="nav"></nav><main id="app"></main><div id="toast"></div><div id="modal"></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getFirestore,collection,doc,setDoc,getDoc,addDoc,deleteDoc,updateDoc,onSnapshot,query,orderBy,limit,where,serverTimestamp,arrayUnion,arrayRemove,writeBatch,increment} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ===== DÁN firebaseConfig CỦA BẠN VÀO ĐÂY (Firebase → Project settings → Your apps → Web) ===== */
+const cfg={apiKey:"DAN_API_KEY",authDomain:"fohu-platform.firebaseapp.com",projectId:"fohu-platform",appId:"DAN_APP_ID"};
+/* ================================================================================================ */
+
+const MEDIA_BASE="https://media.fohu.asia"; // đổi thành địa chỉ công khai của bucket R2
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const PL={free:'Free',standard:'Standard',premium:'Premium'},HL={free:0,standard:3,premium:6};
+const PHONE=/(\+?84|0)[\s.\-]?\d([\s.\-]?\d){8,9}/,ADDR=/(số\s?\d+|ngõ|ngách|hẻm|đường\s|phố\s|phường|quận\s|huyện|xã\s|tp\.|thôn)/i;
+let J=[],apps=[],au=null,me=null,P=[],U={},C={},open={},chats=[],cid=null,msgs=[],req=null,unM=()=>{};
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2600)};
+const safe=s=>typeof s==='string'&&s.startsWith('data:image/')?s:'';
+const rz=(f,m,q=.8)=>new Promise(r=>{const i=new Image;i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=URL.createObjectURL(f)});
+const av=(u,s)=>safe(u?.av)?`<img class="av" width="${s}" height="${s}" src="${u.av}">`:`<span class="av" style="width:${s}px;height:${s}px;font-size:${s/2.4}px">${E((u?.name||'?')[0]).toUpperCase()}</span>`;
+const bdg=p=>p&&p!=='free'?`<span class="bdg ${p}">${PL[p].toUpperCase()}</span>`:'';
+const isV=u=>typeof u==='string'&&u.startsWith(MEDIA_BASE+'/');
+const vthumb=p=>isV(p.video)?`<video src="${E(p.video)}#t=0.1" muted preload="metadata" playsinline style="width:100%;height:100%;object-fit:cover"></video><em style="left:6px;right:auto;pointer-events:none">▶</em>`:'';
+const upVideo=async f=>{if(f.size>100*1048576)throw{code:'video-vuot-100MB'};const t=await au.getIdToken();
+ const r=await fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify({type:f.type,size:f.size})});
+ if(!r.ok)throw{code:'upload-'+r.status};const {url,publicUrl}=await r.json();
+ await new Promise((ok,no)=>{const x=new XMLHttpRequest();x.open('PUT',url);x.setRequestHeader('Content-Type',f.type);x.upload.onprogress=e=>$('#pb').textContent='Đang tải '+Math.round(e.loaded/e.total*100)+'%';x.onload=()=>x.status<300?ok():no({code:'r2-'+x.status});x.onerror=()=>no({code:'r2-network/cors'});x.send(f)});
+ return publicUrl};
+const need=async ids=>{const m=[...new Set(ids)].filter(i=>i&&!U[i]);await Promise.all(m.map(async i=>{const s=await getDoc(doc(db,'users',i));U[i]=s.exists()?s.data():{name:'Người dùng',plan:'free'}}));if(m.length)draw()};
+const need_login=()=>{if(!au){login();return true}};
+const modal=h=>$('#modal').innerHTML=`<div class="mod" onclick="if(event.target===this)closeM()"><div>${h}</div></div>`;
+const closeM=()=>$('#modal').innerHTML='';
+const login=()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>toast('Không đăng nhập được: '+e.code));
+const route=()=>location.hash.slice(1)||'home';
+const go=r=>{if(['inbox','settings','me'].includes(r)&&!au)return login();location.hash=r};
+
+/* ---- Auth & dữ liệu ---- */
+onAuthStateChanged(auth,async u=>{au=u;if(!u){me=null;draw();return}
+ const ref=doc(db,'users',u.uid);if(!(await getDoc(ref)).exists())await setDoc(ref,{name:u.displayName||u.email.split('@')[0],email:u.email,plan:'free',kyc:false,bio:'',phone:'',addr:'',hl:[],applied:0,at:serverTimestamp()});
+ onSnapshot(ref,s=>{me=s.data();U[u.uid]=me;draw()});
+ onSnapshot(query(collection(db,'chats'),where('members','array-contains',u.uid)),s=>{chats=s.docs.map(d=>({id:d.id,...d.data()}));need(chats.flatMap(c=>c.members));draw()});
+ onSnapshot(query(collection(db,'applications'),where('uid','==',u.uid)),s=>{apps=s.docs.map(d=>d.data().job);draw()});
+ onSnapshot(doc(db,'partnerRequests',u.uid),s=>{req=s.exists()?s.data():null;draw()});
+});
+onSnapshot(query(collection(db,'jobs'),orderBy('at','desc'),limit(50)),s=>{J=s.docs.map(d=>({id:d.id,...d.data()}));need(J.map(j=>j.uid));draw()});
+onSnapshot(query(collection(db,'posts'),orderBy('at','desc'),limit(60)),s=>{P=s.docs.map(d=>({id:d.id,...d.data()}));need(P.map(p=>p.uid));draw()},e=>toast('Lỗi tải bài: '+e.code));
+
+/* ---- Vẽ giao diện ---- */
+function draw(){const r=route().split('/')[0];
+ document.documentElement.dataset.theme=localStorage.th||'';
+ $('#nav').innerHTML=`<img src="fohu-logo.png" alt="FOHU" onclick="go('home')">`+[['home','Trang chủ'],['jobs','Việc làm'],['inbox','Tin nhắn'],['partner','Đối tác'],['settings','Cài đặt'],['me','Cá nhân']].map(([k,v])=>`<a class="${r==k?'on':''}" onclick="go('${k}')">${v}</a>`).join('')+(au?`<button class="btn" onclick="compose()">+ Đăng</button>`:`<button class="btn" onclick="login()">Đăng nhập Google</button>`);
+ $('#app').innerHTML=(cfg.apiKey==='DAN_API_KEY'?'<div class="box err">Chưa dán firebaseConfig vào index.html.</div>':'')+({home,jobs,inbox,partner,settings,me:profile,u:profile}[r]||home)()}
+function pin(p){const u=U[p.uid]||{},liked=au&&(p.likedBy||[]).includes(au.uid),n=(p.likedBy||[]).length;
+ return `<div class="pin">${safe(p.img)?`<img class="im" src="${p.img}">`:isV(p.video)?`<video class="im" src="${E(p.video)}" controls preload="metadata" playsinline></video>`:''}<div class="bd"><p>${E(p.cap)}</p>
+ <div class="au" onclick="location.hash='u/${p.uid}'">${av(u,26)}<span>${E(u.name)}</span>${bdg(u.plan)}</div>
+ <div class="act"><span class="${liked?'lk':''}" onclick="like('${p.id}')">${liked?'♥':'♡'} ${n}</span><span onclick="toggleC('${p.id}')">💬 Bình luận</span><span onclick="share('${p.id}')">↗ Chia sẻ</span>${au&&au.uid!==p.uid?`<span onclick="dm('${p.uid}')">✉</span>`:''}${au&&au.uid===p.uid?`<span onclick="del('${p.id}')">🗑</span>`:''}</div>
+ ${open[p.id]?`<div class="cm">${(C[p.id]||[]).map(c=>`<div><b>${E(U[c.uid]?.name||'')}</b>: ${E(c.t)}</div>`).join('')}<input placeholder="Viết bình luận…" onkeydown="if(event.key==='Enter'&&this.value){cmt('${p.id}',this)}"></div>`:''}</div></div>`}
+const home=()=>`<div class="masonry">${P.map(pin).join('')||'<p style="color:var(--mu)">Chưa có bài đăng. Hãy là người đầu tiên!</p>'}</div>`;
+
+function profile(){const uid=route().startsWith('u/')?route().slice(2):au?.uid;if(!uid)return '<p>Vui lòng đăng nhập.</p>';need([uid]);
+ const u=U[uid];if(!u)return '<p>Đang tải…</p>';const own=au&&au.uid===uid,mine=P.filter(p=>p.uid===uid),paid=u.plan!=='free';
+ return `<div class="cover" style="${safe(u.cover)?`background-image:url(${u.cover})`:''}"></div><div class="ph">${av(u,92)}<div style="flex:1"><h2 style="margin:0">${E(u.name)} ${bdg(u.plan)}</h2><span style="color:var(--mu);font-size:14px">${own?E(u.email):''}</span></div>${own?`<button class="btn g" onclick="editP()">Chỉnh sửa</button>`:au?`<button class="btn" onclick="dm('${uid}')">Nhắn tin</button>`:''}</div>
+ <div style="padding:0 16px"><p style="margin:12px 0"><b>${mine.length}</b> bài đăng</p>
+ ${paid?`<div class="box" style="font-size:14px"><p style="margin:0 0 6px">${E(u.bio)||'Chưa có mô tả.'}</p>📞 ${E(u.phone)||'—'} · 📍 ${E(u.addr)||'—'}${u.kyc?' · ✅ Đã xác minh':''}</div>
+ <b>Nổi bật (${(u.hl||[]).length}/${HL[u.plan]})</b><div class="hl">${(u.hl||[]).map(id=>P.find(p=>p.id===id)).filter(Boolean).map(p=>`<div><i style="background-image:url(${safe(p.img)})"></i>${E(p.cap).slice(0,10)}</div>`).join('')||'<span style="color:var(--mu);font-size:13px">Bấm ☆ trên ảnh để ghim</span>'}</div>`
+ :own?`<div class="box" style="font-size:14px">Tài khoản thường chỉ đăng ảnh. <a href="#partner" style="color:var(--ac)">Trở thành đối tác</a> để mở mô tả, liên hệ, mục nổi bật.</div>`:''}
+ <div class="grid">${mine.map(p=>`<div style="background-image:url(${safe(p.img)})">${vthumb(p)}${own&&paid?`<em onclick="hlt('${p.id}')">${(u.hl||[]).includes(p.id)?'★':'☆'}</em>`:''}</div>`).join('')}</div></div>`}
+
+function partner(){const pl=(k,pc,fs)=>`<div class="plan ${k=='premium'?'pr':''}"><h3>${PL[k]} ${bdg(k)}</h3><div class="pc">${pc}</div><ul>${fs.map(f=>`<li>${f}</li>`).join('')}</ul><button class="btn ${me?.plan==k?'g':''}" style="width:100%" onclick="buy('${k}')">${me?.plan==k?'Gói hiện tại':k=='free'?'Dùng miễn phí':'Nâng cấp'}</button></div>`;
+ return `<h2 style="text-align:center">Trở thành đối tác</h2><p style="text-align:center;color:var(--mu)">Photographer, makeup artist, videographer, studio, cho thuê trang phục, AI artist, designer…</p>${req?`<div class="box" style="text-align:center">Yêu cầu gói <b>${PL[req.plan]}</b>: <b>${{pending:'đang chờ duyệt',approved:'đã duyệt',rejected:'bị từ chối'}[req.status]}</b>${req.status==='pending'?` · <a style="color:var(--ac);cursor:pointer" onclick="payQR('${req.plan}')">Xem mã QR thanh toán</a>`:''}</div>`:''}<div class="plans">`+
+ pl('free','0đ',['Đăng ảnh','Like, comment, inbox','Bị lọc SĐT & địa chỉ trong bài','Không có mục nổi bật','Không ứng tuyển job'])+
+ pl('standard','99.000đ/tháng',['Mô tả & liên hệ trên trang','Không bị lọc SĐT/địa chỉ','Huy hiệu Standard','3 album/video nổi bật','Ứng tuyển tối đa 5 job'])+
+ pl('premium','249.000đ/tháng',['Mọi quyền lợi Standard','Huy hiệu Premium','6 album/video nổi bật','Ứng tuyển không giới hạn','Ưu tiên hiển thị'])+`</div>`}
+
+const LIMJ={free:0,standard:5,premium:Infinity};
+function jobs(){const pl=me?.plan||'free',L=LIMJ[pl],n=me?.applied||0;
+ return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h2 style="margin:0">Việc làm</h2>${pl!=='free'?'<button class="btn" onclick="postJob()">+ Đăng tuyển</button>':''}</div>
+ ${au?`<p style="color:var(--mu);font-size:14px">${pl==='free'?'Gói Free không ứng tuyển được. <a href="#partner" style="color:var(--ac)">Nâng cấp</a>':`Đã ứng tuyển: ${n}/${L===Infinity?'∞':L}`}</p>`:'<p style="color:var(--mu);font-size:14px">Đăng nhập để ứng tuyển.</p>'}
+ ${J.map(j=>{const u=U[j.uid]||{},done=apps.includes(j.id),own=au&&au.uid===j.uid;return `<div class="box"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><b>${E(j.title)}</b><div style="color:var(--mu);font-size:13px;margin:4px 0">${E(j.place)} · ${E(j.pay)}</div><div class="au" onclick="location.hash='u/${j.uid}'">${av(u,24)}<span>${E(u.name)}</span>${bdg(u.plan)}</div></div>
+ <div>${own?`<button class="btn g" onclick="delJob('${j.id}')">Xóa</button>`:`<button class="btn ${done?'g':''}" ${done?'disabled':''} onclick="applyJob('${j.id}')">${done?'Đã ứng tuyển':'Ứng tuyển'}</button>`}</div></div><p style="font-size:14px;margin:8px 0 0">${E(j.desc)}</p></div>`}).join('')||'<p style="color:var(--mu)">Chưa có tin tuyển dụng.</p>'}`}
+function inbox(){const o=id=>chats.find(c=>c.id===id)?.members.find(m=>m!==au.uid);
+ return `<h2>Tin nhắn</h2><div class="chat"><div class="box" style="padding:8px">${chats.map(c=>{const u=U[o(c.id)];return `<div class="au" style="padding:8px;border-radius:10px;${c.id==cid?'background:var(--bd)':''}" onclick="openChat('${c.id}')">${av(u,30)}<span>${E(u?.name)}</span></div>`}).join('')||'<span style="color:var(--mu);font-size:13px">Chưa có hội thoại. Bấm ✉ trên bài viết để nhắn.</span>'}</div>
+ <div class="box" style="display:flex;flex-direction:column">${cid?`<div style="flex:1;margin-bottom:10px">${msgs.map(m=>`<div class="msg ${m.from===au.uid?'me':''}">${E(m.t)}</div>`).join('')}</div><input style="border:1px solid var(--bd);background:var(--bg);border-radius:20px;padding:9px 14px" placeholder="Nhập tin nhắn…" onkeydown="if(event.key==='Enter'&&this.value){send(this)}">`:'<span style="color:var(--mu)">Chọn một hội thoại</span>'}</div></div>`}
+
+function settings(){return `<h2>Cài đặt</h2><div class="box"><b>Tài khoản</b><div class="row"><span>Email</span><span style="color:var(--mu)">${E(me?.email)}</span></div><div class="row"><span>Hồ sơ</span><button class="btn g" onclick="editP()">Chỉnh sửa</button></div><div class="row"><span>Gói hiện tại</span><span>${PL[me?.plan||'free']}</span></div></div>
+ <div class="box"><b>Trình duyệt</b><div class="row"><span>Giao diện</span><select onchange="localStorage.th=this.value;draw()"><option value="" ${localStorage.th?'':'selected'}>Sáng</option><option value="dark" ${localStorage.th=='dark'?'selected':''}>Tối</option></select></div></div>
+ <button class="btn g" onclick="out()">Đăng xuất</button>`}
+
+/* ---- Hành động ---- */
+const A={login,go,closeM,draw,
+ like:async id=>{if(need_login())return;const p=P.find(x=>x.id===id),l=(p.likedBy||[]).includes(au.uid);await updateDoc(doc(db,'posts',id),{likedBy:l?arrayRemove(au.uid):arrayUnion(au.uid)})},
+ toggleC:id=>{open[id]=!open[id];if(open[id]&&!C[id])onSnapshot(query(collection(db,'posts',id,'comments'),orderBy('at')),s=>{C[id]=s.docs.map(d=>d.data());need(C[id].map(c=>c.uid));draw()});draw()},
+ cmt:async(id,el)=>{if(need_login())return;const t=el.value;el.value='';await addDoc(collection(db,'posts',id,'comments'),{uid:au.uid,t,at:serverTimestamp()})},
+ share:id=>{navigator.clipboard?.writeText(location.origin+'/#home');toast('Đã sao chép liên kết')},
+ del:async id=>{if(confirm('Xóa bài này?'))await deleteDoc(doc(db,'posts',id))},
+ out:()=>signOut(auth).then(()=>go('home')),
+ compose:()=>{modal(`<h3>Đăng bài mới</h3><label>Ảnh hoặc video (mp4/webm/mov, tối đa 100MB)</label><input type="file" id="f" accept="image/*,video/mp4,video/webm,video/quicktime"><label>Nội dung</label><textarea id="cap" rows="3"></textarea>
+  ${me?.plan==='free'?'<p style="font-size:12px;color:var(--mu)">Gói Free: bài đăng không được chứa số điện thoại hoặc địa chỉ.</p>':''}<div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" id="pb" onclick="post()">Đăng</button>`)},
+ post:async()=>{const c=$('#cap').value.trim(),f=$('#f').files[0],e=$('#er');if(!f)return e.textContent='Vui lòng chọn ảnh hoặc video';
+  if(me.plan==='free'&&(PHONE.test(c)||ADDR.test(c)))return e.textContent='Nội dung chứa số điện thoại/địa chỉ. Nâng cấp gói đối tác để đăng thông tin liên hệ.';
+  $('#pb').disabled=true;try{const d={uid:au.uid,cap:c,likedBy:[],at:serverTimestamp()};if(f.type.startsWith('video/'))d.video=await upVideo(f);else d.img=await rz(f,900);await addDoc(collection(db,'posts'),d);closeM();toast('Đã đăng bài')}catch(x){e.textContent='Lỗi: '+x.code;$('#pb').disabled=false;$('#pb').textContent='Đăng'}},
+ editP:()=>{const pr=me.plan!=='free';modal(`<h3>Chỉnh sửa hồ sơ</h3><label>Ảnh đại diện</label><input type="file" id="a" accept="image/*"><label>Ảnh bìa</label><input type="file" id="cv" accept="image/*"><label>Tên hiển thị</label><input id="nm" value="${E(me.name)}">
+  ${pr?`<label>Mô tả</label><textarea id="bio" rows="3">${E(me.bio)}</textarea><label>Số điện thoại</label><input id="ph" value="${E(me.phone)}"><label>Địa chỉ</label><input id="ad" value="${E(me.addr)}">`:'<p style="font-size:12px;color:var(--mu)">Mô tả & liên hệ dành cho gói đối tác.</p>'}<button class="btn" style="width:100%;margin-top:14px" onclick="saveP()">Lưu</button>`)},
+ saveP:async()=>{const d={name:$('#nm').value.trim()||me.name},a=$('#a').files[0],c=$('#cv').files[0];if(a)d.av=await rz(a,256);if(c)d.cover=await rz(c,1000);
+  if($('#bio'))Object.assign(d,{bio:$('#bio').value,phone:$('#ph').value,addr:$('#ad').value});await updateDoc(doc(db,'users',au.uid),d);closeM();toast('Đã lưu')},
+ hlt:async id=>{const h=me.hl||[];if(h.includes(id))return updateDoc(doc(db,'users',au.uid),{hl:arrayRemove(id)});if(h.length>=HL[me.plan])return toast(`Gói ${PL[me.plan]} chỉ được ${HL[me.plan]} mục nổi bật`);updateDoc(doc(db,'users',au.uid),{hl:arrayUnion(id)})},
+ buy:k=>{if(need_login()||k==='free'||me.plan===k)return;if(req?.status==='pending')return payQR(req.plan);
+  modal(`<h3>Đăng ký đối tác – ${PL[k]}</h3><label>Căn cước công dân – mặt trước</label><input type="file" id="k1" accept="image/*"><label>Căn cước công dân – mặt sau</label><input type="file" id="k2" accept="image/*"><label>Số điện thoại</label><input id="kp"><label>Địa chỉ</label><input id="ka"><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:14px" id="kb" onclick="kyc('${k}')">Gửi yêu cầu</button>`)},
+ kyc:async k=>{const e=$('#er'),f1=$('#k1').files[0],f2=$('#k2').files[0],p=$('#kp').value.replace(/\s/g,''),a=$('#ka').value.trim();
+  if(!f1||!f2)return e.textContent='Vui lòng tải lên cả 2 mặt CCCD';if(!/^(0|\+84)\d{9}$/.test(p))return e.textContent='Số điện thoại không hợp lệ';if(a.length<8)return e.textContent='Vui lòng nhập địa chỉ đầy đủ';
+  $('#kb').disabled=true;try{await setDoc(doc(db,'partnerRequests',au.uid),{plan:k,phone:p,addr:a,front:await rz(f1,800,.7),back:await rz(f2,800,.7),status:'pending',at:serverTimestamp()});payQR(k)}catch(x){e.textContent='Lỗi: '+x.code;$('#kb').disabled=false}},
+ postJob:()=>modal(`<h3>Đăng tin tuyển</h3><label>Tiêu đề</label><input id="jt"><label>Địa điểm</label><input id="jp"><label>Thù lao</label><input id="jy"><label>Mô tả</label><textarea id="jd" rows="3"></textarea><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" onclick="saveJob()">Đăng</button>`),
+ saveJob:async()=>{const d={title:$('#jt').value.trim(),place:$('#jp').value.trim(),pay:$('#jy').value.trim(),desc:$('#jd').value.trim()};if(!d.title)return $('#er').textContent='Nhập tiêu đề';try{await addDoc(collection(db,'jobs'),{...d,uid:au.uid,at:serverTimestamp()});closeM();toast('Đã đăng tin')}catch(x){$('#er').textContent='Lỗi: '+x.code}},
+ delJob:async id=>{if(confirm('Xóa tin này?'))await deleteDoc(doc(db,'jobs',id))},
+ applyJob:async id=>{if(need_login())return;const pl=me.plan,n=me.applied||0;if(pl==='free'){toast('Cần gói đối tác để ứng tuyển');return go('partner')}
+  if(n>=LIMJ[pl])return toast('Đã hết 5 lượt ứng tuyển – nâng cấp Premium để không giới hạn');const j=J.find(x=>x.id===id),b=writeBatch(db);
+  b.set(doc(db,'applications',id+'_'+au.uid),{job:id,uid:au.uid,jobOwner:j.uid,at:serverTimestamp()});b.update(doc(db,'users',au.uid),{applied:increment(1)});
+  try{await b.commit();toast('Đã gửi ứng tuyển')}catch(x){toast('Không thể ứng tuyển: '+x.code)}},
+ payQR:k=>{const amt=k==='standard'?'99.000đ':'249.000đ',note='FOHU '+au.uid.slice(0,6).toUpperCase()+' '+k.toUpperCase();
+  modal(`<h3>Thanh toán gói ${PL[k]}</h3><div style="text-align:center"><img src="pay-qr.png" alt="Mã QR thanh toán" style="max-width:260px;width:100%;border-radius:12px;border:1px solid var(--bd)" onerror="this.outerHTML='<p class=err>Chưa có ảnh pay-qr.png trên website</p>'">
+  <p style="margin:10px 0 2px">Số tiền: <b>${amt}</b></p><p style="margin:0">Nội dung chuyển khoản:</p><p><b style="font-size:18px">${note}</b></p><button class="btn g" onclick="navigator.clipboard?.writeText('${note}');toast('Đã sao chép nội dung')">Sao chép nội dung</button>
+  <p style="font-size:13px;color:var(--mu)">Hồ sơ của bạn đã được gửi. Quét mã, chuyển đúng số tiền và nội dung; chúng tôi sẽ kiểm tra và kích hoạt gói cho bạn.</p><button class="btn" style="width:100%" onclick="closeM()">Đóng</button></div>`)},
+ dm:async uid=>{if(need_login())return;const id=[au.uid,uid].sort().join('_');await setDoc(doc(db,'chats',id),{members:[au.uid,uid]},{merge:true});openChat(id);go('inbox')},
+ openChat:id=>{unM();cid=id;msgs=[];unM=onSnapshot(query(collection(db,'chats',id,'messages'),orderBy('at')),s=>{msgs=s.docs.map(d=>d.data());draw()});draw()},
+ send:async el=>{const t=el.value;el.value='';await addDoc(collection(db,'chats',cid,'messages'),{from:au.uid,t,at:serverTimestamp()})}};
+Object.assign(window,A);window.addEventListener('hashchange',draw);draw();
+</script></body></html>

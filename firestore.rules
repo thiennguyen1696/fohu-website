@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signed() { return request.auth != null; }
+    function admin()  { return signed() && request.auth.token.admin == true; }
+    function plan()   { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data.plan; }
+    function hasContact(t) {
+      return t.matches('.*[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9][ .-]?[0-9].*');
+    }
+
+    // Người dùng: KHÔNG được tự sửa plan / kyc (chỉ admin hoặc Firebase Console)
+    match /users/{u} {
+      allow read: if signed();
+      allow create: if signed() && request.auth.uid == u
+                    && request.resource.data.plan == 'free' && request.resource.data.kyc == false;
+      allow update: if (signed() && request.auth.uid == u
+                    && request.resource.data.plan == resource.data.plan
+                    && request.resource.data.kyc == resource.data.kyc
+                    && request.resource.data.get('applied',0) == resource.data.get('applied',0)) || (signed() && request.auth.uid == u
+                    && request.resource.data.plan == resource.data.plan && request.resource.data.kyc == resource.data.kyc
+                    && request.resource.data.get('applied',0) == resource.data.get('applied',0) + 1
+                    && (resource.data.plan == 'premium' || (resource.data.plan == 'standard' && resource.data.get('applied',0) < 5))) || admin();
+    }
+
+    match /posts/{p} {
+      allow read: if signed();
+      allow create: if signed() && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.cap.size() < 1000
+                    && (plan() != 'free' || !hasContact(request.resource.data.cap));
+      // Ai cũng chỉ được đổi trường likedBy
+      allow update: if signed() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy']);
+      allow delete: if signed() && resource.data.uid == request.auth.uid || admin();
+
+      match /comments/{c} {
+        allow read: if signed();
+        allow create: if signed() && request.resource.data.uid == request.auth.uid
+                      && request.resource.data.t.size() < 500;
+      }
+    }
+
+    // Tin tuyển dụng: chỉ gói đối tác được đăng
+    match /jobs/{j} {
+      allow read: if signed();
+      allow create: if signed() && request.resource.data.uid == request.auth.uid && plan() != 'free';
+      allow delete: if signed() && resource.data.uid == request.auth.uid || admin();
+    }
+    // Ứng tuyển: bắt buộc đi kèm tăng bộ đếm 'applied' (giới hạn 5 job cho Standard)
+    match /applications/{a} {
+      allow read: if signed() && (resource.data.uid == request.auth.uid || resource.data.jobOwner == request.auth.uid);
+      allow create: if signed() && request.resource.data.uid == request.auth.uid
+                    && a == request.resource.data.job + '_' + request.auth.uid
+                    && getAfter(/databases/$(db)/documents/users/$(request.auth.uid)).data.get('applied',0)
+                       == get(/databases/$(db)/documents/users/$(request.auth.uid)).data.get('applied',0) + 1;
+    }
+
+    // Hồ sơ KYC (ảnh CCCD): chỉ chủ tài khoản và admin xem được
+    match /partnerRequests/{u} {
+      allow read: if signed() && (request.auth.uid == u || admin());
+      allow create: if signed() && request.auth.uid == u && request.resource.data.status == 'pending';
+      allow update: if admin();
+    }
+
+    match /chats/{c} {
+      allow read: if signed() && request.auth.uid in resource.data.members;
+      allow create: if signed() && request.auth.uid in request.resource.data.members;
+      allow update: if signed() && request.auth.uid in resource.data.members;
+      match /messages/{m} {
+        allow read: if signed() && request.auth.uid in get(/databases/$(db)/documents/chats/$(c)).data.members;
+        allow create: if signed() && request.resource.data.from == request.auth.uid
+                      && request.auth.uid in get(/databases/$(db)/documents/chats/$(c)).data.members;
+      }
+    }
+  }
+}
