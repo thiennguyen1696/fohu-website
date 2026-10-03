@@ -2,243 +2,284 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fohu.asia - Nền tảng Sáng tạo Hình ảnh & Video Toàn diện</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fohu.asia - Visual Creator & Media Hub</title>
+    <!-- Thêm Logo làm Favicon (Thumb) cho trang web -->
+    <link rel="icon" type="image/png" href="fohu-logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome cho Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .masonry-grid {
-            column-count: 1;
-            column-gap: 1rem;
+        :root {
+            --bg-beige: #FDFBF7;
+            --card-beige: #F4EFEA;
+            --accent-beige: #D5C7B8;
+            --text-dark: #3E3833;
         }
-        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        body {
+            background-color: var(--bg-beige);
+            color: var(--text-dark);
+        }
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 0.75rem;
+        }
         @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
         @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
-        @media (min-width: 1280px) { .masonry-grid { column-count: 5; } }
-        
         .masonry-item {
             break-inside: avoid;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+<body class="antialiased pb-16">
 
-    <!-- HEADER / NAVIGATION -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <!-- Logo -->
-            <div class="flex items-center gap-2">
-                <a href="#" class="text-2xl font-extrabold tracking-tighter text-black flex items-center gap-1">
-                    <span class="bg-black text-white px-2 py-1 rounded-lg text-lg">Fo</span>hu
+    <!-- ================= MÀN HÌNH ĐĂNG NHẬP / XÁC THỰC (GMAIL) ================= -->
+    <div id="authScreen" class="fixed inset-0 z-50 bg-[#FDFBF7] flex items-center justify-center p-4">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-sm w-full p-8 shadow-xl border border-[#EBE4DC] text-center">
+            <div class="mb-6 flex flex-col items-center">
+                <!-- Hiển thị Logo chính thức ở màn hình Login -->
+                <img src="fohu-logo.png" alt="Fohu Logo" class="h-10 object-contain mb-3">
+                <p class="text-xs text-gray-500">Nền tảng mạng xã hội dành cho giới sáng tạo hình ảnh & video</p>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 border border-gray-300 py-3 px-4 rounded-2xl shadow-xs transition font-semibold text-xs text-gray-700">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.93H1.19v3.15C3.17 21.31 7.28 24 12 24z"/>
+                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.8 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.28 0 3.17 2.69 1.19 6.58l4.09 3.15c.95-2.82 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    Tiếp tục với Google (Gmail)
+                </button>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-6">Bằng cách tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Fohu.</p>
+        </div>
+    </div>
+
+    <!-- ================= HỆ THỐNG CÁC TRANG (SPA) ================= -->
+    <div id="mainApp" class="hidden">
+
+        <!-- HEADER CHUNG -->
+        <header class="sticky top-0 z-40 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#EBE4DC] px-3 py-2.5">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+                <!-- Hiển thị Logo chính thức trên Header -->
+                <a href="#" onclick="switchTab('feed')" class="flex items-center shrink-0">
+                    <img src="fohu-logo.png" alt="Fohu Logo" class="h-7 object-contain">
                 </a>
-                <span class="hidden sm:inline-block text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">Visual Creator Hub</span>
-            </div>
 
-            <!-- Thanh tìm kiếm -->
-            <div class="flex-1 max-w-2xl relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                <div class="flex-1 max-w-md relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" placeholder="Tìm kiếm bài viết, creator, máy cơ..." 
+                        class="w-full pl-8 pr-3 py-1.5 bg-[#F4EFEA] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#3E3833] rounded-full text-xs transition-all">
                 </div>
-                <input type="text" placeholder="Tìm kiếm creator, videographer, máy cơ Sony/Canon, studio, preset..." 
-                    class="w-full pl-10 pr-4 py-2.5 bg-gray-100 hover:bg-gray-200/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 rounded-full text-sm transition-all">
-            </div>
 
-            <!-- Menu phải -->
-            <div class="flex items-center gap-3">
-                <button id="btnUpgrade" onclick="openPricingModal()" class="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-full shadow-sm transition">
-                    <i class="fa-solid fa-crown text-yellow-300"></i> Trở thành Creator (149k)
-                </button>
-
-                <button id="btnUpload" onclick="alert('Mở Studio đăng tải Ảnh/Video cho Creator!')" class="hidden bg-black hover:bg-gray-800 text-white text-xs font-bold px-3.5 py-2 rounded-full transition">
-                    <i class="fa-solid fa-plus mr-1"></i> Đăng tải
-                </button>
-
-                <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition">
-                    <i class="fa-regular fa-bell text-lg"></i>
-                </button>
-
-                <!-- Avatar & Switcher -->
-                <div class="relative group">
-                    <button class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" class="w-9 h-9 rounded-full object-cover border">
+                <div class="flex items-center gap-2">
+                    <button onclick="openPricingModal()" class="bg-[#3E3833] text-[#FDFBF7] text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-xs">
+                        <i class="fa-solid fa-crown text-yellow-300"></i> 149k Pro
                     </button>
-                    <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 hidden group-hover:block z-50">
-                        <div class="px-4 py-2 border-b border-gray-100">
-                            <p id="userNameDisplay" class="text-xs font-bold text-gray-900">Nguyễn Trương Hoàng Thiện</p>
-                            <p id="userRoleBadge" class="text-[10px] text-gray-500 font-medium">Thành viên Thường</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 1. TRANG CHỦ (NEWSFEED) -->
+        <div id="tab-feed" class="page-content max-w-3xl mx-auto p-2.5 space-y-3">
+            <div class="bg-[#F4EFEA] rounded-2xl p-3 border border-[#EBE4DC] flex items-center gap-3">
+                <img id="userFeedAvatar" src="" class="w-9 h-9 rounded-full object-cover">
+                <button onclick="openCreatePostModal()" class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-left px-4 py-2.5 rounded-full text-xs border border-[#EBE4DC] transition">
+                    Hôm nay bạn có tác phẩm hay video gì muốn chia sẻ?
+                </button>
+            </div>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+                <button class="px-3 py-1 bg-[#3E3833] text-white text-xs font-bold rounded-full shrink-0">Tất cả</button>
+                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">🎬 Videographer</button>
+                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">📷 Máy cơ</button>
+                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">💄 Makeup</button>
+                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">📍 Check-in Studio</button>
+            </div>
+
+            <div class="masonry-grid">
+                <div class="masonry-item bg-white rounded-2xl overflow-hidden border border-[#EBE4DC] shadow-xs">
+                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" class="w-full object-cover">
+                    <div class="p-3">
+                        <p class="text-xs text-gray-700 font-medium mb-2">Buổi chiều hoàng hôn tại Hồ Tây cùng Sony A7IV 🌅</p>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <div class="flex items-center gap-1.5">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50" class="w-5 h-5 rounded-full">
+                                <span class="text-[10px] font-bold">Hoàng Thiện</span>
+                            </div>
+                            <button class="text-red-500 text-xs"><i class="fa-regular fa-heart"></i> 128</button>
                         </div>
-                        <a href="#" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"><i class="fa-regular fa-bookmark mr-2"></i> Bộ sưu tập đã lưu</a>
-                        <a href="#" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"><i class="fa-solid fa-gear mr-2"></i> Cài đặt tài khoản</a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <button onclick="toggleUserRole()" class="w-full text-left px-4 py-2 text-xs text-indigo-600 font-semibold hover:bg-indigo-50">
-                            🔄 Đổi Role (Test Thường ⇄ Pro)
-                        </button>
+                    </div>
+                </div>
+
+                <div class="masonry-item bg-white rounded-2xl overflow-hidden border border-[#EBE4DC] shadow-xs">
+                    <div class="p-3 bg-[#F4EFEA]/50 text-[10px] font-bold text-gray-600 flex items-center gap-1 border-b border-[#EBE4DC]">
+                        <i class="fa-solid fa-location-dot text-red-500"></i> Check-in tại Dì Ba Studio, Q.1
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500" class="w-full object-cover">
+                    <div class="p-3">
+                        <p class="text-xs text-gray-700 font-medium mb-2">Setup ánh sáng Profoto chuẩn cinematic cho lookbook mới.</p>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <div class="flex items-center gap-1.5">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50" class="w-5 h-5 rounded-full">
+                                <span class="text-[10px] font-bold">Minh Tuấn</span>
+                            </div>
+                            <button class="text-red-500 text-xs"><i class="fa-regular fa-heart"></i> 94</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- SUB-NAV: Danh mục khám phá toàn diện -->
-    <nav class="bg-white border-b border-gray-100 py-2.5 px-4 overflow-x-auto whitespace-nowrap">
-        <div class="max-w-7xl mx-auto flex items-center gap-2">
-            <a href="#" class="px-4 py-1.5 bg-black text-white text-xs font-bold rounded-full">Tất cả</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🎬 Videographer / Reels</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">📷 Máy cơ (DSLR / Mirrorless)</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">📱 Phone Photography</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">💄 Makeup Artist (MUA)</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🤖 AI Artist</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">🏠 Mini Studio</a>
-            <a href="#" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-full transition">👗 Thuê trang phục</a>
+        <!-- 2. TRANG TIN NHẮN (CHAT) -->
+        <div id="tab-messages" class="page-content max-w-xl mx-auto p-3 hidden">
+            <h2 class="text-base font-bold mb-3">Tin nhắn cộng đồng</h2>
+            <div class="space-y-2">
+                <div class="bg-white p-3 rounded-2xl border border-[#EBE4DC] flex items-center gap-3 cursor-pointer hover:bg-gray-50">
+                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <h4 class="text-xs font-bold">Minh Tuấn (Videographer)</h4>
+                        <p class="text-[11px] text-gray-500 truncate">Chào bạn, mình muốn book lịch chụp bộ concept...</p>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                </div>
+            </div>
         </div>
-    </nav>
 
-    <!-- MAIN CONTENT: Masonry Grid -->
-    <main class="max-w-7xl mx-auto p-4 lg:p-6">
-        <div class="masonry-grid">
-            
-            <!-- Item 1 -->
-            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600" alt="Video Reel" class="w-full object-cover">
-                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
-                    <i class="fa-solid fa-video text-red-400"></i> Videographer
-                </div>
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
-                    <div class="flex justify-end">
-                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
-                    </div>
-                    <div class="flex items-center justify-between text-white">
-                        <div class="flex items-center gap-2">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-6 h-6 rounded-full border">
-                            <span class="text-xs font-medium">Hoàng Thện <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></span>
-                        </div>
-                    </div>
+        <!-- 3. TRANG CÁ NHÂN (PROFILE) -->
+        <div id="tab-profile" class="page-content max-w-xl mx-auto p-3 hidden space-y-4">
+            <div class="bg-white rounded-3xl p-5 border border-[#EBE4DC] text-center">
+                <img id="userProfileAvatar" src="" class="w-20 h-20 rounded-full object-cover mx-auto border-2 border-[#3E3833] mb-3">
+                <h3 id="userProfileName" class="text-base font-black">Nguyễn Trương Hoàng Thiện</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Visual Creator & Media Producer</p>
+                <div class="flex justify-center gap-4 mt-3 text-xs font-bold">
+                    <span>14 bài đăng</span>
+                    <span>320 người theo dõi</span>
                 </div>
             </div>
-
-            <!-- Item 2 -->
-            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600" alt="Camera Photo" class="w-full object-cover">
-                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    Sony A7IV • 50mm f/1.4
-                </div>
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
-                    <div class="flex justify-end">
-                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
-                    </div>
-                    <div class="flex items-center justify-between text-white">
-                        <div class="flex items-center gap-2">
-                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-6 h-6 rounded-full border">
-                            <span class="text-xs font-medium">Minh Tuấn Pro <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="masonry-item relative group rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300">
-                <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600" alt="Makeup" class="w-full object-cover">
-                <div class="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    Makeup Artist
-                </div>
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5">
-                    <div class="flex justify-end">
-                        <button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition">Lưu</button>
-                    </div>
-                    <div class="flex items-center justify-between text-white">
-                        <div class="flex items-center gap-2">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="w-6 h-6 rounded-full border">
-                            <span class="text-xs font-medium">Linh Chi MUA</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </main>
 
-    <!-- MODAL ĐĂNG KÝ GÓI CREATOR (149K/THÁNG) -->
-    <div id="pricingModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl">
-            <button onclick="closePricingModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+        <!-- 4. TRANG CÀI ĐẶT (SETTINGS) -->
+        <div id="tab-settings" class="page-content max-w-xl mx-auto p-3 hidden space-y-3">
+            <h2 class="text-base font-bold mb-3">Cài đặt tài khoản</h2>
+            <div class="bg-white rounded-2xl border border-[#EBE4DC] divide-y divide-gray-100 text-xs">
+                <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+                    <span>Chỉnh sửa hồ sơ cá nhân</span>
+                    <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                </div>
+                <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 text-red-600 font-bold" onclick="logout()">
+                    <span>Đăng xuất tài khoản</span>
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM NAVIGATION ================= -->
+        <div class="fixed bottom-0 inset-x-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#EBE4DC] py-2 px-6 flex justify-between items-center z-40">
+            <button onclick="switchTab('feed')" id="nav-feed" class="text-[#3E3833] flex flex-col items-center text-[10px] font-bold">
+                <i class="fa-solid fa-house text-base mb-0.5"></i> Bảng tin
+            </button>
+            <button onclick="switchTab('messages')" id="nav-messages" class="text-gray-400 flex flex-col items-center text-[10px]">
+                <i class="fa-regular fa-comment-dots text-base mb-0.5"></i> Tin nhắn
+            </button>
+            <button onclick="openCreatePostModal()" class="w-10 h-10 bg-[#3E3833] text-[#FDFBF7] rounded-full flex items-center justify-center shadow-md -mt-4 border-2 border-[#FDFBF7]">
+                <i class="fa-solid fa-plus text-sm"></i>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="text-gray-400 flex flex-col items-center text-[10px]">
+                <i class="fa-regular fa-user text-base mb-0.5"></i> Cá nhân
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="text-gray-400 flex flex-col items-center text-[10px]">
+                <i class="fa-solid fa-gear text-base mb-0.5"></i> Cài đặt
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL ĐĂNG BÀI ================= -->
+    <div id="createPostModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-5 relative shadow-xl">
+            <button onclick="closeCreatePostModal()" class="absolute top-3 right-3 text-gray-400 hover:text-black w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-
-            <div class="text-center mb-5">
-                <div class="inline-flex p-3 bg-purple-100 text-purple-600 rounded-2xl text-2xl mb-2">
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <h3 class="text-xl font-extrabold text-gray-900">Đăng ký Tài khoản Creator Pro</h3>
-                <p class="text-xs text-gray-500 mt-1">Mở khóa tính năng đăng tải, portfolio và nhận booking dịch vụ</p>
+            <h3 class="text-sm font-black text-center mb-4">Tạo bài viết / Tác phẩm mới</h3>
+            <textarea placeholder="Nhập nội dung chia sẻ, thông số máy, hoặc câu chuyện..." class="w-full h-24 bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-3 text-xs focus:outline-none mb-3"></textarea>
+            <div class="flex gap-2 mb-4">
+                <button class="flex-1 py-2 bg-[#F4EFEA] text-[#3E3833] text-[11px] font-bold rounded-xl"><i class="fa-solid fa-image text-green-600 mr-1"></i> Ảnh/Video</button>
+                <button class="flex-1 py-2 bg-[#F4EFEA] text-[#3E3833] text-[11px] font-bold rounded-xl"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i> Check-in Studio</button>
             </div>
+            <button onclick="alert('Đăng bài thành công!'); closeCreatePostModal();" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs">Đăng bài</button>
+        </div>
+    </div>
 
-            <!-- Giá tiền -->
-            <div class="bg-gradient-to-br from-purple-900 to-indigo-900 text-white rounded-2xl p-4 text-center mb-5 shadow-inner">
-                <span class="text-3xl font-black">149.000đ</span> <span class="text-xs text-purple-200">/ tháng</span>
-            </div>
-
-            <!-- Chọn Chuyên ngành đăng ký -->
-            <div class="mb-5">
-                <label class="block text-xs font-bold text-gray-700 mb-2">Chọn lĩnh vực chuyên môn chính của bạn:</label>
-                <select id="creatorRoleSelect" class="w-full text-xs bg-gray-100 border border-gray-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    <option value="dslr">📷 Nhiếp ảnh gia Máy cơ (DSLR / Mirrorless)</option>
-                    <option value="video">🎬 Videographer / Quay phim ngắn / Reels</option>
-                    <option value="phone">📱 Phone Photographer & Preset Creator</option>
-                    <option value="mua">💄 Chuyên gia Trang điểm (Makeup Artist)</option>
-                    <option value="ai">🤖 AI Artist / Concept Generator</option>
-                    <option value="studio">🏠 Mini Studio / Cho thuê không gian</option>
-                    <option value="costume">👗 Dịch vụ cho thuê Trang phục</option>
-                </select>
-            </div>
-
-            <button onclick="simulateUpgrade()" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition text-sm">
-                Xác nhận thanh toán 149.000đ
+    <!-- ================= MODAL PRO 149K ================= -->
+    <div id="pricingModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 relative shadow-xl text-center">
+            <button onclick="closePricingModal()" class="absolute top-3 right-3 text-gray-400 hover:text-black w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-xmark"></i>
             </button>
+            <span class="inline-flex p-2 bg-yellow-100 text-yellow-700 rounded-xl text-lg mb-1"><i class="fa-solid fa-crown"></i></span>
+            <h3 class="text-base font-black">Nâng cấp Creator Pro</h3>
+            <p class="text-[11px] text-gray-500 mb-3">149.000đ/tháng • Đăng tải không giới hạn, nhận booking</p>
+            <button onclick="alert('Chuyển hướng cổng thanh toán...'); closePricingModal();" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs">Thanh toán ngay</button>
         </div>
     </div>
 
     <!-- SCRIPT -->
     <script>
-        let isProCreator = false;
+        function loginWithGoogle() {
+            const mockGoogleUser = {
+                name: "Nguyễn Trương Hoàng Thiện",
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"
+            };
+            localStorage.setItem('fohu_user', JSON.stringify(mockGoogleUser));
+            initUserSession(mockGoogleUser);
+        }
 
-        function toggleUserRole() {
-            isProCreator = !isProCreator;
-            const btnUpgrade = document.getElementById('btnUpgrade');
-            const btnUpload = document.getElementById('btnUpload');
-            const userRoleBadge = document.getElementById('userRoleBadge');
+        function initUserSession(user) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userFeedAvatar').src = user.avatar;
+            document.getElementById('userProfileAvatar').src = user.avatar;
+            document.getElementById('userProfileName').innerText = user.name;
+        }
 
-            if (isProCreator) {
-                btnUpgrade.classList.add('hidden');
-                btnUpload.classList.remove('hidden');
-                userRoleBadge.innerText = 'Creator Pro (149k/tháng)';
-                userRoleBadge.className = 'text-[10px] text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-0.5';
-                alert('Đã chuyển sang giao diện Creator Pro thành công!');
-            } else {
-                btnUpgrade.classList.remove('hidden');
-                btnUpload.classList.add('hidden');
-                userRoleBadge.innerText = 'Thành viên Thường';
-                userRoleBadge.className = 'text-[10px] text-gray-500 font-medium';
-                alert('Đã chuyển về tài khoản Thường!');
+        function logout() {
+            localStorage.removeItem('fohu_user');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+        }
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('fohu_user');
+            if (savedUser) {
+                initUserSession(JSON.parse(savedUser));
             }
         }
 
-        function openPricingModal() {
-            document.getElementById('pricingModal').classList.remove('hidden');
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            ['feed', 'messages', 'profile', 'settings'].forEach(id => {
+                const btn = document.getElementById('nav-' + id);
+                if(btn) {
+                    btn.className = (id === tabId) ? "text-[#3E3833] flex flex-col items-center text-[10px] font-bold" : "text-gray-400 flex flex-col items-center text-[10px]";
+                }
+            });
+            window.scrollTo(0, 0);
         }
 
-        function closePricingModal() {
-            document.getElementById('pricingModal').classList.add('hidden');
-        }
-
-        function simulateUpgrade() {
-            const selectedRole = document.getElementById('creatorRoleSelect').value;
-            closePricingModal();
-            isProCreator = false;
-            toggleUserRole();
-        }
+        function openCreatePostModal() { document.getElementById('createPostModal').classList.remove('hidden'); }
+        function closeCreatePostModal() { document.getElementById('createPostModal').classList.add('hidden'); }
+        function openPricingModal() { document.getElementById('pricingModal').classList.remove('hidden'); }
+        function closePricingModal() { document.getElementById('pricingModal').classList.add('hidden'); }
     </script>
 </body>
 </html>
