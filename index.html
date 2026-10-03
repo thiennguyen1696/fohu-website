@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fohu.asia - Visual Creator & Media Hub</title>
-    <!-- Thêm Logo làm Favicon (Thumb) cho trang web -->
+    <title>Fohu.asia - Nền tảng Sáng tạo Hình ảnh & Video Toàn diện</title>
+    <!-- Favicon / Thumb -->
     <link rel="icon" type="image/png" href="fohu-logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -35,17 +35,15 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="antialiased pb-16">
+<body class="antialiased pb-20">
 
-    <!-- ================= MÀN HÌNH ĐĂNG NHẬP / XÁC THỰC (GMAIL) ================= -->
-    <div id="authScreen" class="fixed inset-0 z-50 bg-[#FDFBF7] flex items-center justify-center p-4">
+    <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP / XÁC THỰC GMAIL ================= -->
+    <div id="authScreen" class="fixed inset-0 z-50 bg-[#FDFBF7] flex items-center justify-center p-4 hidden">
         <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-sm w-full p-8 shadow-xl border border-[#EBE4DC] text-center">
             <div class="mb-6 flex flex-col items-center">
-                <!-- Hiển thị Logo chính thức ở màn hình Login -->
                 <img src="fohu-logo.png" alt="Fohu Logo" class="h-10 object-contain mb-3">
                 <p class="text-xs text-gray-500">Nền tảng mạng xã hội dành cho giới sáng tạo hình ảnh & video</p>
             </div>
-
             <div class="space-y-3">
                 <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 border border-gray-300 py-3 px-4 rounded-2xl shadow-xs transition font-semibold text-xs text-gray-700">
                     <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -61,13 +59,12 @@
         </div>
     </div>
 
-    <!-- ================= HỆ THỐNG CÁC TRANG (SPA) ================= -->
+    <!-- ================= 2. HỆ THỐNG ỨNG DỤNG CHÍNH (MAIN APP) ================= -->
     <div id="mainApp" class="hidden">
 
-        <!-- HEADER CHUNG -->
+        <!-- HEADER -->
         <header class="sticky top-0 z-40 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#EBE4DC] px-3 py-2.5">
             <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
-                <!-- Hiển thị Logo chính thức trên Header -->
                 <a href="#" onclick="switchTab('feed')" class="flex items-center shrink-0">
                     <img src="fohu-logo.png" alt="Fohu Logo" class="h-7 object-contain">
                 </a>
@@ -76,104 +73,91 @@
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
-                    <input type="text" placeholder="Tìm kiếm bài viết, creator, máy cơ..." 
+                    <input type="text" id="searchInput" oninput="filterPosts(this.value)" placeholder="Tìm kiếm bài viết, creator, máy cơ..." 
                         class="w-full pl-8 pr-3 py-1.5 bg-[#F4EFEA] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#3E3833] rounded-full text-xs transition-all">
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <button onclick="openPricingModal()" class="bg-[#3E3833] text-[#FDFBF7] text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-xs">
-                        <i class="fa-solid fa-crown text-yellow-300"></i> 149k Pro
+                    <button onclick="openPricingModal()" class="bg-[#3E3833] text-[#FDFBF7] text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-xs flex items-center gap-1">
+                        <i class="fa-solid fa-crown text-yellow-300"></i> <span id="proButtonText">149k Pro</span>
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- 1. TRANG CHỦ (NEWSFEED) -->
+        <!-- ---------------- TAB 1: TRANG CHỦ (NEWSFEED) ---------------- -->
         <div id="tab-feed" class="page-content max-w-3xl mx-auto p-2.5 space-y-3">
-            <div class="bg-[#F4EFEA] rounded-2xl p-3 border border-[#EBE4DC] flex items-center gap-3">
-                <img id="userFeedAvatar" src="" class="w-9 h-9 rounded-full object-cover">
+            <div class="bg-[#F4EFEA] rounded-2xl p-3 border border-[#EBE4DC] flex items-center gap-3 shadow-xs">
+                <img id="userFeedAvatar" src="" class="w-9 h-9 rounded-full object-cover border">
                 <button onclick="openCreatePostModal()" class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-left px-4 py-2.5 rounded-full text-xs border border-[#EBE4DC] transition">
                     Hôm nay bạn có tác phẩm hay video gì muốn chia sẻ?
                 </button>
             </div>
 
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-                <button class="px-3 py-1 bg-[#3E3833] text-white text-xs font-bold rounded-full shrink-0">Tất cả</button>
-                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">🎬 Videographer</button>
-                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">📷 Máy cơ</button>
-                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">💄 Makeup</button>
-                <button class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0">📍 Check-in Studio</button>
+            <!-- Danh mục lọc bài viết -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="categoryFilters">
+                <button onclick="filterCategory('Tất cả', this)" class="px-3 py-1 bg-[#3E3833] text-white text-xs font-bold rounded-full shrink-0 transition">Tất cả</button>
+                <button onclick="filterCategory('Videographer', this)" class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0 transition">🎬 Videographer</button>
+                <button onclick="filterCategory('Máy cơ', this)" class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0 transition">📷 Máy cơ</button>
+                <button onclick="filterCategory('Makeup', this)" class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0 transition">💄 Makeup</button>
+                <button onclick="filterCategory('Check-in', this)" class="px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0 transition">📍 Check-in Studio</button>
             </div>
 
-            <div class="masonry-grid">
-                <div class="masonry-item bg-white rounded-2xl overflow-hidden border border-[#EBE4DC] shadow-xs">
-                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" class="w-full object-cover">
-                    <div class="p-3">
-                        <p class="text-xs text-gray-700 font-medium mb-2">Buổi chiều hoàng hôn tại Hồ Tây cùng Sony A7IV 🌅</p>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <div class="flex items-center gap-1.5">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50" class="w-5 h-5 rounded-full">
-                                <span class="text-[10px] font-bold">Hoàng Thiện</span>
-                            </div>
-                            <button class="text-red-500 text-xs"><i class="fa-regular fa-heart"></i> 128</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Dòng thời gian bài viết (Masonry Grid động) -->
+            <div id="feedContainer" class="masonry-grid">
+                <!-- Render bằng JavaScript -->
+            </div>
+        </div>
 
-                <div class="masonry-item bg-white rounded-2xl overflow-hidden border border-[#EBE4DC] shadow-xs">
-                    <div class="p-3 bg-[#F4EFEA]/50 text-[10px] font-bold text-gray-600 flex items-center gap-1 border-b border-[#EBE4DC]">
-                        <i class="fa-solid fa-location-dot text-red-500"></i> Check-in tại Dì Ba Studio, Q.1
+        <!-- ---------------- TAB 2: TIN NHẮN (CHAT) ---------------- -->
+        <div id="tab-messages" class="page-content max-w-xl mx-auto p-3 hidden space-y-3">
+            <h2 class="text-base font-bold mb-2">Tin nhắn trực tiếp</h2>
+            <div class="bg-white rounded-2xl border border-[#EBE4DC] p-3 flex gap-3">
+                <div class="space-y-2 w-1/3 border-r border-gray-100 pr-2">
+                    <div class="p-2 rounded-xl bg-[#F4EFEA] text-xs font-bold cursor-pointer">Minh Tuấn</div>
+                    <div class="p-2 rounded-xl hover:bg-gray-50 text-xs cursor-pointer text-gray-600">Linh Chi MUA</div>
+                </div>
+                <div class="flex-1 flex flex-col justify-between h-64">
+                    <div class="space-y-2 overflow-y-auto text-xs p-2" id="chatBox">
+                        <div class="bg-gray-100 p-2 rounded-xl max-w-[80%]">Chào bạn, mình muốn book lịch chụp bộ concept tuần này!</div>
+                        <div class="bg-[#3E3833] text-white p-2 rounded-xl max-w-[80%] ml-auto">Chào Minh Tuấn, bên mình nhận lịch vào thứ 7 nhé!</div>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500" class="w-full object-cover">
-                    <div class="p-3">
-                        <p class="text-xs text-gray-700 font-medium mb-2">Setup ánh sáng Profoto chuẩn cinematic cho lookbook mới.</p>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <div class="flex items-center gap-1.5">
-                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50" class="w-5 h-5 rounded-full">
-                                <span class="text-[10px] font-bold">Minh Tuấn</span>
-                            </div>
-                            <button class="text-red-500 text-xs"><i class="fa-regular fa-heart"></i> 94</button>
-                        </div>
+                    <div class="flex gap-2 pt-2 border-t border-gray-100">
+                        <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." class="flex-1 bg-gray-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                        <button onclick="sendMessage()" class="bg-[#3E3833] text-white px-3 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. TRANG TIN NHẮN (CHAT) -->
-        <div id="tab-messages" class="page-content max-w-xl mx-auto p-3 hidden">
-            <h2 class="text-base font-bold mb-3">Tin nhắn cộng đồng</h2>
-            <div class="space-y-2">
-                <div class="bg-white p-3 rounded-2xl border border-[#EBE4DC] flex items-center gap-3 cursor-pointer hover:bg-gray-50">
-                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-10 h-10 rounded-full object-cover">
-                    <div class="flex-1">
-                        <h4 class="text-xs font-bold">Minh Tuấn (Videographer)</h4>
-                        <p class="text-[11px] text-gray-500 truncate">Chào bạn, mình muốn book lịch chụp bộ concept...</p>
-                    </div>
-                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. TRANG CÁ NHÂN (PROFILE) -->
+        <!-- ---------------- TAB 3: TRANG CÁ NHÂN (PROFILE) ---------------- -->
         <div id="tab-profile" class="page-content max-w-xl mx-auto p-3 hidden space-y-4">
-            <div class="bg-white rounded-3xl p-5 border border-[#EBE4DC] text-center">
+            <div class="bg-white rounded-3xl p-5 border border-[#EBE4DC] text-center shadow-xs">
                 <img id="userProfileAvatar" src="" class="w-20 h-20 rounded-full object-cover mx-auto border-2 border-[#3E3833] mb-3">
                 <h3 id="userProfileName" class="text-base font-black">Nguyễn Trương Hoàng Thiện</h3>
-                <p class="text-xs text-gray-500 mt-0.5">Visual Creator & Media Producer</p>
-                <div class="flex justify-center gap-4 mt-3 text-xs font-bold">
-                    <span>14 bài đăng</span>
+                <p id="userProfileRole" class="text-xs text-gray-500 mt-0.5">Visual Creator & Media Producer</p>
+                <div class="flex justify-center gap-6 mt-3 text-xs font-bold">
+                    <span id="userPostCount">0 bài đăng</span>
                     <span>320 người theo dõi</span>
                 </div>
             </div>
+            <h4 class="text-xs font-bold text-gray-600 px-1">Bài viết của bạn:</h4>
+            <div id="myPostsContainer" class="space-y-3">
+                <!-- Render bài viết của chính user -->
+            </div>
         </div>
 
-        <!-- 4. TRANG CÀI ĐẶT (SETTINGS) -->
+        <!-- ---------------- TAB 4: TRANG CÀI ĐẶT (SETTINGS) ---------------- -->
         <div id="tab-settings" class="page-content max-w-xl mx-auto p-3 hidden space-y-3">
             <h2 class="text-base font-bold mb-3">Cài đặt tài khoản</h2>
             <div class="bg-white rounded-2xl border border-[#EBE4DC] divide-y divide-gray-100 text-xs">
-                <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
-                    <span>Chỉnh sửa hồ sơ cá nhân</span>
+                <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50" onclick="alert('Tính năng cập nhật thông tin cá nhân')">
+                    <span>Chỉnh sửa hồ sơ cá nhân & Chuyên môn</span>
                     <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                </div>
+                <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50" onclick="openPricingModal()">
+                    <span>Quản lý gói Creator Pro (149k/tháng)</span>
+                    <i class="fa-solid fa-crown text-yellow-600"></i>
                 </div>
                 <div class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 text-red-600 font-bold" onclick="logout()">
                     <span>Đăng xuất tài khoản</span>
@@ -183,7 +167,7 @@
         </div>
 
         <!-- ================= BOTTOM NAVIGATION ================= -->
-        <div class="fixed bottom-0 inset-x-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#EBE4DC] py-2 px-6 flex justify-between items-center z-40">
+        <div class="fixed bottom-0 inset-x-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#EBE4DC] py-2 px-6 flex justify-between items-center z-40 shadow-lg">
             <button onclick="switchTab('feed')" id="nav-feed" class="text-[#3E3833] flex flex-col items-center text-[10px] font-bold">
                 <i class="fa-solid fa-house text-base mb-0.5"></i> Bảng tin
             </button>
@@ -202,52 +186,77 @@
         </div>
     </div>
 
-    <!-- ================= MODAL ĐĂNG BÀI ================= -->
+    <!-- ================= 3. MODAL ĐĂNG BÀI / CHECK-IN / VIDEO ================= -->
     <div id="createPostModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full p-5 relative shadow-xl">
+        <div class="bg-white rounded-3xl max-w-md w-full p-5 relative shadow-xl space-y-3">
             <button onclick="closeCreatePostModal()" class="absolute top-3 right-3 text-gray-400 hover:text-black w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <h3 class="text-sm font-black text-center mb-4">Tạo bài viết / Tác phẩm mới</h3>
-            <textarea placeholder="Nhập nội dung chia sẻ, thông số máy, hoặc câu chuyện..." class="w-full h-24 bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-3 text-xs focus:outline-none mb-3"></textarea>
-            <div class="flex gap-2 mb-4">
-                <button class="flex-1 py-2 bg-[#F4EFEA] text-[#3E3833] text-[11px] font-bold rounded-xl"><i class="fa-solid fa-image text-green-600 mr-1"></i> Ảnh/Video</button>
-                <button class="flex-1 py-2 bg-[#F4EFEA] text-[#3E3833] text-[11px] font-bold rounded-xl"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i> Check-in Studio</button>
+            <h3 class="text-sm font-black text-center">Tạo bài viết mới trên Fohu</h3>
+            
+            <textarea id="postContent" placeholder="Nhập nội dung chia sẻ, thông số máy, câu chuyện..." class="w-full h-20 bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-3 text-xs focus:outline-none"></textarea>
+            
+            <div class="space-y-2 text-xs">
+                <label class="font-bold text-gray-700 block">Chọn danh mục:</label>
+                <select id="postCategory" class="w-full bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-2.5 focus:outline-none font-semibold">
+                    <option value="Videographer">🎬 Videographer / Reels</option>
+                    <option value="Máy cơ">📷 Máy cơ (DSLR/Mirrorless)</option>
+                    <option value="Makeup">💄 Makeup Artist</option>
+                    <option value="Check-in">📍 Check-in Studio</option>
+                </select>
+
+                <label class="font-bold text-gray-700 block">Link hình ảnh / video minh họa (URL):</label>
+                <input type="text" id="postImage" placeholder="Dán link ảnh từ Unsplash hoặc ảnh công khai..." class="w-full bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-2.5 focus:outline-none" value="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=600">
+
+                <label class="font-bold text-gray-700 block">Check-in Địa điểm (tùy chọn):</label>
+                <input type="text" id="postLocation" placeholder="Ví dụ: Dì Ba Studio, Q.1, TP.HCM" class="w-full bg-[#F4EFEA] border border-[#EBE4DC] rounded-xl p-2.5 focus:outline-none">
             </div>
-            <button onclick="alert('Đăng bài thành công!'); closeCreatePostModal();" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs">Đăng bài</button>
+
+            <button onclick="createNewPost()" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs shadow-md">Đăng bài ngay</button>
         </div>
     </div>
 
-    <!-- ================= MODAL PRO 149K ================= -->
+    <!-- ================= 4. MODAL THANH TOÁN PRO 149K ================= -->
     <div id="pricingModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 relative shadow-xl text-center">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 relative shadow-xl text-center space-y-3">
             <button onclick="closePricingModal()" class="absolute top-3 right-3 text-gray-400 hover:text-black w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <span class="inline-flex p-2 bg-yellow-100 text-yellow-700 rounded-xl text-lg mb-1"><i class="fa-solid fa-crown"></i></span>
+            <span class="inline-flex p-2 bg-yellow-100 text-yellow-700 rounded-xl text-lg"><i class="fa-solid fa-crown"></i></span>
             <h3 class="text-base font-black">Nâng cấp Creator Pro</h3>
-            <p class="text-[11px] text-gray-500 mb-3">149.000đ/tháng • Đăng tải không giới hạn, nhận booking</p>
-            <button onclick="alert('Chuyển hướng cổng thanh toán...'); closePricingModal();" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs">Thanh toán ngay</button>
+            <p class="text-[11px] text-gray-500">149.000đ/tháng • Đăng tải không giới hạn, bật tính năng nhận booking dịch vụ chuyên nghiệp.</p>
+            <button onclick="upgradePro()" class="w-full py-3 bg-[#3E3833] text-white font-bold rounded-xl text-xs shadow-md">Xác nhận thanh toán 149k</button>
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- ================= JAVASCRIPT LOGIC THỰC TẾ ================= -->
     <script>
+        // Dữ liệu bài viết mẫu khởi tạo (Mock Posts)
+        let posts = JSON.parse(localStorage.getItem('fohu_posts')) || [
+            { id: 1, name: "Hoàng Thiện", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50", content: "Buổi chiều hoàng hôn tại Hồ Tây cùng Sony A7IV 🌅", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500", category: "Máy cơ", location: "", likes: 128, liked: false },
+            { id: 2, name: "Minh Tuấn", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50", content: "Setup ánh sáng Profoto chuẩn cinematic cho lookbook mới.", image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500", category: "Videographer", location: "Dì Ba Studio, Q.1", likes: 94, liked: false }
+        ];
+
+        let currentFilter = 'Tất cả';
+
+        // 1. Auth & Session
         function loginWithGoogle() {
-            const mockGoogleUser = {
-                name: "Nguyễn Trương Hoàng Thiện",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"
-            };
-            localStorage.setItem('fohu_user', JSON.stringify(mockGoogleUser));
-            initUserSession(mockGoogleUser);
+            const user = { name: "Nguyễn Trương Hoàng Thiện", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", isPro: false };
+            localStorage.setItem('fohu_user', JSON.stringify(user));
+            initApp(user);
         }
 
-        function initUserSession(user) {
+        function initApp(user) {
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userFeedAvatar').src = user.avatar;
             document.getElementById('userProfileAvatar').src = user.avatar;
             document.getElementById('userProfileName').innerText = user.name;
+            if(user.isPro) {
+                document.getElementById('proButtonText').innerText = "Pro Active";
+                document.getElementById('userProfileRole').innerText = "Verified Creator Pro ⭐";
+            }
+            renderFeed();
         }
 
         function logout() {
@@ -257,16 +266,161 @@
         }
 
         window.onload = function() {
-            const savedUser = localStorage.getItem('fohu_user');
-            if (savedUser) {
-                initUserSession(JSON.parse(savedUser));
+            const user = JSON.parse(localStorage.getItem('fohu_user'));
+            if(user) {
+                initApp(user);
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
             }
+        }
+
+        // 2. Render Feed & Profile
+        function renderFeed(filter = 'Tất cả', searchKey = '') {
+            const container = document.getElementById('feedContainer');
+            container.innerHTML = '';
+
+            const filtered = posts.filter(p => {
+                const matchCat = (filter === 'Tất cả' || p.category === filter);
+                const matchSearch = p.content.toLowerCase().includes(searchKey.toLowerCase()) || p.name.toLowerCase().includes(searchKey.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-xs text-gray-400 py-6">Không tìm thấy bài viết nào phù hợp.</p>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                let locationBadge = p.location ? `<div class="p-2.5 bg-[#F4EFEA]/60 text-[10px] font-bold text-gray-600 flex items-center gap-1 border-b border-[#EBE4DC]"><i class="fa-solid fa-location-dot text-red-500"></i> ${p.location}</div>` : '';
+                
+                let card = document.createElement('div');
+                card.className = "masonry-item bg-white rounded-2xl overflow-hidden border border-[#EBE4DC] shadow-xs";
+                card.innerHTML = `
+                    ${locationBadge}
+                    <img src="${p.image}" class="w-full object-cover">
+                    <div class="p-3">
+                        <p class="text-xs text-gray-700 font-medium mb-2">${p.content}</p>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <div class="flex items-center gap-1.5">
+                                <img src="${p.avatar}" class="w-5 h-5 rounded-full object-cover">
+                                <span class="text-[10px] font-bold">${p.name}</span>
+                            </div>
+                            <button onclick="toggleLike(${p.id})" class="text-xs ${p.liked ? 'text-red-600 font-bold' : 'text-gray-400'}">
+                                <i class="${p.liked ? 'fa-solid' : 'fa-regular'} fa-heart"></i> ${p.likes}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            renderMyProfile();
+        }
+
+        function filterCategory(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('#categoryFilters button').forEach(b => {
+                b.className = "px-3 py-1 bg-[#F4EFEA] text-[#3E3833] text-xs font-semibold rounded-full shrink-0 transition";
+            });
+            btn.className = "px-3 py-1 bg-[#3E3833] text-white text-xs font-bold rounded-full shrink-0 transition";
+            renderFeed(cat, document.getElementById('searchInput').value);
+        }
+
+        function filterPosts(keyword) {
+            renderFeed(currentFilter, keyword);
+        }
+
+        function toggleLike(id) {
+            const p = posts.find(item => item.id === id);
+            if(p) {
+                p.liked = !p.liked;
+                p.likes += p.liked ? 1 : -1;
+                localStorage.setItem('fohu_posts', JSON.stringify(posts));
+                renderFeed(currentFilter, document.getElementById('searchInput').value);
+            }
+        }
+
+        // 3. Tạo bài viết mới
+        function createNewPost() {
+            const user = JSON.parse(localStorage.getItem('fohu_user'));
+            const content = document.getElementById('postContent').value;
+            const category = document.getElementById('postCategory').value;
+            const image = document.getElementById('postImage').value;
+            const location = document.getElementById('postLocation').value;
+
+            if(!content.trim()) {
+                alert('Vui lòng nhập nội dung bài viết!');
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                name: user.name,
+                avatar: user.avatar,
+                content: content,
+                image: image || "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=600",
+                category: category,
+                location: location,
+                likes: 0,
+                liked: false
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('fohu_posts', JSON.stringify(posts));
+            closeCreatePostModal();
+            document.getElementById('postContent').value = '';
+            renderFeed();
+            alert('Đăng bài thành công lên Fohu!');
+        }
+
+        // 4. Render Profile của User
+        function renderMyProfile() {
+            const user = JSON.parse(localStorage.getItem('fohu_user'));
+            const myPosts = posts.filter(p => p.name === user.name);
+            document.getElementById('userPostCount').innerText = myPosts.length + " bài đăng";
+            
+            const myContainer = document.getElementById('myPostsContainer');
+            myContainer.innerHTML = '';
+            if(myPosts.length === 0) {
+                myContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-3 bg-white rounded-2xl border border-[#EBE4DC]">Bạn chưa đăng tác phẩm nào.</p>`;
+                return;
+            }
+            myPosts.forEach(p => {
+                myContainer.innerHTML += `
+                    <div class="bg-white p-3 rounded-2xl border border-[#EBE4DC] flex gap-3 items-center">
+                        <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <span class="text-[9px] bg-[#F4EFEA] px-2 py-0.5 rounded font-bold">${p.category}</span>
+                            <p class="text-xs font-medium text-gray-800 truncate mt-1">${p.content}</p>
+                            <span class="text-[10px] text-gray-400"><i class="fa-regular fa-heart"></i> ${p.likes} lượt thích</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. Chat đơn giản thực tế
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if(!input.value.trim()) return;
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<div class="bg-[#3E3833] text-white p-2 rounded-xl max-w-[80%] ml-auto text-xs">${input.value}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // 6. Nâng cấp Pro & Modal
+        function upgradePro() {
+            let user = JSON.parse(localStorage.getItem('fohu_user'));
+            user.isPro = true;
+            localStorage.setItem('fohu_user', JSON.stringify(user));
+            closePricingModal();
+            initApp(user);
+            alert('Chúc mừng bạn đã kích hoạt thành công tài khoản Creator Pro (149k/tháng)!');
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-
             ['feed', 'messages', 'profile', 'settings'].forEach(id => {
                 const btn = document.getElementById('nav-' + id);
                 if(btn) {
