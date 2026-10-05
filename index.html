@@ -60,7 +60,7 @@ import {getFirestore,collection,doc,setDoc,getDoc,addDoc,deleteDoc,updateDoc,onS
 const cfg={apiKey:"AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",authDomain:"fohu-platform.firebaseapp.com",projectId:"fohu-platform",storageBucket:"fohu-platform.firebasestorage.app",messagingSenderId:"696328353651",appId:"1:696328353651:web:8add8d582b366c12ccf706"};
 /* ================================================================================================ */
 
-const MEDIA_BASE=""; // để trống = tắt video. Sau khi thiết lập R2, điền địa chỉ công khai, ví dụ "https://media.fohu.asia"
+const MEDIA_BASE="https://media.fohu.asia"; // để trống = tắt video. Sau khi thiết lập R2, điền địa chỉ công khai, ví dụ "https://media.fohu.asia"
 const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const PL={free:'Free',standard:'Standard',premium:'Premium'},HL={free:0,standard:3,premium:6},VL={free:0,standard:3,premium:9},LIM={free:{photo:5,video:0},standard:{photo:10,video:3},premium:{photo:Infinity,video:9}};
