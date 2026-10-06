@@ -2,7 +2,7 @@
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
-const { s3, verify, plan, countPosts } = require('./_lib');
+const { s3, verify, plan, countPosts, countDailies } = require('./_lib');
 
 // Giới hạn tổng số ảnh / video đang lưu theo gói
 const LIMIT = { free: { photo: 5, video: 0 }, standard: { photo: 10, video: 3, monthly: true }, premium: { photo: Infinity, video: 9 } };
@@ -17,7 +17,8 @@ module.exports = async (req, res) => {
     const a = await verify(req);
     if (!a) return res.status(401).json({ error: 'auth' });
 
-    const { type, size, thumbSize = 0, count = 1 } = req.body || {};
+    const { type, size, thumbSize = 0, count = 1, kind } = req.body || {};
+    const daily = kind === 'daily'; // ảnh/video Daily (24 giờ): không tính vào hạn mức bài đăng
     const cnt = Math.min(Math.max(parseInt(count) || 1, 1), 10); // số ảnh trong bài đăng này
     const isVid = !!VEXT[type], isImg = type === 'image/jpeg';
     if (!isVid && !isImg) return res.status(400).json({ error: 'type' });
@@ -25,7 +26,10 @@ module.exports = async (req, res) => {
     if (!Number.isInteger(thumbSize) || thumbSize < 0 || thumbSize > MAX_THUMB) return res.status(400).json({ error: 'thumb' });
 
     const L = LIMIT[await plan(a)] || LIMIT.free;
-    if (isVid) {
+    if (daily) {
+      if (isVid && L.video === 0) return res.status(403).json({ error: 'plan-free' }); // Free chỉ đăng ảnh daily
+      if ((await countDailies(a)) >= 10) return res.status(403).json({ error: 'daily-limit' });
+    } else if (isVid) {
       if (L.video === 0) return res.status(403).json({ error: 'plan-free' });
       if ((await countPosts(a, true)).n >= L.video) return res.status(403).json({ error: 'limit' });
     } else if (L.photo !== Infinity) {
@@ -36,7 +40,8 @@ module.exports = async (req, res) => {
     }
 
     const id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
-    const key = isVid ? `videos/${a.uid}/${id}.${VEXT[type]}` : `images/${a.uid}/${id}.jpg`;
+    const key = daily ? `daily/${a.uid}/${id}.${isVid ? VEXT[type] : 'jpg'}`
+      : isVid ? `videos/${a.uid}/${id}.${VEXT[type]}` : `images/${a.uid}/${id}.jpg`;
     const out = { url: await sign(key, type, size), publicUrl: `${process.env.R2_PUBLIC_URL}/${key}` };
     if (thumbSize > 0) {
       const tk = `images/${a.uid}/${id}_t.jpg`;

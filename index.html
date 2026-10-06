@@ -68,8 +68,26 @@ nav a{position:relative}
 #np{position:fixed;top:56px;right:12px;z-index:8;width:min(380px,calc(100vw - 24px));max-height:75vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 8px 30px #0003}
 #np:empty{display:none}
 .ni{display:flex;gap:10px;padding:10px 14px;cursor:pointer;align-items:center}.ni:hover{background:var(--bg)}.ni .t{flex:1;font-size:14px;line-height:1.35}.ni .tm{font-size:12px;color:var(--ac);margin-top:2px}
+.ph{margin:-55px 16px 0}.ph .pn{padding-top:66px}.ph>.pbt{margin-top:66px;display:flex;gap:8px;align-items:center}.ph>.pbt .btn svg{display:block}
+.st2{display:flex;gap:18px;font-size:14px;margin-top:8px;flex-wrap:wrap}
+.ptabs{display:flex;justify-content:center;gap:34px;border-top:1px solid var(--bd);margin-top:16px}
+.ptabs button{background:none;border:0;border-top:2px solid transparent;margin-top:-1px;padding:12px 4px;font-size:13px;font-weight:600;letter-spacing:.3px;color:var(--mu);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.ptabs .on{color:var(--tx);border-top-color:var(--tx)}
+.grid{gap:3px;margin-top:0}
+.dh{font-weight:700;margin:0 0 6px}.dh span{font-weight:400;font-size:12px;color:var(--mu);margin-left:6px}
+.db{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;margin-bottom:6px}
+.dc{flex:none;width:72px;text-align:center;font-size:12px;cursor:pointer}.dc span{display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr{width:68px;height:68px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#f9a03f,#e8554e,#c13584);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.dr .av{width:100%;height:100%;border:3px solid var(--bg);box-sizing:border-box}.dr.seen{background:var(--bd)}.dr.add{background:var(--bd);font-size:30px;color:var(--ac)}
+#sv:empty{display:none}#sv{position:fixed;inset:0;z-index:40;background:#000}
+.svw{position:relative;width:min(480px,100vw);height:100vh;height:100dvh;margin:0 auto;background:#111;display:flex;align-items:center;justify-content:center}
+.svw img,.svw video{width:100%;height:100%;object-fit:contain}
+.svb{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:4px;z-index:3}.svb i{flex:1;height:3px;background:#fff4;border-radius:2px;overflow:hidden}.svb b{display:block;height:100%;background:#fff}
+.svh{position:absolute;top:22px;left:10px;right:10px;display:flex;align-items:center;gap:8px;color:#fff;z-index:3;font-size:13px}.svh button{background:none;border:0;color:#fff;font-size:20px;cursor:pointer;display:flex}.svh span{opacity:.7}
+.svc{position:absolute;bottom:28px;left:16px;right:16px;color:#fff;text-align:center;z-index:3;text-shadow:0 1px 4px #000;font-size:16px}
+.svl,.svr{position:absolute;top:80px;bottom:80px;z-index:2;cursor:pointer}.svl{left:0;width:35%}.svr{right:0;width:65%}
 </style></head><body>
-<nav id="nav"></nav><main id="app"></main><div id="toast"></div><div id="modal"></div><div id="lb"></div><div id="np"></div>
+<nav id="nav"></nav><main id="app"></main><div id="toast"></div><div id="modal"></div><div id="lb"></div><div id="np"></div><div id="sv"></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -80,6 +98,9 @@ const cfg={apiKey:"AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",authDomain:"fohu-pla
 /* ================================================================================================ */
 
 const MEDIA_BASE="https://media.fohu.asia"; // để trống = tắt video. Sau khi thiết lập R2, điền địa chỉ công khai, ví dụ "https://media.fohu.asia"
+/* ===== THANH TOÁN QR: điền thông tin tài khoản ngân hàng NHẬN TIỀN của bạn =====
+   id: mã ngân hàng theo VietQR (ví dụ "MB", "VCB", "TCB", "ACB", "BIDV", "VPB", "TPB" hoặc mã BIN). acc: số tài khoản. name: tên chủ tài khoản (IN HOA, không dấu) */
+const BANK={id:"",acc:"",name:""};
 const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const PL={free:'Free',standard:'Standard',premium:'Premium'},HL={free:0,standard:3,premium:6},VL={free:0,standard:3,premium:9},LIM={free:{photo:5,video:0},standard:{photo:10,video:3,monthly:true},premium:{photo:Infinity,video:9}},
@@ -87,7 +108,7 @@ VN=['An Giang','Bắc Ninh','Cà Mau','Cần Thơ','Cao Bằng','Đà Nẵng','�
 nz=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d'),
 SK=['Photographer','Videographer','Editor','Makeup artist','Stylist','Cho thuê trang phục','Cho thuê studio','AI artist','Designer','Model'];
 const PHONE=/(\+?84|0)[\s.\-]?\d([\s.\-]?\d){8,9}/,ADDR=/(số\s?\d+|ngõ|ngách|hẻm|đường\s|phố\s|phường|quận\s|huyện|xã\s|tp\.|thôn)/i;
-let N=[],bellOpen=false,nTab='all',seenT={},ofil='all',PV={},PVT={},O=[],Z=[],au=null,me=null,P=[],U={},C={},open={},chats=[],cid=null,msgs=[],req=null,unM=()=>{};
+let SV=null,svT=0,D=[],seenD={},PAYS=[],ptab='all',unPay=()=>{},N=[],bellOpen=false,nTab='all',seenT={},ofil='all',PV={},PVT={},O=[],Z=[],au=null,me=null,P=[],U={},C={},open={},chats=[],cid=null,msgs=[],req=null,unM=()=>{};
 const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2600)};
 const safe=s=>typeof s==='string'&&(s.startsWith('data:image/')||isM(s))?s:'';
 const rz=(f,m,q=.8)=>new Promise(r=>{const i=new Image;i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=URL.createObjectURL(f)});
@@ -98,7 +119,7 @@ const isM=u=>MEDIA_BASE&&typeof u==='string'&&u.startsWith(MEDIA_BASE+'/'),isV=i
 const vthumb=p=>isV(p.video)?(safe(p.thumb)?'':`<video src="${E(p.video)}#t=0.1" muted preload="metadata" playsinline style="width:100%;height:100%;object-fit:cover"></video>`)+`<em style="left:6px;right:auto;pointer-events:none">▶</em>`:'';
 const usage=async()=>{const ym=new Date().toISOString().slice(0,7),q=(...w)=>getAggregateFromServer(query(collection(db,'posts'),where('uid','==',au.uid),...w),{n:fsCount(),x:fsSum('extra')}).then(r=>r.data());
  const [t,v,mt,mv]=await Promise.all([q(),q(where('hasVideo','==',true)),q(where('ym','==',ym)),q(where('ym','==',ym),where('hasVideo','==',true))]);return {photos:t.n-v.n+(t.x||0),videos:v.n,monthPhotos:mt.n-mv.n+(mt.x||0)}};
-const errMsg=c=>({'photo-limit-month':'Bạn đã dùng hết 10 ảnh của tháng này. Hãy chờ sang tháng mới hoặc nâng cấp Premium.','photo-limit':'Bạn đã dùng hết số ảnh của gói. Hãy xóa bớt ảnh cũ hoặc nâng cấp gói.','plan-free':'Gói Free chưa đăng được video. Hãy nâng cấp gói đối tác để đăng video.','limit':'Bạn đã dùng hết số video của gói. Hãy xóa bớt video cũ hoặc nâng cấp gói.','video-vuot-100MB':'Video vượt quá 100MB.'}[c]||'Lỗi: '+c);
+const errMsg=c=>({'daily-limit':'Bạn đã có 10 daily đang hiển thị. Hãy xóa bớt hoặc chờ hết 24 giờ.','video-dai':'Video daily tối đa 30 giây.','photo-limit-month':'Bạn đã dùng hết 10 ảnh của tháng này. Hãy chờ sang tháng mới hoặc nâng cấp Premium.','photo-limit':'Bạn đã dùng hết số ảnh của gói. Hãy xóa bớt ảnh cũ hoặc nâng cấp gói.','plan-free':'Gói Free chưa đăng được video. Hãy nâng cấp gói đối tác để đăng video.','limit':'Bạn đã dùng hết số video của gói. Hãy xóa bớt video cũ hoặc nâng cấp gói.','video-vuot-100MB':'Video vượt quá 100MB.'}[c]||'Lỗi: '+c);
 const api=async(path,body)=>{const t=await au.getIdToken();const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw{code:j.error||'api-'+r.status};return j};
 const putR=(url,blob,type,prog)=>new Promise((ok,no)=>{const x=new XMLHttpRequest();x.open('PUT',url);x.setRequestHeader('Content-Type',type);if(prog)x.upload.onprogress=e=>$('#pb').textContent='Đang tải '+Math.round(e.loaded/e.total*100)+'%';x.onload=()=>x.status<300?ok():no({code:'r2-'+x.status});x.onerror=()=>no({code:'r2-network/cors'});x.send(blob)});
 const blobOf=(f,m,q)=>new Promise(r=>{const i=new Image;i.onload=()=>{const s=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',q)};i.src=URL.createObjectURL(f)});
@@ -117,9 +138,30 @@ const gShow=()=>{const z=GZ;$('#lb').innerHTML=`<div class="lb" onclick="if(even
 const zoomI=i=>{const z=Z[i];if(!z||!z.src)return;GZ={...z,i:Math.max(0,(z.list||[]).indexOf(z.src))};gShow()};
 const gz=d=>{if(!GZ||!GZ.list)return;GZ.i=(GZ.i+d+GZ.list.length)%GZ.list.length;GZ.src=GZ.list[GZ.i];gShow()};
 const closeZ=()=>{GZ=null;$('#lb').innerHTML=''};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeZ();closeM();if(bellOpen){bellOpen=false;draw()}}else if(GZ&&e.key==='ArrowLeft')gz(-1);else if(GZ&&e.key==='ArrowRight')gz(1)});
+document.addEventListener('keydown',e=>{if(SV){if(e.key==='Escape')closeSV();else if(e.key==='ArrowRight')svGo(1);else if(e.key==='ArrowLeft')svGo(-1);return}if(e.key==='Escape'){closeZ();closeM();if(bellOpen){bellOpen=false;draw()}}else if(GZ&&e.key==='ArrowLeft')gz(-1);else if(GZ&&e.key==='ArrowRight')gz(1)});
 document.addEventListener('click',e=>{if(bellOpen&&!e.target.closest('#np')&&!e.target.closest('#bell')){bellOpen=false;draw()}});
 
+try{JSON.parse(localStorage.seenD||'[]').forEach(k=>seenD[k]=1)}catch(e){}
+const saveSeen=()=>{try{localStorage.seenD=JSON.stringify(Object.keys(seenD).slice(-300))}catch(e){}};
+const fdate=t=>{const d=t&&t.toDate?t.toDate():new Date(t);return d.toLocaleDateString('vi-VN')};
+const genCode=()=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c='';for(const x of crypto.getRandomValues(new Uint8Array(8)))c+=a[x%a.length];return c};
+const vlen=f=>new Promise(r=>{const v=document.createElement('video');v.preload='metadata';v.onloadedmetadata=()=>r(v.duration||0);v.onerror=()=>r(0);v.src=URL.createObjectURL(f)});
+const gGroups=()=>{const now=Date.now(),by={};D.filter(d=>d.at&&d.at.toMillis&&now-d.at.toMillis()<864e5).forEach(d=>(by[d.uid]=by[d.uid]||[]).push(d));
+ return Object.entries(by).map(([uid,items])=>{items.sort((a,b)=>a.at.toMillis()-b.at.toMillis());return {uid,items,unseen:items.some(i=>!seenD[i.id])}}).sort((a,b)=>((b.uid===(au&&au.uid))-(a.uid===(au&&au.uid)))||(b.unseen-a.unseen))};
+function dailyBar(){if(!au)return '';const g=gGroups();
+ return `<div class="dh">Daily<span>tự xóa sau 24 giờ</span></div><div class="db"><div class="dc" onclick="addDaily()"><div class="dr add">+</div><span>Thêm daily</span></div>${g.map((x,i)=>`<div class="dc" onclick="openDaily(${i})"><div class="dr ${x.unseen?'':'seen'}">${av(U[x.uid],62)}</div><span>${x.uid===au.uid?'Của bạn':E((U[x.uid]||{}).name||'')}</span></div>`).join('')}</div>`}
+const svShow=()=>{clearTimeout(svT);const G=SV&&SV.g[SV.gi];if(!G){closeSV();return}const it=G.items[SV.i];if(!it){svGo(1);return}
+ seenD[it.id]=1;saveSeen();const u=U[G.uid]||{};
+ $('#sv').innerHTML=`<div class="svw"><div class="svb">${G.items.map((x,k)=>`<i><b id="pb${k}" style="width:${k<SV.i?100:0}%"></b></i>`).join('')}</div>
+ <div class="svh">${av(u,36)}<b>${E(u.name)}</b><span>${ago(it.at)}</span><span style="flex:1"></span>${G.uid===au.uid?`<button onclick="delDaily('${it.id}')" title="Xóa">${AI.trash}</button>`:''}<button onclick="closeSV()" title="Đóng">✕</button></div>
+ ${it.type==='video'?`<video id="svm" src="${E(it.media)}" autoplay playsinline></video>`:`<img id="svm" src="${E(it.media)}">`}${it.cap?`<div class="svc">${E(it.cap)}</div>`:''}
+ <div class="svl" onclick="svGo(-1)"></div><div class="svr" onclick="svGo(1)"></div></div>`;
+ const bar=$('#pb'+SV.i),m=$('#svm');
+ if(it.type==='video'&&m){m.onended=()=>svGo(1);m.ontimeupdate=()=>{if(bar&&m.duration)bar.style.width=(m.currentTime/m.duration*100)+'%'}}
+ else{setTimeout(()=>{if(bar){bar.style.transition='width 5s linear';bar.style.width='100%'}},30);svT=setTimeout(()=>svGo(1),5000)}};
+const svGo=d=>{if(!SV)return;const G=SV.g[SV.gi];if(d>0){if(SV.i<G.items.length-1)SV.i++;else{SV.gi++;SV.i=0}}else{if(SV.i>0)SV.i--;else if(SV.gi>0){SV.gi--;SV.i=0}}svShow()};
+const closeSV=()=>{clearTimeout(svT);SV=null;$('#sv').innerHTML='';draw()};
+const cvr=u=>safe(u.cover||u.coverUrl);
 const sv=(d,s=20,f='none')=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${f}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const ICO={home:sv('<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),
 orders:sv('<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h4"/>'),
@@ -135,20 +177,22 @@ const AI={heart:f=>sv('<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 
  share:sv('<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/>',24),
  send:sv('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',24),
  trash:sv('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',22),
- multi:sv('<rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V7"/>',14)};
+ multi:sv('<rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V7"/>',14),
+ grid:sv('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',16),
+ play:sv('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m10 8 6 4-6 4z"/>',16)};
 const unrOf=c=>au&&c.lastFrom&&c.lastFrom!==au.uid&&(c.lastAt?c.lastAt.toMillis():0)>(c.seen&&c.seen[au.uid]&&c.seen[au.uid].toMillis?c.seen[au.uid].toMillis():0);
 const unrChats=()=>chats.filter(unrOf).length,unrN=()=>N.filter(n=>!n.read).length;
 const markSeen=()=>{if(!au||!cid||route().split('/')[0]!=='inbox')return;const c=chats.find(x=>x.id===cid);if(c&&unrOf(c)){const k=cid+(c.lastAt?c.lastAt.toMillis():0);if(seenT[k])return;seenT[k]=1;updateDoc(doc(db,'chats',cid),{['seen.'+au.uid]:serverTimestamp()}).catch(()=>{})}};
-const nText=n=>{const nm=`<b>${E((U[n.from]||{}).name||'Ai đó')}</b>`;return n.type==='like'?`${nm} đã thích bài viết của bạn`:n.type==='comment'?`${nm} đã bình luận: “${E(n.text||'')}”`:`${nm} (đối tác) đã xem thông tin đơn hàng của bạn`};
+const nText=n=>{if(n.type==='plan')return `Gói <b>${PL[n.plan]||''}</b> của bạn đã được kích hoạt. Cảm ơn bạn!`;const nm=`<b>${E((U[n.from]||{}).name||'Ai đó')}</b>`;return n.type==='like'?`${nm} đã thích bài viết của bạn`:n.type==='comment'?`${nm} đã bình luận: “${E(n.text||'')}”`:`${nm} (đối tác) đã xem thông tin đơn hàng của bạn`};
 function notifPanel(){const L=nTab==='unread'?N.filter(n=>!n.read):N;
  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 14px 6px"><b style="font-size:20px">Thông báo</b><a style="color:var(--ac);font-size:13px;cursor:pointer" onclick="readAll()">Đánh dấu tất cả đã đọc</a></div>
  <div class="seg" style="margin:4px 14px 8px"><button class="${nTab==='all'?'on':''}" onclick="setNT('all')">Tất cả</button><button class="${nTab==='unread'?'on':''}" onclick="setNT('unread')">Chưa đọc</button></div>
- ${L.map(n=>`<div class="ni" onclick="notifGo('${n.id}')">${av(U[n.from],44)}<div class="t">${nText(n)}<div class="tm" style="${n.read?'color:var(--mu)':''}">${ago(n.at)}</div></div>${n.read?'':'<span class="dt"></span>'}</div>`).join('')||'<p style="color:var(--mu);text-align:center;padding:24px 0;margin:0;font-size:14px">Chưa có thông báo nào.</p>'}`}
+ ${L.map(n=>`<div class="ni" onclick="notifGo('${n.id}')">${n.type==='plan'?'<img class="av" width="44" height="44" src="fohu-icon.png">':av(U[n.from],44)}<div class="t">${nText(n)}<div class="tm" style="${n.read?'color:var(--mu)':''}">${ago(n.at)}</div></div>${n.read?'':'<span class="dt"></span>'}</div>`).join('')||'<p style="color:var(--mu);text-align:center;padding:24px 0;margin:0;font-size:14px">Chưa có thông báo nào.</p>'}`}
 const setTh=v=>{localStorage.th=v;draw()};
 const need=async ids=>{const m=[...new Set(ids)].filter(i=>i&&!U[i]);await Promise.all(m.map(async i=>{const s=await getDoc(doc(db,'users',i));U[i]=s.exists()?s.data():{name:'Người dùng',plan:'free'}}));if(m.length)draw()};
 const need_login=()=>{if(!au){login();return true}};
 const modal=h=>$('#modal').innerHTML=`<div class="mod" onclick="if(event.target===this)closeM()"><div>${h}</div></div>`;
-const closeM=()=>$('#modal').innerHTML='';
+const closeM=()=>{$('#modal').innerHTML='';unPay()};
 const login=()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>toast('Không đăng nhập được: '+e.code));
 const route=()=>location.hash.slice(1)||'home';
 const go=r=>{if(['inbox','settings','me','orders'].includes(r)&&!au)return login();location.hash=r};
@@ -161,6 +205,8 @@ onAuthStateChanged(auth,async u=>{au=u;if(!u){me=null;draw();return}
  onSnapshot(query(collection(db,'chats'),where('members','array-contains',u.uid)),s=>{chats=s.docs.map(d=>({id:d.id,...d.data()}));need(chats.flatMap(c=>c.members));draw()});
  onSnapshot(query(collection(db,'orders'),orderBy('at','desc'),limit(60)),s=>{O=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>toast('Lỗi tải đơn hàng: '+e.code));
  onSnapshot(query(collection(db,'users',u.uid,'notifs'),orderBy('at','desc'),limit(30)),s=>{N=s.docs.map(d=>({id:d.id,...d.data()}));need(N.map(n=>n.from));draw()},()=>{});
+ onSnapshot(query(collection(db,'payments'),where('uid','==',u.uid)),s=>{PAYS=s.docs.map(d=>({id:d.id,...d.data()}))},()=>{});
+ onSnapshot(query(collection(db,'dailies'),orderBy('at','desc'),limit(100)),s=>{D=s.docs.map(d=>({id:d.id,...d.data()}));need(D.map(x=>x.uid));draw()},()=>{});
  onSnapshot(doc(db,'partnerRequests',u.uid),s=>{req=s.exists()?s.data():null;draw()});
 });
 onSnapshot(query(collection(db,'posts'),orderBy('at','desc'),limit(60)),s=>{P=s.docs.map(d=>({id:d.id,...d.data()}));need(P.map(p=>p.uid));draw()},e=>toast('Lỗi tải bài: '+e.code));
@@ -176,19 +222,23 @@ function pin(p){const u=U[p.uid]||{},liked=au&&(p.likedBy||[]).includes(au.uid),
  <div class="au" onclick="location.hash='u/${p.uid}'">${av(u,26)}<span>${E(u.name)}</span>${bdg(u.plan)}</div>
  <div class="act"><span class="${liked?'lk':''}" title="Thích" onclick="like('${p.id}')">${AI.heart(liked)}</span><span title="Bình luận" onclick="toggleC('${p.id}')">${AI.cm}</span><span title="Chia sẻ" onclick="share('${p.id}')">${AI.share}</span>${au&&!own?`<span title="Nhắn tin" onclick="dm('${p.uid}')">${AI.send}</span>`:''}<span class="sp"></span>${own?`<span title="Xóa bài" onclick="del('${p.id}')">${AI.trash}</span>`:''}</div>${n?`<div class="lc">${n} lượt thích</div>`:''}
  ${open[p.id]?`<div class="cm">${(C[p.id]||[]).map(c=>`<div><b>${E(U[c.uid]?.name||'')}</b>: ${E(c.t)}</div>`).join('')}<input placeholder="Viết bình luận…" onkeydown="if(event.key==='Enter'&&this.value){cmt('${p.id}',this)}"></div>`:''}</div></div>`}
-const home=()=>`<div class="masonry">${P.map(pin).join('')||'<p style="color:var(--mu)">Chưa có bài đăng. Hãy là người đầu tiên!</p>'}</div>`;
+const home=()=>`${dailyBar()}<div class="masonry">${P.map(pin).join('')||'<p style="color:var(--mu)">Chưa có bài đăng. Hãy là người đầu tiên!</p>'}</div>`;
 
 function profile(){const uid=route().startsWith('u/')?route().slice(2):au?.uid;if(!uid)return '<p>Vui lòng đăng nhập.</p>';need([uid]);
- const u=U[uid];if(!u)return '<p>Đang tải…</p>';const own=au&&au.uid===uid,mine=P.filter(p=>p.uid===uid),paid=u.plan!=='free';
- return `<div class="cover" ${cvr(u)?`style="cursor:zoom-in;background-image:url(${cvr(u)})" onclick="zoomI(${zk(cvr(u))})"`:''}></div><div class="ph">${av(u,92,1)}<div class="pn"><h2 style="margin:0">${E(u.name)} ${bdg(u.plan)}</h2><div style="color:var(--mu);font-size:14px;margin-top:2px">${u.username?'@'+E(u.username):''}${own?(u.username?' · ':'')+E(u.email):''}</div></div>${own?`<button class="btn g" onclick="editP()">Chỉnh sửa</button>`:au?`<button class="btn" onclick="dm('${uid}')">Nhắn tin</button>`:''}</div>
- <div style="padding:10px 16px 0">${u.bio?`<p style="margin:0 0 10px;font-size:14px;line-height:1.5;white-space:pre-line">${E(u.bio)}</p>`:''}${(u.skills||[]).length?`<div>${u.skills.map(k=>`<span class="sk">${E(k)}</span>`).join('')}</div>`:''}<p style="margin:6px 0 12px"><b>${mine.length}</b> bài đăng</p>
- ${paid?`<div class="box" style="font-size:14px">📞 ${E(u.phone)||'—'} · 📍 ${E(u.addr)||'—'}${u.kyc?' · ✅ Đã xác minh':''}</div>
+ const u=U[uid];if(!u)return '<p>Đang tải…</p>';const own=au&&au.uid===uid,all=P.filter(p=>p.uid===uid),mine=ptab==='video'?all.filter(p=>p.video):all,paid=u.plan!=='free';
+ const likes=all.reduce((a,p)=>a+(p.likedBy||[]).length,0),vids=all.filter(p=>p.video).length;
+ return `<div class="cover" ${cvr(u)?`style="cursor:zoom-in;background-image:url(${cvr(u)})" onclick="zoomI(${zk(cvr(u))})"`:''}></div>
+ <div class="ph">${av(u,110,1)}<div class="pn"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 style="margin:0">${E(u.name)}</h2>${bdg(u.plan)}</div><div style="color:var(--mu);font-size:14px;margin-top:2px">${u.username?'@'+E(u.username):''}${own?(u.username?' · ':'')+E(u.email):''}</div>
+  <div class="st2"><span><b>${all.length}</b> bài đăng</span><span><b>${likes}</b> lượt thích</span><span><b>${vids}</b> video</span></div></div>
+  ${own?`<div class="pbt"><button class="btn g" onclick="editP()">Chỉnh sửa hồ sơ</button><button class="btn g" onclick="go('settings')" title="Cài đặt" aria-label="Cài đặt">${ICO.settings}</button></div>`:au?`<div class="pbt"><button class="btn" onclick="dm('${uid}')">Nhắn tin</button></div>`:''}</div>
+ <div style="padding:14px 16px 0">${u.bio?`<p style="margin:0 0 10px;font-size:14px;line-height:1.5;white-space:pre-line">${E(u.bio)}</p>`:''}${(u.skills||[]).length?`<div>${u.skills.map(k=>`<span class="sk">${E(k)}</span>`).join('')}</div>`:''}
+ ${paid?`<div class="box" style="font-size:14px;margin-top:6px">📞 ${E(u.phone)||'—'} · 📍 ${E(u.addr)||'—'}${u.kyc?' · ✅ Đã xác minh':''}</div>
  <b>Nổi bật (${(u.hl||[]).length}/${HL[u.plan]})</b><div class="hl">${(u.hl||[]).map(id=>P.find(p=>p.id===id)).filter(Boolean).map(p=>`<div style="cursor:zoom-in" onclick="zoomI(${zk(safe(p.img)||p.video,!safe(p.img))})"><i style="background-image:url(${safe(p.thumb)||safe(p.img)})"></i>${E(p.cap).slice(0,10)}</div>`).join('')||'<span style="color:var(--mu);font-size:13px">Bấm ☆ trên ảnh để ghim</span>'}</div>`
- :own?`<div class="box" style="font-size:14px">Tài khoản thường chỉ đăng ảnh. <a href="#partner" style="color:var(--ac)">Trở thành đối tác</a> để mở mô tả, liên hệ, mục nổi bật.</div>`:''}
- <div class="grid">${mine.map(p=>`<div style="background-image:url(${safe(p.thumb)||safe(p.img)});cursor:zoom-in" onclick="zoomI(${zk(safe(p.img)||p.video,!safe(p.img),p.imgs&&p.imgs.length>1?p.imgs:null)})">${vthumb(p)}${p.imgs&&p.imgs.length>1?`<span class="mb">${AI.multi} ${p.imgs.length}</span>`:''}${own&&paid?`<em onclick="event.stopPropagation();hlt('${p.id}')">${(u.hl||[]).includes(p.id)?'★':'☆'}</em>`:''}</div>`).join('')}</div></div>`}
-
-function partner(){const pl=(k,pc,fs)=>`<div class="plan ${k=='premium'?'pr':''}"><h3>${PL[k]} ${bdg(k)}</h3><div class="pc">${pc}</div><ul>${fs.map(f=>`<li>${f}</li>`).join('')}</ul><button class="btn ${me?.plan==k?'g':''}" style="width:100%" onclick="buy('${k}')">${me?.plan==k?'Gói hiện tại':k=='free'?'Dùng miễn phí':'Nâng cấp'}</button></div>`;
- return `<h2 style="text-align:center">Trở thành đối tác</h2><p style="text-align:center;color:var(--mu)">Photographer, makeup artist, videographer, studio, cho thuê trang phục, AI artist, designer…</p>${req?`<div class="box" style="text-align:center">Yêu cầu gói <b>${PL[req.plan]}</b>: <b>${{pending:'đang chờ duyệt',approved:'đã duyệt',rejected:'bị từ chối'}[req.status]}</b>${req.status==='pending'?` · <a style="color:var(--ac);cursor:pointer" onclick="payQR('${req.plan}')">Xem mã QR thanh toán</a>`:''}</div>`:''}<div class="plans">`+
+ :own?`<div class="box" style="font-size:14px">Tài khoản thường chỉ đăng ảnh. <a href="#partner" style="color:var(--ac)">Trở thành đối tác</a> để mở thông tin liên hệ, mục nổi bật và chuyên môn.</div>`:''}</div>
+ <div class="ptabs"><button class="${ptab==='all'?'on':''}" onclick="setPT('all')">${AI.grid} BÀI ĐĂNG</button><button class="${ptab==='video'?'on':''}" onclick="setPT('video')">${AI.play} VIDEO</button></div>
+ <div class="grid">${mine.map(p=>`<div style="background-image:url(${safe(p.thumb)||safe(p.img)});cursor:zoom-in" onclick="zoomI(${zk(safe(p.img)||p.video,!safe(p.img),p.imgs&&p.imgs.length>1?p.imgs:null)})">${vthumb(p)}${p.imgs&&p.imgs.length>1?`<span class="mb">${AI.multi} ${p.imgs.length}</span>`:''}${own&&paid?`<em onclick="event.stopPropagation();hlt('${p.id}')">${(u.hl||[]).includes(p.id)?'★':'☆'}</em>`:''}</div>`).join('')||`<p style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px 0">${ptab==='video'?'Chưa có video.':'Chưa có bài đăng.'}</p>`}</div>`}
+function partner(){const pl=(k,pc,fs)=>`<div class="plan ${k=='premium'?'pr':''}"><h3>${PL[k]} ${bdg(k)}</h3><div class="pc">${pc}</div><ul>${fs.map(f=>`<li>${f}</li>`).join('')}</ul><button class="btn ${me?.plan==k&&k==='free'?'g':''}" style="width:100%" onclick="buy('${k}')">${me?.plan==k?(k==='free'?'Gói hiện tại':'Gia hạn'):k=='free'?'Dùng miễn phí':'Nâng cấp'}</button></div>`;
+ return `<h2 style="text-align:center">Trở thành đối tác</h2>${me?.planUntil?`<div class="box" style="text-align:center">Gói <b>${PL[me.plan]}</b> có hiệu lực đến <b>${fdate(me.planUntil)}</b>. Chuyển khoản thêm để gia hạn 30 ngày.</div>`:''}<p style="text-align:center;color:var(--mu)">Photographer, makeup artist, videographer, studio, cho thuê trang phục, AI artist, designer…</p>${req?`<div class="box" style="text-align:center">Hồ sơ xác minh danh tính: <b>${{pending:'đang chờ duyệt',approved:'đã duyệt',rejected:'bị từ chối'}[req.status]}</b>${req.status==='pending'?` · <a style="color:var(--ac);cursor:pointer" onclick="payQR('${req.plan}')">Xem mã QR thanh toán</a>`:''}</div>`:''}<div class="plans">`+
  pl('free','0đ',['Đăng tối đa 5 ảnh, không đăng video','Like, comment, inbox','Bị lọc SĐT & địa chỉ trong bài','Không có mục nổi bật','Không xem được thông tin đơn hàng'])+
  pl('standard','99.000đ/tháng',['Đăng 10 ảnh/tháng và 3 video','Mô tả & liên hệ trên trang','Không bị lọc SĐT/địa chỉ','Huy hiệu Standard','3 album/video nổi bật','Nhận tối đa 5 đơn hàng/tháng'])+
  pl('premium','149.000đ/tháng',['Đăng ảnh không giới hạn, tối đa 9 video','Mọi quyền lợi Standard','Huy hiệu Premium','6 album/video nổi bật','Nhận đơn hàng không giới hạn','Ưu tiên hiển thị'])+`</div>`}
@@ -211,7 +261,7 @@ function inbox(){queueMicrotask(markSeen);const o=id=>chats.find(c=>c.id===id)?.
  return `<h2>Tin nhắn</h2><div class="chat"><div class="box" style="padding:8px">${chats.map(c=>{const u=U[o(c.id)];return `<div class="au" style="padding:8px;border-radius:10px;${c.id==cid?'background:var(--bd);':''}${unrOf(c)?'font-weight:700;':''}" onclick="openChat('${c.id}')">${av(u,30)}<span>${E(u?.name)}</span>${unrOf(c)?'<span class="dt" style="margin-left:auto"></span>':''}</div>`}).join('')||'<span style="color:var(--mu);font-size:13px">Chưa có hội thoại. Bấm ✉ trên bài viết để nhắn.</span>'}</div>
  <div class="box" style="display:flex;flex-direction:column">${cid?`<div style="flex:1;margin-bottom:10px">${msgs.map(m=>`<div class="msg ${m.from===au.uid?'me':''}">${E(m.t)}</div>`).join('')}</div><input style="border:1px solid var(--bd);background:var(--bg);border-radius:20px;padding:9px 14px" placeholder="Nhập tin nhắn…" onkeydown="if(event.key==='Enter'&&this.value){send(this)}">`:'<span style="color:var(--mu)">Chọn một hội thoại</span>'}</div></div>`}
 
-function settings(){return `<h2>Cài đặt</h2><div class="box"><b>Tài khoản</b><div class="row"><span>Email</span><span style="color:var(--mu)">${E(me?.email)}</span></div><div class="row"><span>Hồ sơ</span><button class="btn g" onclick="editP()">Chỉnh sửa</button></div><div class="row"><span>Khu vực hoạt động</span><button class="btn g" onclick="areaP()">${(me?.areas||[]).length?me.areas.slice(0,2).join(', ')+(me.areas.length>2?' +'+(me.areas.length-2):''):'Chọn'}</button></div><div class="row"><span>Bio</span><button class="btn g" onclick="bioP()">${me?.bio?'Chỉnh sửa':'Thêm'}</button></div><div class="row"><span>Chuyên môn</span><button class="btn g" onclick="skillP()">${(me?.skills||[]).length?me.skills.slice(0,2).join(', ')+(me.skills.length>2?' +'+(me.skills.length-2):''):(me?.plan==='free'?'Dành cho đối tác':'Chọn')}</button></div><div class="row"><span>Gói hiện tại</span><span>${PL[me?.plan||'free']}</span></div></div>
+function settings(){return `<h2>Cài đặt</h2><div class="box"><b>Tài khoản</b><div class="row"><span>Email</span><span style="color:var(--mu)">${E(me?.email)}</span></div><div class="row"><span>Hồ sơ</span><button class="btn g" onclick="editP()">Chỉnh sửa</button></div><div class="row"><span>Khu vực hoạt động</span><button class="btn g" onclick="areaP()">${(me?.areas||[]).length?me.areas.slice(0,2).join(', ')+(me.areas.length>2?' +'+(me.areas.length-2):''):'Chọn'}</button></div><div class="row"><span>Bio</span><button class="btn g" onclick="bioP()">${me?.bio?'Chỉnh sửa':'Thêm'}</button></div><div class="row"><span>Chuyên môn</span><button class="btn g" onclick="skillP()">${(me?.skills||[]).length?me.skills.slice(0,2).join(', ')+(me.skills.length>2?' +'+(me.skills.length-2):''):(me?.plan==='free'?'Dành cho đối tác':'Chọn')}</button></div><div class="row"><span>Gói hiện tại</span><span>${PL[me?.plan||'free']}${me?.planUntil?' · đến '+fdate(me.planUntil):''}</span></div></div>
  <div class="box"><b>Trình duyệt</b><div class="row"><span>Giao diện</span><div class="seg"><button class="${localStorage.th?'':'on'}" onclick="setTh('')">${ICO.sun} Sáng</button><button class="${localStorage.th=='dark'?'on':''}" onclick="setTh('dark')">${ICO.moon} Tối</button></div></div></div>
  <button class="btn g" onclick="out()">Đăng xuất</button>`}
 
@@ -253,15 +303,25 @@ const A={login,go,closeM,draw,
    if(raw&&raw!==m.username){if((await getDoc(doc(db,'usernames',raw))).exists())throw{code:'username-taken'};b.set(doc(db,'usernames',raw),{uid:au.uid});if(m.username)b.delete(doc(db,'usernames',m.username));d.username=raw}
    b.update(doc(db,'users',au.uid),d);await b.commit();closeM();toast('Đã lưu')}catch(x){e.textContent=x.code==='username-taken'?'Tên người dùng đã có người dùng, hãy chọn tên khác':'Lỗi: '+x.code;$('#sb').disabled=false}},
  hlt:async id=>{const h=me.hl||[];if(h.includes(id))return updateDoc(doc(db,'users',au.uid),{hl:arrayRemove(id)});if(h.length>=HL[me.plan])return toast(`Gói ${PL[me.plan]} chỉ được ${HL[me.plan]} mục nổi bật`);updateDoc(doc(db,'users',au.uid),{hl:arrayUnion(id)})},
- buy:k=>{if(need_login()||k==='free'||me.plan===k)return;if(req?.status==='pending')return payQR(req.plan);
+ buy:k=>{if(need_login()||k==='free')return;if(req||me.kyc)return payQR(k);
   modal(`<h3>Đăng ký đối tác – ${PL[k]}</h3><label>Căn cước công dân – mặt trước</label>${fp('k1','image/*','Chọn ảnh mặt trước')}<label>Căn cước công dân – mặt sau</label>${fp('k2','image/*','Chọn ảnh mặt sau')}<label>Số điện thoại</label><input id="kp"><label>Địa chỉ</label><input id="ka"><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:14px" id="kb" onclick="kyc('${k}')">Gửi yêu cầu</button>`)},
  kyc:async k=>{const e=$('#er'),f1=$('#k1').files[0],f2=$('#k2').files[0],p=$('#kp').value.replace(/\s/g,''),a=$('#ka').value.trim();
   if(!f1||!f2)return e.textContent='Vui lòng tải lên cả 2 mặt CCCD';if(!/^(0|\+84)\d{9}$/.test(p))return e.textContent='Số điện thoại không hợp lệ';if(a.length<8)return e.textContent='Vui lòng nhập địa chỉ đầy đủ';
   $('#kb').disabled=true;try{await setDoc(doc(db,'partnerRequests',au.uid),{plan:k,phone:p,addr:a,front:await rz(f1,800,.7),back:await rz(f2,800,.7),status:'pending',at:serverTimestamp()});payQR(k)}catch(x){e.textContent='Lỗi: '+x.code;$('#kb').disabled=false}},
  setOF:v=>{ofil=v;draw()},
+ setPT:v=>{ptab=v;draw()},
+ openDaily:i=>{const g=gGroups();if(!g[i])return;const k=g[i].items.findIndex(x=>!seenD[x.id]);SV={g,gi:i,i:k<0?0:k};svShow()},
+ addDaily:()=>{if(!au)return login();modal(`<h3>Thêm daily</h3><p style="font-size:13px;color:var(--mu);margin-top:0">Daily hiển thị 24 giờ rồi tự xóa.</p><label>${me?.plan==='free'?'Ảnh':'Ảnh hoặc video (tối đa 30 giây)'}</label>${fp('df',me?.plan==='free'?'image/*':'image/*,video/mp4,video/webm,video/quicktime','Chọn ảnh / video')}<label>Chú thích (không bắt buộc)</label><input id="dc" maxlength="80"><div class="err" id="er"></div><button class="btn" style="width:100%;margin-top:12px" id="pb" onclick="saveDaily()">Đăng daily</button>`)},
+ saveDaily:async()=>{const f=$('#df').files[0],e=$('#er');if(!f)return e.textContent='Hãy chọn ảnh hoặc video';const vid=f.type.startsWith('video/');
+  if(vid&&me.plan==='free')return e.textContent=errMsg('plan-free');if(vid&&f.size>50*1048576)return e.textContent='Video daily tối đa 50MB.';
+  $('#pb').disabled=true;try{if(vid&&(await vlen(f))>31)throw{code:'video-dai'};
+   const blob=vid?f:await blobOf(f,1080,.8),type=vid?f.type:'image/jpeg',j=await api('/api/upload',{type,size:blob.size,kind:'daily'});await putR(j.url,blob,type,1);
+   await addDoc(collection(db,'dailies'),{uid:au.uid,type:vid?'video':'image',media:j.publicUrl,cap:$('#dc').value.trim().slice(0,80),at:serverTimestamp()});closeM();toast('Đã đăng daily')}
+  catch(x){e.textContent=errMsg(x.code);$('#pb').disabled=false;$('#pb').textContent='Đăng daily'}},
+ delDaily:async id=>{if(!confirm('Xóa daily này?'))return;const d=D.find(x=>x.id===id);closeSV();await deleteDoc(doc(db,'dailies',id));if(d&&isM(d.media))api('/api/delete',{keys:[d.media.slice(MEDIA_BASE.length+1)]}).catch(()=>{})},
  toggleBell:()=>{bellOpen=!bellOpen;draw()},
  setNT:v=>{nTab=v;draw()},
- notifGo:async id=>{const n=N.find(x=>x.id===id);bellOpen=false;draw();if(n&&!n.read)updateDoc(doc(db,'users',au.uid,'notifs',id),{read:true}).catch(()=>{});go(n&&n.type==='order'?'orders':'home')},
+ notifGo:async id=>{const n=N.find(x=>x.id===id);bellOpen=false;draw();if(n&&!n.read)updateDoc(doc(db,'users',au.uid,'notifs',id),{read:true}).catch(()=>{});go(n&&n.type==='order'?'orders':n&&n.type==='plan'?'partner':'home')},
  readAll:async()=>{const un=N.filter(n=>!n.read);if(!un.length)return;const b=writeBatch(db);un.forEach(n=>b.update(doc(db,'users',au.uid,'notifs',n.id),{read:true}));b.commit().catch(()=>{})},
  bioP:()=>modal(`<h3>Bio</h3><label>Giới thiệu ngắn về bạn (tối đa 150 ký tự)</label><textarea id="bio" rows="4" maxlength="150">${E(me.bio)}</textarea><button class="btn" style="width:100%;margin-top:12px" onclick="saveBio()">Lưu</button>`),
  saveBio:async()=>{await updateDoc(doc(db,'users',au.uid),{bio:$('#bio').value.trim().slice(0,150)});closeM();toast('Đã lưu bio')},
@@ -286,12 +346,18 @@ const A={login,go,closeM,draw,
  areaP:()=>{const a=me.areas||[];modal(`<h3>Khu vực hoạt động</h3><input id="aq" placeholder="Tìm tỉnh/thành…" oninput="areaF(this.value)"><div id="al" style="max-height:50vh;overflow:auto;margin-top:8px">${VN.map(p=>`<label class="ck" data-n="${nz(p)}"><input type="checkbox" value="${p}" ${a.includes(p)?'checked':''}> ${p}</label>`).join('')}</div><button class="btn" style="width:100%;margin-top:12px" onclick="saveAreas()">Lưu</button>`)},
  areaF:v=>document.querySelectorAll('#al .ck').forEach(l=>l.style.display=l.dataset.n.includes(nz(v))?'':'none'),
  saveAreas:async()=>{const v=[...document.querySelectorAll('#al input:checked')].map(i=>i.value);await updateDoc(doc(db,'users',au.uid),{areas:v});closeM();toast('Đã lưu khu vực')},
- payQR:k=>{const amt=k==='standard'?'99.000đ':'149.000đ',note='FOHU '+au.uid.slice(0,6).toUpperCase()+' '+k.toUpperCase();
-  modal(`<h3>Thanh toán gói ${PL[k]}</h3><div style="text-align:center"><img src="pay-qr.png" alt="Mã QR thanh toán" style="max-width:260px;width:100%;border-radius:12px;border:1px solid var(--bd)" onerror="this.outerHTML='<p class=err>Chưa có ảnh pay-qr.png trên website</p>'">
-  <p style="margin:10px 0 2px">Số tiền: <b>${amt}</b></p><p style="margin:0">Nội dung chuyển khoản:</p><p><b style="font-size:18px">${note}</b></p><button class="btn g" onclick="navigator.clipboard?.writeText('${note}');toast('Đã sao chép nội dung')">Sao chép nội dung</button>
-  <p style="font-size:13px;color:var(--mu)">Hồ sơ của bạn đã được gửi. Quét mã, chuyển đúng số tiền và nội dung; chúng tôi sẽ kiểm tra và kích hoạt gói cho bạn.</p><button class="btn" style="width:100%" onclick="closeM()">Đóng</button></div>`)},
+ payQR:async k=>{const amt=k==='standard'?99000:149000;
+  if(!BANK.acc)return toast('Chưa cấu hình tài khoản ngân hàng nhận tiền');
+  const old=PAYS.find(x=>x.plan===k&&x.status==='pending'&&x.at&&x.at.toMillis&&Date.now()-x.at.toMillis()<864e5);let code=old&&old.id;
+  if(!code){code=genCode();try{await setDoc(doc(db,'payments',code),{uid:au.uid,plan:k,amount:amt,status:'pending',at:serverTimestamp()})}catch(x){return toast('Không tạo được mã thanh toán: '+x.code)}}
+  const note='FOHU '+code,qr=`https://img.vietqr.io/image/${encodeURIComponent(BANK.id)}-${encodeURIComponent(BANK.acc)}-compact2.png?amount=${amt}&addInfo=${encodeURIComponent(note)}&accountName=${encodeURIComponent(BANK.name)}`;
+  modal(`<h3>Thanh toán gói ${PL[k]}</h3><div id="pbody" style="text-align:center"><img src="${qr}" alt="Mã QR thanh toán" style="max-width:280px;width:100%;border-radius:12px;border:1px solid var(--bd)">
+  <p style="margin:10px 0 2px">Số tiền: <b>${amt.toLocaleString('vi-VN')}đ</b></p><p style="margin:0">Nội dung chuyển khoản (giữ nguyên):</p><p style="margin:4px 0 8px"><b style="font-size:18px">${note}</b></p>
+  <button class="btn g" onclick="navigator.clipboard?.writeText('${note}');toast('Đã sao chép nội dung')">Sao chép nội dung</button>
+  <p style="font-size:13px;color:var(--mu);margin:12px 0">⏳ Đang chờ ngân hàng báo tiền về. Gói sẽ tự kích hoạt trong vài giây sau khi chuyển khoản thành công, bạn không cần làm gì thêm.</p><button class="btn g" style="width:100%" onclick="closeM()">Đóng</button></div>`);
+  unPay();unPay=onSnapshot(doc(db,'payments',code),s=>{const d=s.data();if(d&&d.status==='paid'&&$('#pbody'))$('#pbody').innerHTML=`<div style="font-size:48px">✅</div><h3>Thanh toán thành công!</h3><p style="color:var(--mu)">Gói ${PL[k]} đã được kích hoạt.</p><button class="btn" style="width:100%" onclick="closeM()">Hoàn tất</button>`})},
  dm:async uid=>{if(need_login())return;const id=[au.uid,uid].sort().join('_');if(!chats.find(c=>c.id===id))await setDoc(doc(db,'chats',id),{members:[au.uid,uid]});openChat(id);go('inbox')},
  openChat:id=>{unM();cid=id;msgs=[];unM=onSnapshot(query(collection(db,'chats',id,'messages'),orderBy('at')),s=>{msgs=s.docs.map(d=>d.data());draw()});draw()},
  send:async el=>{const t=el.value;el.value='';const b=writeBatch(db);b.set(doc(collection(db,'chats',cid,'messages')),{from:au.uid,t,at:serverTimestamp()});b.update(doc(db,'chats',cid),{lastFrom:au.uid,lastText:t.slice(0,80),lastAt:serverTimestamp()});await b.commit()}};
-Object.assign(window,A,{fpv,zoomI,closeZ,setTh,gz});window.addEventListener('hashchange',draw);draw();
+Object.assign(window,A,{fpv,zoomI,closeZ,setTh,gz,svGo,closeSV});window.addEventListener('hashchange',draw);draw();
 </script></body></html>

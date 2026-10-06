@@ -44,4 +44,17 @@ async function countPosts(a, onlyVideo, ym) {
   return { n: num(f.n), x: num(f.x) }; // n = số bài, x = tổng số ảnh phụ (bài nhiều ảnh)
 }
 
-module.exports = { s3, verify, plan, countPosts };
+// Đếm số daily của người dùng chưa bị dọn (giới hạn chống lạm dụng lưu trữ)
+async function countDailies(a) {
+  const r = await fetch(`${FS}:runAggregationQuery`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.tok },
+    body: JSON.stringify({ structuredAggregationQuery: { aggregations: [{ alias: 'n', count: {} }], structuredQuery: {
+      from: [{ collectionId: 'dailies' }],
+      where: { fieldFilter: { field: { fieldPath: 'uid' }, op: 'EQUAL', value: { stringValue: a.uid } } } } } }),
+  });
+  if (!r.ok) throw new Error('count-failed');
+  const j = await r.json();
+  return Number(j[0]?.result?.aggregateFields?.n?.integerValue || 0);
+}
+
+module.exports = { s3, verify, plan, countPosts, countDailies };
