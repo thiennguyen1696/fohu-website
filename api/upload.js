@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const { s3, verify, plan, countPosts } = require('./_lib');
 
 // Giới hạn tổng số ảnh / video đang lưu theo gói
-const LIMIT = { free: { photo: 5, video: 0 }, standard: { photo: 10, video: 3 }, premium: { photo: Infinity, video: 9 } };
+const LIMIT = { free: { photo: 5, video: 0 }, standard: { photo: 10, video: 3, monthly: true }, premium: { photo: Infinity, video: 9 } };
 const VEXT = { 'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov' };
 const MAX_VIDEO = 100 * 1024 * 1024, MAX_IMAGE = 8 * 1024 * 1024, MAX_THUMB = 1024 * 1024;
 const sign = (Key, ContentType, ContentLength) => getSignedUrl(s3,
@@ -17,7 +17,8 @@ module.exports = async (req, res) => {
     const a = await verify(req);
     if (!a) return res.status(401).json({ error: 'auth' });
 
-    const { type, size, thumbSize = 0 } = req.body || {};
+    const { type, size, thumbSize = 0, count = 1 } = req.body || {};
+    const cnt = Math.min(Math.max(parseInt(count) || 1, 1), 10); // số ảnh trong bài đăng này
     const isVid = !!VEXT[type], isImg = type === 'image/jpeg';
     if (!isVid && !isImg) return res.status(400).json({ error: 'type' });
     if (!Number.isInteger(size) || size <= 0 || size > (isVid ? MAX_VIDEO : MAX_IMAGE)) return res.status(400).json({ error: 'size' });
@@ -26,10 +27,12 @@ module.exports = async (req, res) => {
     const L = LIMIT[await plan(a)] || LIMIT.free;
     if (isVid) {
       if (L.video === 0) return res.status(403).json({ error: 'plan-free' });
-      if ((await countPosts(a, true)) >= L.video) return res.status(403).json({ error: 'limit' });
+      if ((await countPosts(a, true)).n >= L.video) return res.status(403).json({ error: 'limit' });
     } else if (L.photo !== Infinity) {
-      const [all, vid] = await Promise.all([countPosts(a, false), countPosts(a, true)]);
-      if (all - vid >= L.photo) return res.status(403).json({ error: 'photo-limit' });
+      const ym = L.monthly ? new Date().toISOString().slice(0, 7) : undefined; // Standard: tính theo tháng (UTC)
+      const [all, vid] = await Promise.all([countPosts(a, false, ym), countPosts(a, true, ym)]);
+      const photos = all.n - vid.n + all.x; // mỗi ảnh trong bài nhiều ảnh tính 1
+      if (photos + cnt > L.photo) return res.status(403).json({ error: L.monthly ? 'photo-limit-month' : 'photo-limit' });
     }
 
     const id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;

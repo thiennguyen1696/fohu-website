@@ -29,17 +29,19 @@ async function plan(a) {
 }
 
 // Đếm bài của người dùng: tất cả bài, hoặc chỉ các bài video (hasVideo = true). Số ảnh = tất cả - video.
-async function countPosts(a, onlyVideo) {
+async function countPosts(a, onlyVideo, ym) {
   const eq = (f, value) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value } });
   const r = await fetch(`${FS}:runAggregationQuery`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.tok },
-    body: JSON.stringify({ structuredAggregationQuery: { aggregations: [{ alias: 'n', count: {} }], structuredQuery: {
+    body: JSON.stringify({ structuredAggregationQuery: { aggregations: [{ alias: 'n', count: {} }, { alias: 'x', sum: { field: { fieldPath: 'extra' } } }], structuredQuery: {
       from: [{ collectionId: 'posts' }],
-      where: { compositeFilter: { op: 'AND', filters: [eq('uid', { stringValue: a.uid }), ...(onlyVideo ? [eq('hasVideo', { booleanValue: true })] : [])] } } } } }),
+      where: { compositeFilter: { op: 'AND', filters: [eq('uid', { stringValue: a.uid }), ...(onlyVideo ? [eq('hasVideo', { booleanValue: true })] : []), ...(ym ? [eq('ym', { stringValue: ym })] : [])] } } } } }),
   });
   if (!r.ok) throw new Error('count-failed');
   const j = await r.json();
-  return Number(j[0]?.result?.aggregateFields?.n?.integerValue || 0);
+  const f = j[0]?.result?.aggregateFields || {};
+  const num = v => Number(v?.integerValue ?? v?.doubleValue ?? 0);
+  return { n: num(f.n), x: num(f.x) }; // n = số bài, x = tổng số ảnh phụ (bài nhiều ảnh)
 }
 
 module.exports = { s3, verify, plan, countPosts };
