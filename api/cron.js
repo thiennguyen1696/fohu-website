@@ -1,11 +1,12 @@
 // Chạy mỗi ngày (vercel.json): (1) hạ gói đã hết hạn về Free, (2) xóa Daily quá 24 giờ cùng file trên R2.
 const { DeleteObjectsCommand } = require('@aws-sdk/client-s3');
-const { db, admin } = require('./_admin');
+const { init } = require('./_admin');
 const { s3 } = require('./_lib');
 
 module.exports = async (req, res) => {
   if (!process.env.CRON_SECRET || req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).json({ error: 'auth' });
   try {
+    const { db, admin } = init();
     // 1) Gói hết hạn
     const ex = await db.collection('users').where('planUntil', '<', admin.firestore.Timestamp.now()).limit(400).get();
     const b1 = db.batch();
