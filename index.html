@@ -100,7 +100,7 @@ const cfg={apiKey:"AIzaSyA2_BhvTVEzdwh5Tco4vkOQUkD0KZc_2u0",authDomain:"fohu-pla
 const MEDIA_BASE="https://media.fohu.asia"; // để trống = tắt video. Sau khi thiết lập R2, điền địa chỉ công khai, ví dụ "https://media.fohu.asia"
 /* ===== THANH TOÁN QR: điền thông tin tài khoản ngân hàng NHẬN TIỀN của bạn =====
    id: mã ngân hàng theo VietQR (ví dụ "MB", "VCB", "TCB", "ACB", "BIDV", "VPB", "TPB" hoặc mã BIN). acc: số tài khoản. name: tên chủ tài khoản (IN HOA, không dấu) */
-const BANK={id:"",acc:"",name:""};
+const BANK={id:"MB",acc:"0909097326",name:"NGUYEN TRUONG HOANG THIEN"};
 const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const PL={free:'Free',standard:'Standard',premium:'Premium'},HL={free:0,standard:3,premium:6},VL={free:0,standard:3,premium:9},LIM={free:{photo:5,video:0},standard:{photo:10,video:3,monthly:true},premium:{photo:Infinity,video:9}},
