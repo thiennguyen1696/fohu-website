@@ -17,8 +17,8 @@ async function verify(req) {
   const v = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.FIREBASE_API_KEY}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: tok }),
   });
-  const uid = v.ok ? (await v.json()).users?.[0]?.localId : null;
-  return uid ? { uid, tok } : null;
+  const u = v.ok ? (await v.json()).users?.[0] : null;
+  return u ? { uid: u.localId, tok, email: u.email, emailVerified: !!u.emailVerified } : null;
 }
 
 // Đọc gói của người dùng (đọc bằng chính token của họ, tuân theo Security Rules)
