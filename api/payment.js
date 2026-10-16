@@ -1,6 +1,6 @@
 // Webhook nhận biến động số dư từ SePay (https://sepay.vn). Khi có tiền vào đúng mã "FOHU <MÃ>" và đủ số tiền
 // thì tự kích hoạt gói trong 30 ngày. Bảo vệ bằng API Key (header Authorization: Apikey <SEPAY_API_KEY>).
-const { init } = require('./_admin');
+const { init, describe } = require('./_admin');
 
 const PRICE = { standard: 99000, premium: 149000 }; // phải khớp với trang Đối tác và firestore.rules
 const DAYS = 30;
@@ -10,7 +10,8 @@ module.exports = async (req, res) => {
     if (req.method === 'GET' && req.query && req.query.check) {
       // Kiểm tra cấu hình (không lộ giá trị bí mật): mở https://<tên miền>/api/payment?check=1
       const out = { SEPAY_API_KEY: !!process.env.SEPAY_API_KEY, FIREBASE_SERVICE_ACCOUNT: !!process.env.FIREBASE_SERVICE_ACCOUNT };
-      try { init(); out.adminInit = 'ok'; } catch (e) { out.adminInit = e.message; }
+      out.info = describe();
+      try { init(); out.adminInit = 'ok'; } catch (e) { out.adminInit = String(e.message).slice(0, 100); }
       return res.status(200).json(out);
     }
     if (req.method !== 'POST') return res.status(405).json({ success: false });
