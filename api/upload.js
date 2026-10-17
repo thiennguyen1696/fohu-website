@@ -1,5 +1,5 @@
 // Cấp link tải ảnh/video (kèm ảnh thu nhỏ) lên Cloudflare R2. Giới hạn video theo gói.
-const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
 const { s3, verify, plan, countPosts, countDailies } = require('./_lib');
@@ -12,8 +12,23 @@ const sign = (Key, ContentType, ContentLength) => getSignedUrl(s3,
   new PutObjectCommand({ Bucket: process.env.R2_BUCKET, Key, ContentType, ContentLength }), { expiresIn: 300 });
 
 module.exports = async (req, res) => {
+  let step = 'start'; // bước đang chạy, trả về khi lỗi để biết chính xác hỏng ở đâu
   try {
+    if (req.method === 'GET' && req.query && req.query.check) {
+      // Kiểm tra cấu hình R2 (không lộ giá trị bí mật): mở https://<tên miền>/api/upload?check=1
+      const out = {};
+      ['R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL', 'FIREBASE_API_KEY'].forEach((k) => { out[k] = !!process.env[k]; });
+      out.publicUrlFormat = /^https:\/\/[^/]+$/.test(process.env.R2_PUBLIC_URL || '') ? 'ok' : 'sai (phải dạng https://ten-mien, không có / ở cuối)';
+      try { await sign('check/test.mp4', 'video/mp4', 1000); out.sign = 'ok'; } catch (e) { out.sign = String(e.message).slice(0, 100); }
+      try { // thử ghi và xóa một tệp nhỏ để xác nhận khóa R2 có quyền Read & Write
+        await s3.send(new PutObjectCommand({ Bucket: process.env.R2_BUCKET, Key: 'check/ping.txt', Body: 'ok', ContentType: 'text/plain' }));
+        await s3.send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET, Key: 'check/ping.txt' }));
+        out.r2Write = 'ok';
+      } catch (e) { out.r2Write = String(e.name + ': ' + e.message).slice(0, 140); }
+      return res.status(200).json(out);
+    }
     if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
+    step = 'verify';
     const a = await verify(req);
     if (!a) return res.status(401).json({ error: 'auth' });
 
@@ -25,7 +40,9 @@ module.exports = async (req, res) => {
     if (!Number.isInteger(size) || size <= 0 || size > (isVid ? MAX_VIDEO : MAX_IMAGE)) return res.status(400).json({ error: 'size' });
     if (!Number.isInteger(thumbSize) || thumbSize < 0 || thumbSize > MAX_THUMB) return res.status(400).json({ error: 'thumb' });
 
+    step = 'plan';
     const L = LIMIT[await plan(a)] || LIMIT.free;
+    step = 'count';
     if (daily) {
       if (isVid && L.video === 0) return res.status(403).json({ error: 'plan-free' }); // Free chỉ đăng ảnh daily
       if ((await countDailies(a)) >= 10) return res.status(403).json({ error: 'daily-limit' });
@@ -39,6 +56,7 @@ module.exports = async (req, res) => {
       if (photos + cnt > L.photo) return res.status(403).json({ error: L.monthly ? 'photo-limit-month' : 'photo-limit' });
     }
 
+    step = 'sign';
     const id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
     const key = daily ? `daily/${a.uid}/${id}.${isVid ? VEXT[type] : 'jpg'}`
       : isVid ? `videos/${a.uid}/${id}.${VEXT[type]}` : `images/${a.uid}/${id}.jpg`;
@@ -50,6 +68,7 @@ module.exports = async (req, res) => {
     }
     res.status(200).json(out);
   } catch (e) {
-    res.status(500).json({ error: 'server' });
+    console.error('upload', step, e);
+    res.status(500).json({ error: 'server', step, detail: String((e && e.message) || e).slice(0, 140) });
   }
 };

@@ -28,20 +28,24 @@ async function plan(a) {
   return (await r.json()).fields?.plan?.stringValue || 'free';
 }
 
-// Đếm bài của người dùng: tất cả bài, hoặc chỉ các bài video (hasVideo = true). Số ảnh = tất cả - video.
+// Đếm bài của người dùng: n = số bài, x = tổng số ảnh phụ (bài nhiều ảnh). Số ảnh = (bài không phải video) + x.
+// Dùng truy vấn thường (chỉ tải trường 'extra') thay cho sum(): sum() đòi tạo chỉ mục tổ hợp riêng cho từng bộ lọc nên rất dễ lỗi.
 async function countPosts(a, onlyVideo, ym) {
   const eq = (f, value) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value } });
-  const r = await fetch(`${FS}:runAggregationQuery`, {
+  const filters = [eq('uid', { stringValue: a.uid })];
+  if (onlyVideo) filters.push(eq('hasVideo', { booleanValue: true }));
+  if (ym) filters.push(eq('ym', { stringValue: ym }));
+  const r = await fetch(`${FS}:runQuery`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.tok },
-    body: JSON.stringify({ structuredAggregationQuery: { aggregations: [{ alias: 'n', count: {} }, { alias: 'x', sum: { field: { fieldPath: 'extra' } } }], structuredQuery: {
+    body: JSON.stringify({ structuredQuery: {
       from: [{ collectionId: 'posts' }],
-      where: { compositeFilter: { op: 'AND', filters: [eq('uid', { stringValue: a.uid }), ...(onlyVideo ? [eq('hasVideo', { booleanValue: true })] : []), ...(ym ? [eq('ym', { stringValue: ym })] : [])] } } } } }),
+      where: filters.length > 1 ? { compositeFilter: { op: 'AND', filters } } : filters[0],
+      select: { fields: [{ fieldPath: 'extra' }] }, limit: 1000 } }),
   });
   if (!r.ok) throw new Error('count-failed');
-  const j = await r.json();
-  const f = j[0]?.result?.aggregateFields || {};
-  const num = v => Number(v?.integerValue ?? v?.doubleValue ?? 0);
-  return { n: num(f.n), x: num(f.x) }; // n = số bài, x = tổng số ảnh phụ (bài nhiều ảnh)
+  const docs = (await r.json()).filter((d) => d.document);
+  const x = docs.reduce((s, d) => { const v = d.document.fields && d.document.fields.extra; return s + Number((v && (v.integerValue ?? v.doubleValue)) || 0); }, 0);
+  return { n: docs.length, x };
 }
 
 // Đếm số daily của người dùng chưa bị dọn (giới hạn chống lạm dụng lưu trữ)
