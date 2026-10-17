@@ -2,6 +2,7 @@
 // Chỉ các email trong biến môi trường ADMIN_EMAILS (cách nhau bằng dấu phẩy) mới dùng được.
 const { init } = require('./_admin');
 const { verify } = require('./_lib');
+const { activate } = require('./_pay');
 
 const isAdmin = (a) => {
   const list = (process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
@@ -29,6 +30,21 @@ module.exports = async (req, res) => {
       const us = snap.empty ? [] : await db.getAll(...snap.docs.map((d) => db.doc(`users/${d.id}`)));
       const items = snap.docs.map((d, i) => ({ id: d.id, ...brief(d.data(), us[i].data() || {}) })).sort((p, q) => q.at - p.at);
       return res.status(200).json({ items });
+    }
+
+    if (action === 'payments') { // 40 phiếu thanh toán gần nhất (để đối soát)
+      const snap = await db.collection('payments').orderBy('at', 'desc').limit(40).get();
+      const us = snap.empty ? [] : await db.getAll(...snap.docs.map((d) => db.doc(`users/${d.data().uid}`)));
+      const items = snap.docs.map((d, i) => { const x = d.data(), u = us[i].data() || {};
+        return { id: d.id, plan: x.plan, amount: x.amount, status: x.status, at: x.at && x.at.toMillis ? x.at.toMillis() : 0,
+          txId: x.txId || '', note: x.note || '', amountPaid: x.amountPaid || 0,
+          user: { name: u.name, email: u.email, plan: u.plan } }; });
+      return res.status(200).json({ items });
+    }
+    if (action === 'activate') { // kích hoạt tay khi đã thấy tiền về tài khoản nhưng webhook chưa chạy
+      const code = String(req.body.code || '').toUpperCase();
+      if (!/^[A-HJ-NP-Z2-9]{8}$/.test(code)) return res.status(400).json({ error: 'code' });
+      return res.status(200).json({ result: await activate(db, admin, code, { force: true }) });
     }
 
     if (!ID.test(String(id || ''))) return res.status(400).json({ error: 'id' });
