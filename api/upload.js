@@ -44,7 +44,6 @@ module.exports = async (req, res) => {
     const L = LIMIT[await plan(a)] || LIMIT.free;
     step = 'count';
     if (daily) {
-      if (isVid && L.video === 0) return res.status(403).json({ error: 'plan-free' }); // Free chỉ đăng ảnh daily
       if ((await countDailies(a)) >= 10) return res.status(403).json({ error: 'daily-limit' });
     } else if (isVid) {
       if (L.video === 0) return res.status(403).json({ error: 'plan-free' });

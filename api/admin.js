@@ -47,7 +47,20 @@ module.exports = async (req, res) => {
       return res.status(200).json({ result: await activate(db, admin, code, { force: true }) });
     }
 
+    if (action === 'tickets') { // 50 yêu cầu hỗ trợ gần nhất
+      const snap = await db.collection('supportTickets').orderBy('at', 'desc').limit(50).get();
+      return res.status(200).json({ items: snap.docs.map((d) => { const t = d.data();
+        return { id: d.id, name: t.name, email: t.email, subject: t.subject, message: t.message, status: t.status, at: t.at && t.at.toMillis ? t.at.toMillis() : 0 }; }) });
+    }
+
     if (!ID.test(String(id || ''))) return res.status(400).json({ error: 'id' });
+
+    if (action === 'ticketDone') {
+      const ref = db.doc(`supportTickets/${id}`);
+      if (!(await ref.get()).exists) return res.status(404).json({ error: 'notfound' });
+      await ref.update({ status: 'done', doneBy: a.email });
+      return res.status(200).json({ ok: true });
+    }
 
     if (action === 'get') {
       const d = await db.doc(`partnerRequests/${id}`).get();
