@@ -1,7 +1,9 @@
 // Trang quản trị: duyệt hồ sơ xác minh đối tác (xem ảnh CCCD, duyệt/từ chối).
 // Chỉ các email trong biến môi trường ADMIN_EMAILS (cách nhau bằng dấu phẩy) mới dùng được.
 const { init } = require('./_admin');
-const { verify } = require('./_lib');
+const { verify, s3 } = require('./_lib');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const crypto = require('crypto');
 const { activate } = require('./_pay');
 
 const isAdmin = (a) => {
@@ -47,6 +49,39 @@ module.exports = async (req, res) => {
       return res.status(200).json({ result: await activate(db, admin, code, { force: true }) });
     }
 
+    if (action === 'migrate') { // chuyển ảnh base64 cũ trong Firestore sang R2, mỗi lần 6 mục
+      const kind = req.body.kind === 'users' ? 'users' : 'posts', after = req.body.after;
+      let q = db.collection(kind).orderBy(admin.firestore.FieldPath.documentId()).limit(6);
+      if (after) q = q.startAfter(String(after));
+      const snap = await q.get();
+      const up = async (val, uid, tag) => {
+        const m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(val || '');
+        if (!m) return null;
+        const ext = m[1] === 'image/png' ? 'png' : m[1] === 'image/webp' ? 'webp' : 'jpg';
+        const key = `images/${uid}/mig-${tag}-${Date.now()}-${crypto.randomBytes(3).toString('hex')}.${ext}`;
+        await s3.send(new PutObjectCommand({ Bucket: process.env.R2_BUCKET, Key: key, Body: Buffer.from(m[2], 'base64'), ContentType: m[1], CacheControl: 'public, max-age=31536000, immutable' }));
+        return `${process.env.R2_PUBLIC_URL}/${key}`;
+      };
+      const del = admin.firestore.FieldValue.delete();
+      let moved = 0;
+      for (const d of snap.docs) {
+        const x = d.data(), upd = {};
+        if (kind === 'posts') {
+          const u = await up(x.img, x.uid || d.id, 'p');
+          if (u) { upd.img = u; if (!x.thumb || String(x.thumb).startsWith('data:')) upd.thumb = u; }
+        } else {
+          // Ưu tiên trường mới (av/cover); chỉ dùng trường cũ (avatar/coverUrl) khi chưa có trường mới. Trường cũ luôn được dọn.
+          const av = x.av ? await up(x.av, d.id, 'av') : await up(x.avatar, d.id, 'av');
+          if (av) upd.av = av;
+          if (x.avatar && (upd.av || x.av)) upd.avatar = del;
+          const cv = x.cover ? await up(x.cover, d.id, 'cv') : await up(x.coverUrl, d.id, 'cv');
+          if (cv) upd.cover = cv;
+          if (x.coverUrl && (upd.cover || x.cover)) upd.coverUrl = del;
+        }
+        if (Object.keys(upd).length) { await d.ref.update(upd); moved++; }
+      }
+      return res.status(200).json({ scanned: snap.size, moved, next: snap.size < 6 ? null : snap.docs[snap.size - 1].id });
+    }
     if (action === 'tickets') { // 50 yêu cầu hỗ trợ gần nhất
       const snap = await db.collection('supportTickets').orderBy('at', 'desc').limit(50).get();
       return res.status(200).json({ items: snap.docs.map((d) => { const t = d.data();
