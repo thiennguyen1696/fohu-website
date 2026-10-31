@@ -63,12 +63,20 @@ module.exports = async (req, res) => {
         return `${process.env.R2_PUBLIC_URL}/${key}`;
       };
       const del = admin.firestore.FieldValue.delete();
+      const uc = {};
+      const userOf = async (id) => uc[id] || (uc[id] = ((await db.doc(`users/${id}`).get()).data() || {}));
       let moved = 0;
       for (const d of snap.docs) {
         const x = d.data(), upd = {};
         if (kind === 'posts') {
           const u = await up(x.img, x.uid || d.id, 'p');
           if (u) { upd.img = u; if (!x.thumb || String(x.thumb).startsWith('data:')) upd.thumb = u; }
+          if (!('an' in x) && x.uid) { // ảnh chụp tên/ảnh tác giả để khách chưa đăng nhập vẫn thấy được
+            const au = await userOf(x.uid);
+            upd.an = au.name || '';
+            if (/^https?:/.test(au.av || '')) upd.aa = au.av;
+            if (au.username) upd.aun = au.username;
+          }
         } else {
           // Ưu tiên trường mới (av/cover); chỉ dùng trường cũ (avatar/coverUrl) khi chưa có trường mới. Trường cũ luôn được dọn.
           const av = x.av ? await up(x.av, d.id, 'av') : await up(x.avatar, d.id, 'av');
