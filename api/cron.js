@@ -24,7 +24,11 @@ module.exports = async (req, res) => {
     old.docs.forEach((d) => b2.delete(d.ref));
     if (!old.empty) await b2.commit();
 
-    res.status(200).json({ expiredPlans: ex.size, deletedDailies: old.size });
+    // 3) Bản ghi khách truy cập theo ngày (dùng để đếm khách duy nhất) chỉ cần giữ vài ngày
+    const oldV = await db.collection('vis').where('t', '<', admin.firestore.Timestamp.fromMillis(Date.now() - 3 * 24 * 3600 * 1000)).limit(400).get();
+    if (!oldV.empty) { const b3 = db.batch(); oldV.docs.forEach((d) => b3.delete(d.ref)); await b3.commit(); }
+
+    res.status(200).json({ expiredPlans: ex.size, deletedDailies: old.size, deletedVisits: oldV.size });
   } catch (e) {
     console.error('cron', e);
     res.status(500).json({ error: 'server' });
