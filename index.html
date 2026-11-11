@@ -229,8 +229,31 @@ button,a{touch-action:manipulation}
 .sv-h{display:flex;align-items:center;gap:10px;padding:2px 0 12px;border-bottom:1px solid var(--bd)}.sv-h b{flex:1;text-align:center;font-size:18px;margin-right:36px}
 .fe{display:grid;grid-template-columns:1fr 1fr;gap:6px}.fe button{display:flex;align-items:center;gap:10px;border:1px solid var(--bd);background:var(--card);border-radius:12px;padding:10px 12px;font-size:15px;cursor:pointer;color:var(--tx);text-align:left}.fe button:hover{background:var(--bd)}.fe i{font-style:normal;font-size:24px}
 .lq{width:100%;margin-bottom:8px}.lr{display:flex;align-items:center;gap:10px;padding:10px 6px;border-radius:10px;cursor:pointer}.lr:hover{background:var(--bd)}.lr svg{width:22px;height:22px;color:#f5533d;flex:none}.lr small{display:block;color:var(--mu);font-size:12px}
-.pm{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;color:var(--mu);margin:0 0 6px}.pm span{display:inline-flex;align-items:center;gap:3px}.pm svg{width:13px;height:13px}
+.pmeta{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;color:var(--mu);margin:0 0 6px}.pmeta span{display:inline-flex;align-items:center;gap:3px}.pmeta svg{width:13px;height:13px}
 .cmp .cmp-t{border:0;background:transparent;box-shadow:none;border-radius:0;padding:6px 0;margin:0}.cmp .cmp-t:focus{outline:none;box-shadow:none;border:0}
+.lbi,.gcl,.lbs{display:none}
+@media(max-width:800px){
+ .lb{touch-action:none;overscroll-behavior:contain}
+ .lb.pm{display:block}
+ .lb .lbm,.lb.pm .lbm{position:absolute;inset:0;width:100%;height:100%;flex:none;touch-action:none;overflow:hidden}
+ .lbm>img,.lbm>video{transition:transform .22s ease;will-change:transform;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+ .lbm>img.drag{transition:none}
+ .lbn{display:none}
+ .lb .lbx,.lb.pm .lbx{top:calc(12px + env(safe-area-inset-top));left:12px;right:auto;z-index:6;background:#0007}
+ .lb .lbc,.lb.pm .lbc{top:calc(20px + env(safe-area-inset-top));bottom:auto;left:50%;z-index:6}
+ .lb .lbx,.lb .lbc,.lb .lbi{transition:opacity .2s}
+ .lb.hid .lbx,.lb.hid .lbc,.lb.hid .lbi{opacity:0;pointer-events:none}
+ .lbi{display:block;position:absolute;left:0;right:0;bottom:0;z-index:5;padding:56px 14px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.8));color:#fff;pointer-events:none}
+ .lbi>*{pointer-events:auto}
+ .lbi .au2{display:flex;gap:10px;align-items:center}.lbi .au2 b{font-size:15px}.lbi .au2 small{display:block;opacity:.8;font-size:12px}
+ .lbcap{margin:8px 0 4px;font-size:14px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lbcap.open{display:block;max-height:30vh;overflow:auto}
+ .lbcn{display:flex;justify-content:space-between;font-size:13px;opacity:.92;padding:6px 0 8px;border-bottom:1px solid #fff3;min-height:20px}
+ .lba{display:flex}.lba button{flex:1;background:none;border:0;color:#fff;display:flex;gap:6px;align-items:center;justify-content:center;padding:10px 0;font-size:14px;font-weight:600;cursor:pointer}.lba svg{width:22px;height:22px}.lba .on{color:#ff6b61}
+ .lb.pm .gp{position:absolute;left:0;right:0;bottom:0;width:100%;max-width:none;height:72%;border-left:0;border-top:0;border-radius:18px 18px 0 0;z-index:8;transform:translateY(105%);transition:transform .26s ease}
+ .lb.pm.cm .gp{transform:none}
+ .lbs{position:absolute;inset:0;z-index:7;background:rgba(0,0,0,.45)}.lb.cm .lbs{display:block}
+ .gcl{display:flex;margin-left:auto}.gph{padding-top:16px}
+}
 </style></head><body>
 <nav id="nav"><span class="brand"><img src="/fohu-logo-sm.png" alt="" width="40" height="32"><b>FOHU</b></span></nav><main id="app"><section class="hero"><h1>FOHU – Mạng xã hội media Việt</h1><p>Nơi người Việt chia sẻ ảnh và video, kết nối với photographer, videographer, makeup artist, studio, cho thuê trang phục, AI artist và designer cho mọi dự án sáng tạo.</p><div class="hc"><button class="btn" onclick="login()">Đăng nhập với Google</button><a class="btn g" href="/about" data-r="about">Tìm hiểu thêm</a></div>
 <div class="hf"><div><h2>Chia sẻ ảnh và video</h2><p>Đăng ảnh, video và Daily 24 giờ. Quan tâm những người sáng tạo bạn yêu thích để thấy tác phẩm của họ trước tiên.</p></div><div><h2>Tìm đối tác sáng tạo</h2><p>Xem hồ sơ, chuyên môn, khu vực hoạt động và đánh giá thực tế của photographer, videographer, makeup artist và nhiều nghề khác.</p></div><div><h2>Đăng đơn, nhận đơn</h2><p>Khách hàng đăng nhu cầu, đối tác ứng tuyển. Thông tin liên hệ chỉ hiện khi đối tác mở đơn, giúp bạn tránh bị làm phiền.</p></div></div></section><noscript><p>Vui lòng bật JavaScript để sử dụng FOHU.</p></noscript></main><footer id="ft"><div class="fw"><b>FOHU</b><span>Mạng xã hội media Việt</span><div class="fl2" role="navigation" aria-label="Chân trang"><a href="/about" data-r="about">Giới thiệu</a><a href="/support" data-r="support">Liên hệ &amp; Hỗ trợ</a><a href="/privacy" data-r="privacy">Chính sách bảo mật</a><a href="/terms" data-r="terms">Điều khoản sử dụng</a></div><small>© 2026 FOHU. Bảo lưu mọi quyền.</small></div></footer><div id="bb"></div><div id="toast"></div><div id="modal"></div><div id="lb"></div><div id="np"></div><div id="mp" onmouseenter="meHov(1)" onmouseleave="meHov(0)"></div><div id="sv"></div>
@@ -283,17 +306,55 @@ let GZ=null,CS={},meT=0;
 const subC=id=>{if(CS[id])return;CS[id]=1;onSnapshot(query(collection(db,'posts',id,'comments'),orderBy('at')),s=>{C[id]=s.docs.map(d=>d.data());need(C[id].map(c=>c.uid));draw()})};
 const gPanel=()=>{const z=GZ;if(!z||!z.pid)return '';const p=findP(z.pid);if(!p)return '<div class="gph">Bài viết không còn tồn tại</div>';if(au)subC(p.id);
  const u=U[p.uid]||(p.an?{name:p.an,av:p.aa,username:p.aun}:au?{}:{name:'Thành viên FOHU'}),liked=au&&(p.likedBy||[]).includes(au.uid),n=(p.likedBy||[]).length,cs=C[p.id]||[];
- return `<div class="gph">${av(u,40)}<div style="flex:1;min-width:0"><b onclick="closeZ();nav('u/${p.uid}')">${E(u.name)}</b> ${bdg(u.plan)}${au&&au.uid!==p.uid&&!FOL.has(p.uid)?`<span class="fb2" style="margin-left:8px" onclick="toggleF('${p.uid}')">Quan tâm</span>`:''}<small>${ago(p.at)}</small></div>${au&&au.uid!==p.uid?`<span class="ib" title="Nhắn tin" onclick="closeZ();dm('${p.uid}')">${AI.send}</span>`:''}</div>
- ${p.cap?`<div class="gcap">${E(p.cap)}</div>`:''}${pm(p)?`<div style="padding:0 16px 10px">${pm(p)}</div>`:''}
+ return `<div class="gph">${av(u,40)}<div style="flex:1;min-width:0"><b onclick="closeZ();nav('u/${p.uid}')">${E(u.name)}</b> ${bdg(u.plan)}${au&&au.uid!==p.uid&&!FOL.has(p.uid)?`<span class="fb2" style="margin-left:8px" onclick="toggleF('${p.uid}')">Quan tâm</span>`:''}<small>${ago(p.at)}</small></div>${au&&au.uid!==p.uid?`<span class="ib" title="Nhắn tin" onclick="closeZ();dm('${p.uid}')">${AI.send}</span>`:''}<button class="ib gcl" title="Đóng" onclick="gSheet(0)">✕</button></div>
+ ${p.cap?`<div class="gcap">${E(p.cap)}</div>`:''}${pmeta(p)?`<div style="padding:0 16px 10px">${pmeta(p)}</div>`:''}
  <div class="gst"><span>${n?`<span style="color:#f0645a;display:inline-flex;vertical-align:-3px">${AI.heartS}</span> ${n}`:''}</span><span>${cs.length?cs.length+' bình luận':''}</span></div>
  <div class="gac"><button class="${liked?'on':''}" onclick="like('${p.id}')">${AI.heart(liked)} Thích</button><button onclick="document.getElementById('gci').focus()">${AI.cm} Bình luận</button><button onclick="share('${p.id}')">${AI.share} Chia sẻ</button></div>
  <div class="gpb">${cs.map(c=>{const cu=U[c.uid]||{};return `<div class="gc2">${av(cu,32)}<div><div class="gbb"><b>${E(cu.name||'')}</b>${E(c.t)}</div><small>${ago(c.at)}</small></div></div>`}).join('')||'<div style="color:var(--mu);font-size:13px;text-align:center;padding:16px 0">Chưa có bình luận nào. Hãy là người đầu tiên!</div>'}</div>
  <div class="gpa">${au?`<div class="gin">${av(me||{},32)}<input id="gci" placeholder="Viết bình luận…" onkeydown="if(event.key==='Enter'&&this.value){cmt('${p.id}',this)}"><button class="ib" title="Gửi" onclick="gSend('${p.id}')">${AI.send}</button></div>`:'<div style="text-align:center;font-size:13px;color:var(--mu)"><a style="color:var(--act);cursor:pointer" onclick="closeZ();login()">Đăng nhập</a> để thích và bình luận</div>'}</div>`};
-const gRefresh=()=>{if(!GZ||!GZ.pid)return;const g=$('#gp');if(!g)return;const i=$('#gci'),v=i?i.value:'',f=!!i&&document.activeElement===i;g.innerHTML=gPanel();if(v)$('#gci').value=v;if(f)$('#gci').focus()};
-const gShow=()=>{const z=GZ,pm=!!z.pid;$('#lb').innerHTML=`<div class="lb${pm?' pm':''}" onclick="if(event.target===this)closeZ()"><button class="lbx" onclick="closeZ()">✕</button><div class="lbm">${z.list&&z.list.length>1?`<button class="lbn l" onclick="gz(-1)">‹</button><button class="lbn r" onclick="gz(1)">›</button><div class="lbc">${z.i+1} / ${z.list.length}</div>`:''}${z.v?`<video src="${E(z.src)}" controls autoplay playsinline></video>`:`<img src="${E(z.src)}">`}</div>${pm?`<div class="gp" id="gp">${gPanel()}</div>`:''}</div>`};
+const gRefresh=()=>{if(!GZ||!GZ.pid)return;const g=$('#gp');if(!g)return;const i=$('#gci'),v=i?i.value:'',f=!!i&&document.activeElement===i;g.innerHTML=gPanel();const li=$('#lbi');if(li)li.innerHTML=gInfo();if(v)$('#gci').value=v;if(f)$('#gci').focus()};
+const LB={s:1,x:0,y:0,sx:0,sy:0,bx:0,by:0,dx:0,dy:0,mode:'',lastTap:0,pending:0,d0:0,s0:1,moved:false};
+const lbEl=()=>{const m=document.querySelector('.lbm');return m?m.querySelector('img'):null};
+const lbApply=smooth=>{const im=lbEl();if(!im)return;if(im.classList)im.classList.toggle('drag',!smooth);im.style.transform=`translate(${LB.x}px,${LB.y}px) scale(${LB.s})`};
+const lbReset=()=>{LB.s=1;LB.x=0;LB.y=0;lbApply(true)};
+const lbDist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+const lbTog=()=>{if(!GZ)return;GZ.hid=!GZ.hid;const l=document.querySelector('.lb');if(l)l.classList.toggle('hid',GZ.hid)};
+const gSheet=v=>{if(!GZ)return;GZ.cm=!!v;const l=document.querySelector('.lb');if(l)l.classList.toggle('cm',!!v)};
+const lbTs=e=>{if(!GZ||(e.target&&e.target.tagName==='VIDEO'))return;const t=e.touches;LB.moved=false;
+ if(t.length===2){LB.mode='pinch';LB.d0=lbDist(t)||1;LB.s0=LB.s;return}
+ LB.mode=LB.s>1?'pan':'';LB.sx=t[0].clientX;LB.sy=t[0].clientY;LB.bx=LB.x;LB.by=LB.y;LB.dx=0;LB.dy=0};
+const lbTm=e=>{if(!GZ||!lbEl())return;const t=e.touches;
+ if(LB.mode==='pinch'&&t.length===2){LB.s=Math.min(4,Math.max(1,LB.s0*lbDist(t)/LB.d0));LB.moved=true;lbApply(false);return}
+ if(t.length!==1||LB.mode==='pinch')return;LB.dx=t[0].clientX-LB.sx;LB.dy=t[0].clientY-LB.sy;
+ if(!LB.moved&&Math.hypot(LB.dx,LB.dy)<8)return;LB.moved=true;
+ if(LB.mode==='pan'){const mx=(window.innerWidth||400)*(LB.s-1)/2,my=(window.innerHeight||800)*(LB.s-1)/2;LB.x=Math.max(-mx,Math.min(mx,LB.bx+LB.dx));LB.y=Math.max(-my,Math.min(my,LB.by+LB.dy));lbApply(false);return}
+ if(!LB.mode)LB.mode=Math.abs(LB.dx)>Math.abs(LB.dy)?'h':'v';
+ if(LB.mode==='h'){const multi=GZ.list&&GZ.list.length>1;LB.x=multi?LB.dx:LB.dx/4;LB.y=0;lbApply(false)}
+ else{LB.x=0;LB.y=LB.dy;lbApply(false);const l=document.querySelector('.lb');if(l)l.style.background=`rgba(0,0,0,${Math.max(.2,1-Math.abs(LB.dy)/500)})`}};
+const lbTe=e=>{if(!GZ||!lbEl())return;const mode=LB.mode;
+ if(mode==='pinch'){if(e.touches.length<2){LB.mode='';if(LB.s<1.05)lbReset();else lbApply(true)}return}
+ const l=document.querySelector('.lb');if(l)l.style.background='';
+ if(!LB.moved){const now=Date.now();
+  if(now-LB.lastTap<300){clearTimeout(LB.pending);LB.lastTap=0;if(LB.s>1)lbReset();else{LB.s=2.5;LB.x=0;LB.y=0;lbApply(true)}}
+  else{LB.lastTap=now;LB.pending=setTimeout(lbTog,280)}
+  LB.mode='';return}
+ if(mode==='h'){const multi=GZ.list&&GZ.list.length>1;
+  if(multi&&Math.abs(LB.dx)>60){const d=LB.dx<0?1:-1;LB.x=-d*(window.innerWidth||400);lbApply(true);setTimeout(()=>gz(d),140)}else lbReset()}
+ else if(mode==='v'){if(Math.abs(LB.dy)>110)closeZ();else lbReset()}
+ else lbApply(true);
+ LB.mode=''};
+// Thanh thông tin phía dưới ảnh (điện thoại): tác giả, mô tả, số thích/bình luận, nút Thích - Bình luận - Chia sẻ
+const gInfo=()=>{const z=GZ;if(!z||!z.pid)return '';const p=findP(z.pid);if(!p)return '';
+ const u=U[p.uid]||(p.an?{name:p.an,av:p.aa,username:p.aun}:au?{}:{name:'Thành viên FOHU'}),liked=au&&(p.likedBy||[]).includes(au.uid),n=(p.likedBy||[]).length,cs=C[p.id]||[];
+ return `<div class="au2">${av(u,36)}<div style="min-width:0"><b>${E(u.name)}</b><small>${ago(p.at)}${p.feel?` · ${E(p.feel.e)} ${E(p.feel.t)}`:''}${p.loc?` · ${E(p.loc)}`:''}</small></div></div>${p.cap?`<div class="lbcap" onclick="this.classList.toggle('open')">${E(p.cap)}</div>`:''}
+ <div class="lbcn" onclick="gSheet(1)"><span>${n?`<span style="color:#ff6b61;display:inline-flex;vertical-align:-3px">${AI.heartS}</span> ${n}`:''}</span><span>${cs.length?cs.length+' bình luận':''}</span></div>
+ <div class="lba"><button class="${liked?'on':''}" onclick="like('${p.id}')">${AI.heart(liked)} Thích</button><button onclick="gSheet(1)">${AI.cm} Bình luận</button><button onclick="share('${p.id}')">${AI.share} Chia sẻ</button></div>`};
+const gShow=()=>{const z=GZ,pm=!!z.pid;LB.s=1;LB.x=0;LB.y=0;LB.mode='';clearTimeout(LB.pending);
+ $('#lb').innerHTML=`<div class="lb${pm?' pm':''}${z.cm?' cm':''}${z.hid?' hid':''}" onclick="if(event.target===this)closeZ()"><button class="lbx" onclick="closeZ()">✕</button><div class="lbm" ontouchstart="lbTs(event)" ontouchmove="lbTm(event)" ontouchend="lbTe(event)" ontouchcancel="lbTe(event)">${z.list&&z.list.length>1?`<button class="lbn l" onclick="gz(-1)">‹</button><button class="lbn r" onclick="gz(1)">›</button><div class="lbc">${z.i+1} / ${z.list.length}</div>`:''}${z.v?`<video src="${E(z.src)}" controls autoplay playsinline></video>`:`<img src="${E(z.src)}" draggable="false">`}</div>${pm?`<div class="lbi" id="lbi">${gInfo()}</div><div class="lbs" onclick="gSheet(0)"></div><div class="gp" id="gp">${gPanel()}</div>`:''}</div>`;
+ if(z.list&&z.list.length>1&&!z.v)[1,-1].forEach(d=>{const x=z.list[(z.i+d+z.list.length)%z.list.length];if(x){const im=new Image;im.src=x}})};
 const zoomI=i=>{const z=Z[i];if(!z||!z.src)return;GZ={...z,i:Math.max(0,(z.list||[]).indexOf(z.src))};gShow()};
 const gz=d=>{if(!GZ||!GZ.list)return;GZ.i=(GZ.i+d+GZ.list.length)%GZ.list.length;GZ.src=GZ.list[GZ.i];gShow()};
-const closeZ=()=>{GZ=null;$('#lb').innerHTML=''};
+const closeZ=()=>{clearTimeout(LB.pending);GZ=null;$('#lb').innerHTML=''};
 const meHov=on=>{clearTimeout(meT);const m=$('#mp');if(!m)return;if(on&&au){const a=$('#n-me');if(a&&a.getBoundingClientRect){const r=a.getBoundingClientRect();m.style.left=Math.max(8,Math.min((window.innerWidth||1200)-248,r.left+r.width/2-120))+'px'}m.classList.add('open')}else meT=setTimeout(()=>m.classList.remove('open'),180)};
 const meGo=k=>{const m=$('#mp');if(m)m.classList.remove('open');k==='out'?window.out():go(k)};
 const mePanel=()=>{const u=me||{};return `<div class="mph" onclick="meGo('me')">${av(u,40)}<div style="min-width:0"><b>${E(u.name)}</b><div style="font-size:12px;color:var(--mu)">${u.username?'@'+E(u.username):'Xem trang cá nhân'}</div></div></div>
@@ -375,7 +436,7 @@ const EMO2=['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','😊
 const FEEL=[['😊','vui vẻ'],['😍','hạnh phúc'],['🥰','được yêu thương'],['😎','tự tin'],['🤩','hào hứng'],['🥳','phấn khích'],['😌','thư giãn'],['🙏','biết ơn'],['💪','tràn đầy năng lượng'],['🎨','sáng tạo'],['🤔','trăn trở'],['😴','mệt mỏi'],['😢','buồn'],['🌸','bình yên'],['🔥','nhiệt huyết'],['🏆','tự hào']];
 const autoGrow=t=>{try{t.style.height='auto';t.style.height=Math.min(t.scrollHeight||0,260)+'px'}catch(e){}};
 const strip=x=>String(x).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase();
-const pm=p=>(p.feel||p.loc)?`<div class="pm">${p.feel?`<span>${E(p.feel.e)} đang cảm thấy ${E(p.feel.t)}</span>`:''}${p.loc?`<span>${AI.pin} ${E(p.loc)}</span>`:''}</div>`:'';
+const pmeta=p=>(p.feel||p.loc)?`<div class="pmeta">${p.feel?`<span>${E(p.feel.e)} đang cảm thấy ${E(p.feel.t)}</span>`:''}${p.loc?`<span>${AI.pin} ${E(p.loc)}</span>`:''}</div>`:'';
 const emoHtml=()=>emoOpen?`<div class="emo-pop">${EMO2.map(e=>`<span onclick="addEmo('${e}')">${e}</span>`).join('')}</div>`:'';
 const cmpMain=()=>{const n=DR.items.length,paid=me?.plan!=='free',first=(me.name||'bạn').split(' ').pop(),acc=paid?'image/*,video/mp4,video/webm,video/quicktime':'image/*';
  return `<div class="cmp-h"><b>Tạo bài viết</b><button class="cx" title="Đóng (bản nháp được giữ lại)" onclick="closeM()">✕</button></div>
@@ -496,7 +557,7 @@ function drawNow(){Z=[];const r=route().split('/')[0];seoMeta(r);
  $('#bb').innerHTML=au?bottomBar(r):'';
  $('#app').innerHTML=renewBanner()+({home,orders,jobs:orders,inbox,partner,settings,admin,support,about,privacy,terms,me:profile,u:profile}[r]||home)();if(GZ&&GZ.pid)gRefresh()}
 function pin(p,o={}){const u=U[p.uid]||(p.an?{name:p.an,av:p.aa,username:p.aun}:au?{}:{name:'Thành viên FOHU'}),liked=au&&(p.likedBy||[]).includes(au.uid),n=(p.likedBy||[]).length,list=p.imgs&&p.imgs.length>1?p.imgs.filter(safe):null,own=au&&au.uid===p.uid;
- return `<div class="pin">${safe(p.img)?`<div class="pw"><img class="im" loading="lazy" decoding="async" alt="${E((p.cap||'').slice(0,100))||'Ảnh trên FOHU'}" src="${safe(p.thumb)||p.img}" style="cursor:zoom-in" onclick="zoomI(${zk(p.img,false,list,p.id)})">${list?`<span class="mb">${AI.multi} ${list.length}</span>`:''}</div>`:isV(p.video)?`<div class="pw"><video class="im" src="${E(p.video)}${safe(p.thumb)?'':'#t=0.1'}"${safe(p.thumb)?` poster="${p.thumb}" preload="none"`:' preload="metadata"'} muted playsinline style="cursor:pointer" onclick="zoomI(${zk(p.video,true,null,p.id)})"></video><span class="pl"><i>${AI.play2}</i></span></div>`:''}<div class="bd"><p>${E(p.cap)}</p>${pm(p)}
+ return `<div class="pin">${safe(p.img)?`<div class="pw"><img class="im" loading="lazy" decoding="async" alt="${E((p.cap||'').slice(0,100))||'Ảnh trên FOHU'}" src="${safe(p.thumb)||p.img}" style="cursor:zoom-in" onclick="zoomI(${zk(p.img,false,list,p.id)})">${list?`<span class="mb">${AI.multi} ${list.length}</span>`:''}</div>`:isV(p.video)?`<div class="pw"><video class="im" src="${E(p.video)}${safe(p.thumb)?'':'#t=0.1'}"${safe(p.thumb)?` poster="${p.thumb}" preload="none"`:' preload="metadata"'} muted playsinline style="cursor:pointer" onclick="zoomI(${zk(p.video,true,null,p.id)})"></video><span class="pl"><i>${AI.play2}</i></span></div>`:''}<div class="bd"><p>${E(p.cap)}</p>${pmeta(p)}
  ${o.noAuthor?'':`<div class="au" onclick="nav('u/${p.uid}')">${av(u,26)}<span class="an">${E(u.name)}</span>${bdg(u.plan)}${FOL.has(p.uid)?'<span class="fl">Đang quan tâm</span>':au&&!own?`<span class="fb2" onclick="event.stopPropagation();toggleF('${p.uid}')">+ Quan tâm</span>`:''}</div>`}
  <div class="act"><span class="${liked?'lk':''}" title="Thích" onclick="like('${p.id}')">${AI.heart(liked)}</span><span title="Bình luận" onclick="toggleC('${p.id}')">${AI.cm}</span><span title="Chia sẻ" onclick="share('${p.id}')">${AI.share}</span>${au&&!own?`<span title="Nhắn tin" onclick="dm('${p.uid}')">${AI.send}</span>`:''}${o.hl?`<span title="${o.pinned?'Bỏ ghim khỏi mục nổi bật':'Ghim vào mục nổi bật'}" style="${o.pinned?'color:#F5B94A':''}" onclick="hlt('${p.id}')">${AI.star(!!o.pinned)}</span>`:''}<span class="sp"></span>${own?`<span title="Xóa bài" onclick="del('${p.id}')">${AI.trash}</span>`:''}</div>${n?`<div class="lc">${n} lượt thích</div>`:''}
  ${open[p.id]?`<div class="cm">${(C[p.id]||[]).map(c=>`<div><b>${E(U[c.uid]?.name||'')}</b>: ${E(c.t)}</div>`).join('')}<input placeholder="Viết bình luận…" onkeydown="if(event.key==='Enter'&&this.value){cmt('${p.id}',this)}"></div>`:''}</div></div>`}
@@ -796,7 +857,7 @@ const A={login,go,closeM,draw,
  dm:async uid=>{if(need_login())return;const id=[au.uid,uid].sort().join('_');if(!chats.find(c=>c.id===id))await setDoc(doc(db,'chats',id),{members:[au.uid,uid]});openChat(id);go('inbox')},
  openChat:id=>{unM();cid=id;msgs=[];unM=onSnapshot(query(collection(db,'chats',id,'messages'),orderBy('at')),s=>{msgs=s.docs.map(d=>d.data());draw()});draw()},
  send:async el=>{const t=el.value;el.value='';const b=writeBatch(db);b.set(doc(collection(db,'chats',cid,'messages')),{from:au.uid,t,at:serverTimestamp()});b.update(doc(db,'chats',cid),{lastFrom:au.uid,lastText:t.slice(0,80),lastAt:serverTimestamp()});await b.commit()}};
-Object.assign(window,A,{mlock,fpv,zoomI,closeZ,setTh,gz,svGo,closeSV,skLim,nav});window.addEventListener('hashchange',draw);window.addEventListener('popstate',draw);
+Object.assign(window,A,{lbTs,lbTm,lbTe,gSheet,mlock,fpv,zoomI,closeZ,setTh,gz,svGo,closeSV,skLim,nav});window.addEventListener('hashchange',draw);window.addEventListener('popstate',draw);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[data-r]');if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&e.button===0){e.preventDefault();nav(a.dataset.r)}});
 if(location.hash.length>1&&(!location.pathname||location.pathname==='/')){try{history.replaceState(null,'','/'+location.hash.slice(1))}catch(e){}}  // liên kết cũ dạng /#orders tự chuyển sang /orders
